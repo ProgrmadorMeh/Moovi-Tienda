@@ -1,3 +1,136 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "pixel-8-pro-1",
+      "description": "Front view of the Google Pixel 8 Pro in Obsidian color",
+      "imageUrl": "https://picsum.photos/seed/101/800/800",
+      "imageHint": "smartphone front"
+    },
+    {
+      "id": "pixel-8-pro-2",
+      "description": "Angled view of the Google Pixel 8 Pro camera bar",
+      "imageUrl": "https://picsum.photos/seed/102/800/800",
+      "imageHint": "smartphone camera"
+    },
+    {
+      "id": "pixel-8-pro-3",
+      "description": "Side view of the Google Pixel 8 Pro showing the thin profile",
+      "imageUrl": "https://picsum.photos/seed/103/800/800",
+      "imageHint": "smartphone side"
+    },
+    {
+      "id": "galaxy-s24-ultra-1",
+      "description": "Front view of the Samsung Galaxy S24 Ultra in Titanium Gray",
+      "imageUrl": "https://picsum.photos/seed/104/800/800",
+      "imageHint": "smartphone front"
+    },
+    {
+      "id": "galaxy-s24-ultra-2",
+      "description": "Close-up of the Samsung Galaxy S24 Ultra's rear cameras",
+      "imageUrl": "https://picsum.photos/seed/105/800/800",
+      "imageHint": "smartphone camera"
+    },
+    {
+      "id": "galaxy-s24-ultra-3",
+      "description": "Samsung Galaxy S24 Ultra with S Pen",
+      "imageUrl": "https://picsum.photos/seed/106/800/800",
+      "imageHint": "smartphone stylus"
+    },
+    {
+      "id": "iphone-15-pro-1",
+      "description": "Front view of the Apple iPhone 15 Pro in Natural Titanium",
+      "imageUrl": "https://picsum.photos/seed/107/800/800",
+      "imageHint": "smartphone front"
+    },
+    {
+      "id": "iphone-15-pro-2",
+      "description": "Angled view of the Apple iPhone 15 Pro showing the titanium frame and camera system",
+      "imageUrl": "https://picsum.photos/seed/108/800/800",
+      "imageHint": "smartphone angle"
+    },
+    {
+      "id": "iphone-15-pro-3",
+      "description": "Close-up of the iPhone 15 Pro's triple-camera system",
+      "imageUrl": "https://picsum.photos/seed/109/800/800",
+      "imageHint": "smartphone camera"
+    },
+    {
+      "id": "oneplus-12-1",
+      "description": "Front view of the OnePlus 12 in Flowy Emerald",
+      "imageUrl": "https://picsum.photos/seed/110/800/800",
+      "imageHint": "smartphone front"
+    },
+    {
+      "id": "oneplus-12-2",
+      "description": "Back view of the OnePlus 12 showcasing the circular camera module",
+      "imageUrl": "https://picsum.photos/seed/111/800/800",
+      "imageHint": "smartphone back"
+    },
+    {
+      "id": "oneplus-12-3",
+      "description": "OnePlus 12 angled to show the curved display",
+      "imageUrl": "https://picsum.photos/seed/112/800/800",
+      "imageHint": "smartphone display"
+    },
+    {
+      "id": "xperia-1-v-1",
+      "description": "Front view of the Sony Xperia 1 V",
+      "imageUrl": "https://picsum.photos/seed/113/800/800",
+      "imageHint": "smartphone front"
+    },
+    {
+      "id": "xperia-1-v-2",
+      "description": "Close-up on the ZEISS camera system of the Sony Xperia 1 V",
+      "imageUrl": "https://picsum.photos/seed/114/800/800",
+      "imageHint": "smartphone camera"
+    },
+    {
+      "id": "xperia-1-v-3",
+      "description": "Side profile of the Sony Xperia 1 V showing the dedicated shutter button",
+      "imageUrl": "https://picsum.photos/seed/115/800/800",
+      "imageHint": "smartphone side"
+    },
+    {
+      "id": "pixel-7a-1",
+      "description": "Front view of the Google Pixel 7a in Charcoal",
+      "imageUrl": "https://picsum.photos/seed/116/800/800",
+      "imageHint": "smartphone front"
+    },
+    {
+      "id": "pixel-7a-2",
+      "description": "Back view of the Google Pixel 7a showing the camera bar",
+      "imageUrl": "https://picsum.photos/seed/117/800/800",
+      "imageHint": "smartphone back"
+    },
+    {
+      "id": "galaxy-a54-1",
+      "description": "Front view of the Samsung Galaxy A54 in Awesome Violet",
+      "imageUrl": "https://picsum.photos/seed/118/800/800",
+      "imageHint": "smartphone front"
+    },
+    {
+      "id": "galaxy-a54-2",
+      "description": "Back view of the Samsung Galaxy A54 showcasing the clean camera layout",
+      "imageUrl": "https://picsum.photos/seed/119/800/800",
+      "imageHint": "smartphone back"
+    },
+    {
+      "id": "iphone-se-1",
+      "description": "Front view of the Apple iPhone SE in Midnight",
+      "imageUrl": "https://picsum.photos/seed/120/800/800",
+      "imageHint": "smartphone front"
+    },
+    {
+      "id": "iphone-se-2",
+      "description": "Back view of the Apple iPhone SE",
+      "imageUrl": "https://picsum.photos/seed/121/800/800",
+      "imageHint": "smartphone back"
+    },
+    {
+      "id": "contact-hero",
+      "description": "A modern desk setup with a laptop and smartphone, conveying a sense of customer support and communication.",
+      "imageUrl": "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkZXNrJTIwc2V0dXB8ZW58MHx8fHwxNzU5NzcyMTkwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "desk setup"
+    }
+  ]
 }
