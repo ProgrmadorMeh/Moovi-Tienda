@@ -1,35 +1,104 @@
-import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+'use client';
+
+import Image from "next/image";
 import Link from "next/link";
+import { useCartStore, type CartItem as CartItemType } from "@/lib/cart-store";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Trash2, ShoppingCart } from "lucide-react";
 
 export default function CartSheet() {
-  // This is a placeholder as the cart is not fully implemented.
-  const itemCount = 0;
+  const { items, removeFromCart, clearCart } = useCartStore();
+  const subtotal = items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
 
-  if (itemCount > 0) {
+  if (items.length === 0) {
     return (
-      <div className="flex h-full flex-col justify-between">
-        {/* List of items would go here */}
-        <div className="p-4">
-          <p>Items in your cart:</p>
-          {/* Placeholder for cart items */}
-        </div>
-        <div className="border-t p-4">
-          <Button className="w-full">Checkout</Button>
-        </div>
+      <div className="flex h-full flex-col items-center justify-center space-y-4 p-4">
+        <ShoppingCart
+          className="h-24 w-24 text-muted-foreground"
+          strokeWidth={1}
+        />
+        <SheetHeader>
+          <SheetTitle className="font-headline text-xl font-semibold">
+            Your cart is empty
+          </SheetTitle>
+        </SheetHeader>
+        <p className="text-center text-muted-foreground">
+          Looks like you haven't added anything to your cart yet.
+        </p>
+        <Button asChild className="mt-4">
+          <Link href="/">Continue Shopping</Link>
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="flex h-full flex-col items-center justify-center space-y-4">
-      <ShoppingCart className="h-24 w-24 text-muted-foreground" strokeWidth={1} />
-      <h3 className="font-headline text-xl font-semibold">Your cart is empty</h3>
-      <p className="text-center text-muted-foreground">
-        Looks like you haven't added anything to your cart yet.
-      </p>
-      <Button asChild className="mt-4">
-        <Link href="/">Continue Shopping</Link>
+    <div className="flex h-full flex-col">
+      <SheetHeader className="p-4">
+        <SheetTitle className="font-headline text-lg font-semibold">
+          Shopping Cart ({items.length})
+        </SheetTitle>
+      </SheetHeader>
+      <ScrollArea className="flex-grow px-4">
+        <div className="space-y-4">
+          {items.map((item) => (
+            <CartItem key={item.id} item={item} onRemove={removeFromCart} />
+          ))}
+        </div>
+      </ScrollArea>
+      <SheetFooter className="p-4">
+        <div className="w-full space-y-4">
+          <Separator />
+          <div className="flex justify-between font-semibold">
+            <span>Subtotal</span>
+            <span>${subtotal.toFixed(2)}</span>
+          </div>
+          <Button className="w-full">Checkout</Button>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={clearCart}
+          >
+            Clear Cart
+          </Button>
+        </div>
+      </SheetFooter>
+    </div>
+  );
+}
+
+interface CartItemProps {
+  item: CartItemType;
+  onRemove: (productId: number) => void;
+}
+
+function CartItem({ item, onRemove }: CartItemProps) {
+  return (
+    <div className="flex items-center space-x-4">
+      <div className="relative h-20 w-20 overflow-hidden rounded-md border">
+        <Image
+          src={item.images[0].url}
+          alt={item.name}
+          fill
+          className="object-cover"
+        />
+      </div>
+      <div className="flex-grow">
+        <p className="font-semibold">{item.name}</p>
+        <p className="text-sm text-muted-foreground">
+          Qty: {item.quantity}
+        </p>
+        <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+      </div>
+      <Button variant="ghost" size="icon" onClick={() => onRemove(item.id)}>
+        <Trash2 className="h-5 w-5" />
+        <span className="sr-only">Remove</span>
       </Button>
     </div>
   );

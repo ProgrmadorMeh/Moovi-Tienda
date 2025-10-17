@@ -1,6 +1,14 @@
+'use client';
+
 import { getProductById } from "@/lib/products";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import { useCartStore } from "@/lib/cart-store";
+import { useToast } from "@/hooks/use-toast";
+import * as React from "react";
+
+import Preference from "@/lib/funtion/RealizarCompra";
+
 import {
   Carousel,
   CarouselContent,
@@ -11,7 +19,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Star, ShoppingCart } from "lucide-react";
+import { Star, ShoppingCart, CreditCard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProductPageProps {
@@ -21,11 +29,38 @@ interface ProductPageProps {
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-  const product = getProductById(params.id);
+  const resolvedParams = React.use(params);
+  const product = getProductById(resolvedParams.id);
+  const { addToCart } = useCartStore();
+  const { toast } = useToast();
 
   if (!product) {
     notFound();
   }
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    toast({
+      title: "Added to cart",
+      description: `${product.name} has been added to your cart.`,
+      action: (
+        <Button asChild variant="secondary">
+          <a href="#">View Cart</a>
+        </Button>
+      ),
+    });
+  };
+
+  const handleBuyNow = async () => {
+    if (!product) return;
+    const email = "test.user@example.com"; // TODO: Reemplazar con el email del usuario logueado
+    const cartItem = {
+      nombre: product.name,
+      cantidad: 1,
+      precio: product.price,
+    };
+    await Preference(email, [cartItem]);
+  };
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-12">
@@ -85,9 +120,14 @@ export default function ProductPage({ params }: ProductPageProps) {
 
           <p className="text-lg text-muted-foreground">{product.description}</p>
           
-          <Button size="lg" className="w-full text-lg">
-            <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
-          </Button>
+          <div className="flex flex-col space-y-4">
+            <Button size="lg" className="w-full text-lg" onClick={handleAddToCart}>
+              <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
+            </Button>
+            <Button variant="secondary" size="lg" className="w-full text-lg" onClick={handleBuyNow}>
+              <CreditCard className="mr-2 h-5 w-5" /> Buy Now
+            </Button>
+          </div>
 
           <Separator />
 
