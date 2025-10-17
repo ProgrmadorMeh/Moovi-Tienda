@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-const accessToken = process.env.MP_ACCESS_TOKEN;
+const accessToken = process.env.NEXT_PUBLIC_MP_ACCESS_TOKEN;
 
 export async function POST(req) {
   if (req.method !== 'POST') {
