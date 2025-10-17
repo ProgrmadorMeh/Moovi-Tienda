@@ -18,7 +18,7 @@ export default async function Preference (email, carrito) {
       window.location.href = data.init_point
     } else {
       // mostrar error o manejar
-      console.error('Error creating preference:', data.message);
+      console.error('Error creating preference:', data);
     }
     } catch (err) {
       console.error('Error en fetch:', err)
