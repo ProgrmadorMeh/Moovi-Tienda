@@ -2,7 +2,7 @@ export default async function Preference (email, carrito) {
     const body = { carrito, email }
   
     try {
-      const res = await fetch('/api/mercadoPago', {
+      const res = await fetch('/api/mercadopago', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -18,9 +18,9 @@ export default async function Preference (email, carrito) {
       window.location.href = data.init_point
     } else {
       // mostrar error o manejar
+      console.error('Error creating preference:', data.message);
     }
     } catch (err) {
       console.error('Error en fetch:', err)
-      output.textContent = 'Error en la petición: ' + err.message
     }
   }
