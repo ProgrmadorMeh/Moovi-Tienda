@@ -40,6 +40,15 @@ export async function POST(req) {
 
     const data = await response.json()
 
+    if (!response.ok) {
+        // If Mercado Pago API returned an error, forward it
+        return new Response(
+            JSON.stringify({ success: false, message: 'Error from Mercado Pago', error: data }),
+            { headers: { 'Content-Type': 'application/json' }, status: response.status }
+        );
+    }
+
+
     return new Response(
       JSON.stringify({
         success: true,
