@@ -12,19 +12,22 @@ export default async function Preference(email, carrito) {
 
     if (res.ok) {
       if (data.success && data.init_point) {
+        // Redirección a Mercado Pago
         window.location.href = data.init_point;
       } else {
-        // Handle case where success is false or init_point is missing
+        // El servidor respondió OK, pero no se pudo crear la preferencia.
         console.error('API succeeded but preference creation failed:', data);
-        alert('Error: Could not start the payment process. Please try again.');
+        alert('Error: No se pudo iniciar el proceso de pago. Por favor, inténtelo de nuevo.');
       }
     } else {
-      // Handle non-ok responses (e.g., 4xx, 5xx)
+      // El servidor respondió con un error (4xx, 5xx).
       console.error('Error from API route:', data);
-      alert(`Error: ${data.message || 'An unknown error occurred.'}`);
+      const errorMessage = data.error?.message || data.message || 'Ocurrió un error desconocido.';
+      alert(`Error: ${errorMessage}`);
     }
   } catch (err) {
+    // Error de red o al procesar el fetch.
     console.error('Error during fetch:', err);
-    alert('A network error occurred. Please check your connection and try again.');
+    alert('Ocurrió un error de red. Por favor, revise su conexión e inténtelo de nuevo.');
   }
 }

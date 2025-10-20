@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-const accessToken = process.env.NEXT_PUBLIC_MP_ACCESS_TOKEN;
+const accessToken = process.env.MP_ACCESS_TOKEN;
 
 export async function POST(req) {
   if (req.method !== 'POST') {
@@ -25,9 +25,9 @@ export async function POST(req) {
       items,
       payer: { email },
       back_urls: {
-        success: 'https://',
-        failure: 'https://',
-        pending: 'https://',
+        success: 'https://tusitio.com/success',
+        failure: 'https://tusitio.com/failure',
+        pending: 'https://tusitio.com/pending',
       },
       auto_return: 'approved',
     }
@@ -44,14 +44,15 @@ export async function POST(req) {
     const data = await response.json()
 
     if (!response.ok) {
-        // If Mercado Pago API returned an error, forward it
+        // Si la API de Mercado Pago devuelve un error, lo enviamos al cliente.
+        console.error('Error from Mercado Pago API:', data);
         return new Response(
             JSON.stringify({ success: false, message: 'Error from Mercado Pago', error: data }),
             { headers: { 'Content-Type': 'application/json' }, status: response.status }
         );
     }
 
-
+    // Si todo va bien, devolvemos el init_point.
     return new Response(
       JSON.stringify({
         success: true,
@@ -61,7 +62,7 @@ export async function POST(req) {
       { headers: { 'Content-Type': 'application/json' }, status: 200 }
     )
   } catch (err) {
-    console.error(err)
+    console.error('Internal Server Error:', err)
     return new Response(
       JSON.stringify({ success: false, message: err.message }),
       { headers: { 'Content-Type': 'application/json' }, status: 500 }
