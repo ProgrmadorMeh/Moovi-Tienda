@@ -1,4 +1,3 @@
-
 'use client';
 
 import { getProductById } from "@/lib/products";
@@ -9,18 +8,10 @@ import { useToast } from "@/hooks/use-toast";
 import * as React from "react";
 import Preference from "@/lib/funtion/pago/RealizarCompra";
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ShoppingCart, CreditCard } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface ProductPageProps {
   params: {
@@ -29,8 +20,7 @@ interface ProductPageProps {
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-  const resolvedParams = React.use(params);
-  const product = getProductById(resolvedParams.id);
+  const product = getProductById(params.id);
   const { addToCart } = useCartStore();
   const { toast } = useToast();
 
@@ -70,12 +60,18 @@ export default function ProductPage({ params }: ProductPageProps) {
         <div className="md:sticky md:top-20 md:self-start">
         <Card className="overflow-hidden">
           <CardContent className="relative aspect-square p-0">
-            <Image
-              src={product.imageUrl}
-              alt={product.model}
-              fill
-              className="object-cover"
-            />
+            {product.imageUrl ? (
+              <Image
+                src={product.imageUrl}
+                alt={product.model}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-muted">
+                <span className="text-muted-foreground">No Image</span>
+              </div>
+            )}
           </CardContent>
         </Card>
 

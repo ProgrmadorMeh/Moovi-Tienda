@@ -83,12 +83,18 @@ function CartItem({ item, onRemove }: CartItemProps) {
   return (
     <div className="flex items-center space-x-4">
       <div className="relative h-20 w-20 overflow-hidden rounded-md border">
-        <Image
-          src={item.images[0].url}
-          alt={productName}
-          fill
-          className="object-cover"
-        />
+        {item.imageUrl ? (
+          <Image
+            src={item.imageUrl}
+            alt={productName}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-muted">
+            <span className="text-xs text-muted-foreground">No Image</span>
+          </div>
+        )}
       </div>
       <div className="flex-grow">
         <p className="font-semibold">{productName}</p>
