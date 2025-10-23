@@ -11,9 +11,4 @@ export type Product = {
   imageUrl?: string | null;
   lastUpdate: string;
   imei?: string;
-  images: {
-    url: string;
-    alt: string;
-    hint: string;
-  }[];
 };

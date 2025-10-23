@@ -12,7 +12,10 @@ const allImages = placeholderImages.map(img => ({
 const resp = await methodGetList("celulares");
 const celulares = resp.data;
 console.log(resp.message);
-export const products: Product[] = celulares ?? [];
+export const products: Product[] = (celulares || []).map((product: Product, index: number) => ({
+    ...product,
+    imageUrl: allImages[index % allImages.length].url,
+  }));
 
 
 export function getProducts(): Product[] {
