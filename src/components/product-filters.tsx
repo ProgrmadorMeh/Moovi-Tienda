@@ -11,15 +11,16 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "./ui/separator";
 
+type FilterValues = {
+  brand: string;
+  storage: string;
+  priceRange: number[];
+};
 interface ProductFiltersProps {
   brands: string[];
   storageOptions: string[];
-  filters: {
-    brand: string;
-    storage: string;
-    priceRange: number[];
-  };
-  setFilters: (filters: ProductFiltersProps["filters"]) => void;
+  filters: FilterValues;
+  setFilters: (filters: FilterValues) => void;
   sort: string;
   setSort: (sort: string) => void;
 }
@@ -42,7 +43,7 @@ export default function ProductFilters({
 
   const handlePriceChange = (value: number[]) => {
     setFilters({ ...filters, priceRange: value });
-  }
+  };
 
   return (
     <div className="space-y-6 rounded-lg border bg-card p-6">
