@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
-import * as React from "react";
 import Preference from "@/lib/funtion/pago/RealizarCompra";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -55,7 +54,7 @@ export default function ProductPage({ params }: ProductPageProps) {
   };
 
   return (
-    <div className="container mx-auto max-w-6xl px-4 py-12">
+    <div className="container mx-auto max-w-6xl px-4 pt-24 pb-12">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
         <div className="md:sticky md:top-20 md:self-start">
         <Card className="overflow-hidden">
