@@ -1,5 +1,6 @@
 'use client';
 
+import React from "react";
 import { getProductById } from "@/lib/products";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -19,7 +20,8 @@ interface ProductPageProps {
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-  const product = getProductById(params.id);
+  const resolvedParams = React.use(params);
+  const product = getProductById(resolvedParams.id);
   const { addToCart } = useCartStore();
   const { toast } = useToast();
 
