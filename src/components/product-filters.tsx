@@ -84,7 +84,7 @@ export default function ProductFilters({
       </div>
 
       <div className="space-y-4">
-        <Label htmlFor="storage">Memoria</Label>
+        <Label htmlFor="storage">Almacenamiento</Label>
         <Select value={filters.storage} onValueChange={handleStorageChange}>
           <SelectTrigger id="storage">
             <SelectValue placeholder="Select storage" />
