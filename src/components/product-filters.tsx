@@ -42,7 +42,7 @@ export default function ProductFilters({
 
   const handlePriceChange = (value: number[]) => {
     setFilters({ ...filters, priceRange: value });
-  };
+  }
 
   return (
     <div className="space-y-6 rounded-lg border bg-card p-6">
