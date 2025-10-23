@@ -12,7 +12,7 @@ import { Trash2, ShoppingCart } from "lucide-react";
 export default function CartSheet() {
   const { items, removeFromCart, clearCart } = useCartStore();
   const subtotal = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+    (acc, item) => acc + item.salePrice * item.quantity,
     0
   );
 
@@ -75,26 +75,27 @@ export default function CartSheet() {
 
 interface CartItemProps {
   item: CartItemType;
-  onRemove: (productId: number) => void;
+  onRemove: (productId: string) => void;
 }
 
 function CartItem({ item, onRemove }: CartItemProps) {
+  const productName = `${item.brand} ${item.model}`;
   return (
     <div className="flex items-center space-x-4">
       <div className="relative h-20 w-20 overflow-hidden rounded-md border">
         <Image
           src={item.images[0].url}
-          alt={item.name}
+          alt={productName}
           fill
           className="object-cover"
         />
       </div>
       <div className="flex-grow">
-        <p className="font-semibold">{item.name}</p>
+        <p className="font-semibold">{productName}</p>
         <p className="text-sm text-muted-foreground">
           Qty: {item.quantity}
         </p>
-        <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+        <p className="font-bold">${(item.salePrice * item.quantity).toFixed(2)}</p>
       </div>
       <Button variant="ghost" size="icon" onClick={() => onRemove(item.id)}>
         <Trash2 className="h-5 w-5" />

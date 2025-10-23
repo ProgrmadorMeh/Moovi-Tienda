@@ -2,12 +2,11 @@ import Image from "next/image";
 import ProductCatalog from "@/components/product-catalog";
 import { getProducts } from "@/lib/products";
 import type { Product } from "@/lib/types";
-import { CartProvider } from "@/context/CartContext";
 
 export default function Home() {
   const products: Product[] = getProducts();
   const brands = [...new Set(products.map((p) => p.brand))];
-  const storageOptions = [...new Set(products.map((p) => p.storage))].sort(
+  const capacityOptions = [...new Set(products.map((p) => p.capacity))].sort(
     (a, b) => parseInt(a) - parseInt(b)
   );
 
@@ -35,7 +34,7 @@ export default function Home() {
         <ProductCatalog
           products={products}
           brands={brands}
-          storageOptions={storageOptions}
+          capacityOptions={capacityOptions}
         />
       </div>
     </>

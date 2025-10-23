@@ -13,12 +13,12 @@ import { Separator } from "./ui/separator";
 
 type FilterValues = {
   brand: string;
-  storage: string;
+  capacity: string;
   priceRange: number[];
 };
 interface ProductFiltersProps {
   brands: string[];
-  storageOptions: string[];
+  capacityOptions: string[];
   filters: FilterValues;
   setFilters: (filters: FilterValues) => void;
   sort: string;
@@ -27,7 +27,7 @@ interface ProductFiltersProps {
 
 export default function ProductFilters({
   brands,
-  storageOptions,
+  capacityOptions,
   filters,
   setFilters,
   sort,
@@ -37,8 +37,8 @@ export default function ProductFilters({
     setFilters({ ...filters, brand: value });
   };
 
-  const handleStorageChange = (value: string) => {
-    setFilters({ ...filters, storage: value });
+  const handleCapacityChange = (value: string) => {
+    setFilters({ ...filters, capacity: value });
   };
 
   const handlePriceChange = (value: number[]) => {
@@ -84,16 +84,16 @@ export default function ProductFilters({
       </div>
 
       <div className="space-y-4">
-        <Label htmlFor="storage">Almacenamiento</Label>
-        <Select value={filters.storage} onValueChange={handleStorageChange}>
-          <SelectTrigger id="storage">
-            <SelectValue placeholder="Select storage" />
-          </Trigger>
+        <Label htmlFor="capacity">Almacenamiento</Label>
+        <Select value={filters.capacity} onValueChange={handleCapacityChange}>
+          <SelectTrigger id="capacity">
+            <SelectValue placeholder="Select capacity" />
+          </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Storage</SelectItem>
-            {storageOptions.map((storage) => (
-              <SelectItem key={storage} value={storage}>
-                {storage}
+            <SelectItem value="all">All Capacities</SelectItem>
+            {capacityOptions.map((capacity) => (
+              <SelectItem key={capacity} value={capacity}>
+                {capacity}
               </SelectItem>
             ))}
           </SelectContent>

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo } from "react";
@@ -9,42 +8,44 @@ import ProductFilters from "./product-filters";
 interface ProductCatalogProps {
   products: Product[];
   brands: string[];
-  storageOptions: string[];
+  capacityOptions: string[];
 }
 
 export default function ProductCatalog({
   products,
   brands,
-  storageOptions,
+  capacityOptions,
 }: ProductCatalogProps) {
   const [filters, setFilters] = useState({
     brand: "all",
-    storage: "all",
+    capacity: "all",
     priceRange: [0, 1500],
   });
   const [sort, setSort] = useState("price-asc");
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
-      const { brand, storage, priceRange } = filters;
+      const { brand, capacity, priceRange } = filters;
       const brandMatch = brand === "all" || product.brand === brand;
-      const storageMatch =
-        storage === "all" || product.storage === storage;
+      const capacityMatch =
+        capacity === "all" || product.capacity === capacity;
       const priceMatch =
-        product.price >= priceRange[0] && product.price <= priceRange[1];
-      return brandMatch && storageMatch && priceMatch;
+        product.salePrice >= priceRange[0] && product.salePrice <= priceRange[1];
+      return brandMatch && capacityMatch && priceMatch;
     });
 
     return filtered.sort((a, b) => {
+      const aName = `${a.brand} ${a.model}`;
+      const bName = `${b.brand} ${b.model}`;
       switch (sort) {
         case "price-asc":
-          return a.price - b.price;
+          return a.salePrice - b.salePrice;
         case "price-desc":
-          return b.price - a.price;
+          return b.salePrice - a.salePrice;
         case "name-asc":
-          return a.name.localeCompare(b.name);
+          return aName.localeCompare(bName);
         case "name-desc":
-          return b.name.localeCompare(a.name);
+          return bName.localeCompare(aName);
         default:
           return 0;
       }
@@ -57,7 +58,7 @@ export default function ProductCatalog({
         <div className="sticky top-20">
           <ProductFilters
             brands={brands}
-            storageOptions={storageOptions}
+            capacityOptions={capacityOptions}
             filters={filters}
             setFilters={setFilters}
             sort={sort}

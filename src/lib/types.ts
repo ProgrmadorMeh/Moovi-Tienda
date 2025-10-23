@@ -1,16 +1,19 @@
-
 export type Product = {
   id: string;
-  name: string;
   brand: string;
   model: string;
-  storage: string;
+  capacity: '128GB' | '256GB' | '512GB' | '1TB';
   color: string;
-  price: number;
+  costPrice: number;
+  salePrice: number;
   stock: number;
   description?: string;
-  images: { url: string; alt: string; hint: string }[];
-  rating: number;
-  reviewCount: number;
-  specifications: Record<string, string>;
+  imageUrl?: string | null;
+  lastUpdate: string;
+  imei?: string;
+  images: {
+    url: string;
+    alt: string;
+    hint: string;
+  }[];
 };

@@ -19,7 +19,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Star, ShoppingCart, CreditCard } from "lucide-react";
+import { ShoppingCart, CreditCard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProductPageProps {
@@ -37,12 +37,14 @@ export default function ProductPage({ params }: ProductPageProps) {
   if (!product) {
     notFound();
   }
+  
+  const productName = `${product.brand} ${product.model}`;
 
   const handleAddToCart = () => {
     addToCart(product);
     toast({
       title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
+      description: `${productName} has been added to your cart.`,
       action: (
         <Button asChild variant="secondary">
           <a href="#">View Cart</a>
@@ -55,9 +57,9 @@ export default function ProductPage({ params }: ProductPageProps) {
     if (!product) return;
     const email = "test.user@example.com"; // TODO: Reemplazar con el email del usuario logueado
     const cartItem = {
-      nombre: product.name,
+      nombre: productName,
       cantidad: 1,
-      precio: product.price,
+      precio: product.salePrice,
     };
     await Preference(email, [cartItem]);
   };
@@ -93,30 +95,11 @@ export default function ProductPage({ params }: ProductPageProps) {
           <div>
             <p className="text-sm font-medium text-primary">{product.brand}</p>
             <h1 className="font-headline text-4xl font-bold tracking-tight lg:text-5xl">
-              {product.name}
+              {productName}
             </h1>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={cn(
-                    "h-5 w-5",
-                    i < Math.round(product.rating)
-                      ? "fill-primary text-primary"
-                      : "text-muted-foreground"
-                  )}
-                />
-              ))}
-            </div>
-            <span className="text-sm text-muted-foreground">
-              {product.rating} ({product.reviewCount} reviews)
-            </span>
-          </div>
-
-          <p className="text-4xl font-bold">${product.price}</p>
+          <p className="text-4xl font-bold">${product.salePrice}</p>
 
           <p className="text-lg text-muted-foreground">{product.description}</p>
           
@@ -132,14 +115,20 @@ export default function ProductPage({ params }: ProductPageProps) {
           <Separator />
 
           <div>
-            <h3 className="font-headline text-2xl font-semibold">Specifications</h3>
+            <h3 className="font-headline text-2xl font-semibold">Details</h3>
             <ul className="mt-4 space-y-2 text-muted-foreground">
-              {Object.entries(product.specifications).map(([key, value]) => (
-                <li key={key} className="flex justify-between">
-                  <span className="font-medium text-foreground">{key}</span>
-                  <span>{value}</span>
+                <li className="flex justify-between">
+                  <span className="font-medium text-foreground">Capacity</span>
+                  <span>{product.capacity}</span>
                 </li>
-              ))}
+                <li className="flex justify-between">
+                  <span className="font-medium text-foreground">Color</span>
+                  <span>{product.color}</span>
+                </li>
+                 <li className="flex justify-between">
+                  <span className="font-medium text-foreground">In Stock</span>
+                  <span>{product.stock}</span>
+                </li>
             </ul>
           </div>
         </div>

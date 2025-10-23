@@ -19,6 +19,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const productName = `${product.brand} ${product.model}`;
+  
   return (
     <Link href={`/products/${product.id}`} className="group">
       <Card className="h-full overflow-hidden transition-all duration-300 ease-in-out hover:border-primary hover:shadow-lg hover:shadow-primary/10">
@@ -41,30 +43,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         </CardHeader>
         <CardContent className="p-4">
           <CardTitle className="font-headline text-lg leading-tight">
-            {product.name}
+            {productName}
           </CardTitle>
           <CardDescription className="mt-1 text-sm text-muted-foreground">
             {product.brand}
           </CardDescription>
-          <div className="mt-2 flex items-center gap-1">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={cn(
-                    "h-4 w-4",
-                    i < Math.round(product.rating)
-                      ? "fill-primary text-primary"
-                      : "text-muted-foreground"
-                  )}
-                />
-              ))}
-            </div>
-            <span className="text-xs text-muted-foreground">({product.reviewCount})</span>
-          </div>
         </CardContent>
         <CardFooter className="p-4 pt-0">
-          <p className="text-xl font-semibold">${product.price}</p>
+          <p className="text-xl font-semibold">${product.salePrice}</p>
         </CardFooter>
       </Card>
     </Link>
