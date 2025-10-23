@@ -7,7 +7,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
 import * as React from "react";
 
-import Preference from "@/lib/funtion/RealizarCompra";
+import Preference from "@/lib/funtion/pago/RealizarCompra";
 
 import {
   Carousel,
