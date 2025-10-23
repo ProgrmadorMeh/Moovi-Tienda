@@ -26,11 +26,11 @@ export default function ProductCard({ product }: ProductCardProps) {
       <Card className="h-full overflow-hidden transition-all duration-300 ease-in-out hover:border-primary hover:shadow-lg hover:shadow-primary/10">
         <CardHeader className="p-0">
           <div className="relative h-64 w-full">
-            {product.images?.[0] ? (
+            {product.imageUrl? (
               <Image
-                src={product.images[0].url}
-                alt={product.images[0].alt}
-                data-ai-hint={product.images[0].hint}
+                src={product.imageUrl}
+                alt={product.imageUrl}
+                data-ai-hint={product.imageUrl}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />

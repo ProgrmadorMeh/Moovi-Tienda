@@ -1,4 +1,4 @@
-import { supabase } from '../../supabaseClient.js';
+import { supabase } from '../../supabaseClient';
 
 /**
  * Obtiene registros de cualquier tabla usando filtros con coincidencia parcial (ilike).
@@ -17,8 +17,6 @@ export async function methodGetList( tabla, filtros = {}, campos = "*") {
   }
 
   try {
-
-
     // Construir condiciones ilike para los filtros
     const condiciones = Object.entries(filtros)
       .filter(([_, valor]) => valor && valor.toString().trim() !== '')
@@ -54,11 +52,11 @@ export async function methodGetList( tabla, filtros = {}, campos = "*") {
 
       // Agrega el nombre de la marca a cada celular
       data.forEach(celular => {
-        const marca = dataMarca.find(mar => mar.id === celular.id_marca);
+        const marca = dataMarca.find(mar => mar.id === celular.id_brand);
         if (marca) {
-          celular.nombre_marca = marca.nombre;
+          celular.brand = marca.nombre;
         } else {
-          celular.nombre_marca = "Null";
+          celular.brand = "Null";
         }
       });
     }

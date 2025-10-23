@@ -68,27 +68,17 @@ export default function ProductPage({ params }: ProductPageProps) {
     <div className="container mx-auto max-w-6xl px-4 py-12">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
         <div className="md:sticky md:top-20 md:self-start">
-          <Carousel className="w-full">
-            <CarouselContent>
-              {product.images.map((image, index) => (
-                <CarouselItem key={index}>
-                  <Card className="overflow-hidden">
-                    <CardContent className="relative aspect-square p-0">
-                      <Image
-                        src={image.url}
-                        alt={image.alt}
-                        data-ai-hint={image.hint}
-                        fill
-                        className="object-cover"
-                      />
-                    </CardContent>
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-2" />
-            <CarouselNext className="right-2" />
-          </Carousel>
+        <Card className="overflow-hidden">
+          <CardContent className="relative aspect-square p-0">
+            <Image
+              src={product.imageUrl}
+              alt={product.model}
+              fill
+              className="object-cover"
+            />
+          </CardContent>
+        </Card>
+
         </div>
 
         <div className="space-y-6">
