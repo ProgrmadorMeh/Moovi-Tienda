@@ -1,10 +1,10 @@
+
 "use client";
 
 import { useState, useMemo } from "react";
 import type { Product } from "@/lib/types";
 import ProductCard from "./product-card";
 import ProductFilters from "./product-filters";
-import { Separator } from "./ui/separator";
 
 interface ProductCatalogProps {
   products: Product[];

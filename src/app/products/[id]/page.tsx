@@ -1,3 +1,4 @@
+
 'use client';
 
 import { getProductById } from "@/lib/products";
@@ -6,7 +7,6 @@ import Image from "next/image";
 import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
 import * as React from "react";
-
 import Preference from "@/lib/funtion/pago/RealizarCompra";
 
 import {

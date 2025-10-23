@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -87,7 +88,7 @@ export default function ProductFilters({
         <Select value={filters.storage} onValueChange={handleStorageChange}>
           <SelectTrigger id="storage">
             <SelectValue placeholder="Select storage" />
-          </SelectTrigger>
+          </Trigger>
           <SelectContent>
             <SelectItem value="all">All Storage</SelectItem>
             {storageOptions.map((storage) => (
