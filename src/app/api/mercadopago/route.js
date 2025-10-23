@@ -12,25 +12,25 @@ export async function POST(req) {
   }
 
   try {
-    const { carrito, email } = await req.json()
-
+    const { carrito, email } = await req.json();
     const items = carrito.map((item) => ({
       title: item.nombre,
-      quantity: item.cantidad,
-      unit_price: item.precio,
+      quantity: Number(item.cantidad) || 1,   // asegurar que es número
+      unit_price: Number(item.precio) || 0,   // asegurar que es número
       currency_id: 'ARS',
-    }))
-
+    }));
+    console.log(items)
+    
     const preference = {
       items,
       payer: { email },
       back_urls: {
-        success: 'https://tusitio.com/success',
-        failure: 'https://tusitio.com/failure',
-        pending: 'https://tusitio.com/pending',
+        success: "https://tusitio.com/success",
+        failure: "https://tusitio.com/failure",
+        pending: "https://tusitio.com/pending",
       },
-      auto_return: 'approved',
-    }
+      auto_return: "approved",
+    };
 
     const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
       method: 'POST',

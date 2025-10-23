@@ -23,8 +23,8 @@ export default function CartSheet() {
     const email = "test.user@example.com"; // TODO: Reemplazar con el email del usuario logueado
     const cartItemsForApi = items.map(item => ({
       nombre: `${item.brand} ${item.model}`,
-      cantidad: item.quantity,
-      precio: item.salePrice,
+      cantidad: Number(item.quantity),
+      precio: Number(item.salePrice),
     }));
 
     await Preference(email, cartItemsForApi);
