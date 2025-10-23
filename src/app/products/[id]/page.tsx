@@ -20,8 +20,7 @@ interface ProductPageProps {
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-  const resolvedParams = React.use(params);
-  const product = getProductById(resolvedParams.id);
+  const product = getProductById(params.id);
   const { addToCart } = useCartStore();
   const { toast } = useToast();
 

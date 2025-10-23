@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Trash2, ShoppingCart } from "lucide-react";
+import Preference from "@/lib/funtion/pago/RealizarCompra";
 
 export default function CartSheet() {
   const { items, removeFromCart, clearCart } = useCartStore();
@@ -15,6 +16,20 @@ export default function CartSheet() {
     (acc, item) => acc + item.salePrice * item.quantity,
     0
   );
+
+  const handleCheckout = async () => {
+    if (items.length === 0) return;
+
+    const email = "test.user@example.com"; // TODO: Reemplazar con el email del usuario logueado
+    const cartItemsForApi = items.map(item => ({
+      nombre: `${item.brand} ${item.model}`,
+      cantidad: item.quantity,
+      precio: item.salePrice,
+    }));
+
+    await Preference(email, cartItemsForApi);
+  };
+
 
   if (items.length === 0) {
     return (
@@ -59,7 +74,7 @@ export default function CartSheet() {
             <span>Subtotal</span>
             <span>${subtotal.toFixed(2)}</span>
           </div>
-          <Button className="w-full">Checkout</Button>
+          <Button className="w-full" onClick={handleCheckout}>Checkout</Button>
           <Button
             variant="outline"
             className="w-full"
