@@ -48,6 +48,33 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
                 Precio único
               </Badge>
             )}
+
+            {/* Overlay for Quick View buttons */}
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between items-center p-4">
+              <Button
+                variant="secondary"
+                size="icon"
+                className="rounded-full self-end"
+                onClick={(e) => {
+                    e.preventDefault();
+                    onQuickView(product);
+                }}
+                aria-label="Vista Rápida"
+              >
+                <Eye className="h-5 w-5" />
+              </Button>
+              <Button
+                variant="secondary"
+                className="w-full"
+                onClick={(e) => {
+                    e.preventDefault();
+                    onQuickView(product);
+                }}
+              >
+                Vista previa
+              </Button>
+            </div>
+
           </div>
         </CardHeader>
 
@@ -83,7 +110,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
             {product.installments && product.installments > 0 && (
               <p suppressHydrationWarning className="text-sm text-muted-foreground">
                   o {product.installments} cuotas sin interés de $
-                  {installmentPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             )}
             
@@ -104,20 +131,6 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           )}
          </CardFooter>
       </Link>
-      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <Button
-            variant="secondary"
-            size="icon"
-            className="rounded-full"
-            onClick={(e) => {
-                e.preventDefault();
-                onQuickView(product);
-            }}
-            aria-label="Vista Rápida"
-        >
-            <Eye className="h-5 w-5" />
-        </Button>
-      </div>
     </Card>
   );
 }
