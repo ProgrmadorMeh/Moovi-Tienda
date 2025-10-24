@@ -1,7 +1,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Image as ImageIcon, Truck } from "lucide-react";
+import { Eye, Image as ImageIcon, Truck } from "lucide-react";
 
 import type { Product } from "@/lib/types";
 import {
@@ -13,20 +13,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "./ui/button";
 
 interface ProductCardProps {
   product: Product;
+  onQuickView: (product: Product) => void;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, onQuickView }: ProductCardProps) {
   const productName = `${product.model}`;
   const hasImage = product.imageUrl && product.imageUrl.trim() !== "";
   const installmentPrice = product.installments ? product.salePrice / product.installments : 0;
 
   return (
-    <Link href={`/products/${product.id}`} className="group">
-      <Card className="h-full overflow-hidden transition-all duration-300 ease-in-out hover:border-primary hover:shadow-lg hover:shadow-primary/10">
-        <CardHeader className="p-0 relative">
+    <Card className="group relative h-full overflow-hidden transition-all duration-300 ease-in-out hover:border-primary hover:shadow-lg hover:shadow-primary/10">
+      <Link href={`/products/${product.id}`} className="block">
+        <CardHeader className="p-0">
           <div className="relative h-64 w-full">
             {hasImage ? (
               <Image
@@ -101,7 +103,21 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
          </CardFooter>
-      </Card>
-    </Link>
+      </Link>
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <Button
+            variant="secondary"
+            size="icon"
+            className="rounded-full"
+            onClick={(e) => {
+                e.preventDefault();
+                onQuickView(product);
+            }}
+            aria-label="Vista Rápida"
+        >
+            <Eye className="h-5 w-5" />
+        </Button>
+      </div>
+    </Card>
   );
 }
