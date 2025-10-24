@@ -26,17 +26,17 @@ export default function ProductCard({ product }: ProductCardProps) {
       <Card className="h-full overflow-hidden transition-all duration-300 ease-in-out hover:border-primary hover:shadow-lg hover:shadow-primary/10">
         <CardHeader className="p-0">
           <div className="relative h-64 w-full">
-            {product.imageUrl? (
+            {product.imageUrl && product.imageUrl.trim() !== "" ? (
               <Image
                 src={product.imageUrl}
-                alt={product.imageUrl}
-                data-ai-hint={product.imageUrl}
+                alt={productName}
+                data-ai-hint={product.brand}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-muted">
-                <span className="text-muted-foreground">No Image</span>
+                <span className="text-muted-foreground">sin imagen</span>
               </div>
             )}
           </div>
