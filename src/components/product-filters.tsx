@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -26,8 +27,8 @@ interface ProductFiltersProps {
 }
 
 export default function ProductFilters({
-  brands,
-  capacityOptions,
+  brands = [],
+  capacityOptions = [],
   filters,
   setFilters,
   sort,
@@ -48,7 +49,7 @@ export default function ProductFilters({
   return (
     <div className="space-y-6 rounded-lg border bg-card p-6">
       <h3 className="font-headline text-2xl font-semibold">Filters</h3>
-      
+
       <div className="space-y-4">
         <Label htmlFor="sort">Sort by</Label>
         <Select value={sort} onValueChange={setSort}>
@@ -109,7 +110,7 @@ export default function ProductFilters({
         </div>
         <Slider
           min={0}
-          max={1500}
+          max={1000000}
           step={50}
           value={filters.priceRange}
           onValueChange={handlePriceChange}

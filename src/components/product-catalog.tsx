@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo } from "react";
@@ -19,18 +20,27 @@ export default function ProductCatalog({
   const [filters, setFilters] = useState({
     brand: "all",
     capacity: "all",
-    priceRange: [0, 1500],
+    priceRange: [0, 1000000],
   });
   const [sort, setSort] = useState("price-asc");
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
       const { brand, capacity, priceRange } = filters;
+
       const brandMatch = brand === "all" || product.brand === brand;
+
+      const productCapacity = product.capacity || "";
+      const filterCapacity = capacity.replace(/gb|bg/i, "").trim();
       const capacityMatch =
-        capacity === "all" || product.capacity === capacity;
+        capacity === "all" ||
+        productCapacity.toLowerCase().includes(filterCapacity);
+
       const priceMatch =
-        product.salePrice >= priceRange[0] && product.salePrice <= priceRange[1];
+        product.salePrice !== undefined &&
+        product.salePrice >= priceRange[0] &&
+        product.salePrice <= priceRange[1];
+
       return brandMatch && capacityMatch && priceMatch;
     });
 
@@ -75,7 +85,9 @@ export default function ProductCatalog({
           </div>
         ) : (
           <div className="flex h-full min-h-[40vh] flex-col items-center justify-center rounded-lg border border-dashed bg-card p-8 text-center">
-            <h3 className="font-headline text-2xl font-semibold">No Products Found</h3>
+            <h3 className="font-headline text-2xl font-semibold">
+              No Products Found
+            </h3>
             <p className="mt-2 text-muted-foreground">
               Try adjusting your filters to find what you're looking for.
             </p>

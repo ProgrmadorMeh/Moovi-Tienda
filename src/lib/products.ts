@@ -1,27 +1,30 @@
 import type { Product } from "./types";
-import { placeholderImages } from './placeholder-images.json';
-import { methodGetList } from "@/lib/funtion/metodos/methodGetList"
+import { methodGetList } from "@/lib/funtion/metodos/methodGetList";
 
-const allImages = placeholderImages.map(img => ({
-  id: img.id,
-  url: img.imageUrl,
-  alt: img.description,
-  hint: img.imageHint,
-}));
+// ✅ Carga los productos desde tu API o base de datos
+export async function getProducts(): Promise<Product[]> {
+  const resp = await methodGetList("celulares");
 
-const resp = await methodGetList("celulares");
-const celulares = resp.data;
-console.log(resp.message);
-export const products: Product[] = (celulares || []).map((product: Product, index: number) => ({
+  if (!resp || !Array.isArray(resp.data)) {
+    console.error("❌ Error al obtener productos:", resp);
+    return [];
+  }
+
+  const celulares = resp.data as Product[];
+
+  // Opcional: agrega un fallback si `imageUrl` está vacío
+  const products = celulares.map((product) => ({
     ...product,
-    imageUrl: allImages[index % allImages.length].url,
+    imageUrl: product.imageUrl && product.imageUrl.trim() !== ""
+      ? product.imageUrl
+      : "/img/default-product.jpg", // 👉 pon una imagen por defecto si lo deseas
   }));
 
-
-export function getProducts(): Product[] {
+  console.log("✅ Productos cargados:", products.length);
   return products;
 }
 
-export function getProductById(id: string): Product | undefined {
-  return products.find(p => p.id === id);
+export async function getProductById(id: string): Promise<Product | undefined> {
+  const products = await getProducts();
+  return products.find((p) => p.id === id);
 }

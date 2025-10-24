@@ -3,8 +3,8 @@ import ProductCatalog from "@/components/product-catalog";
 import { getProducts } from "@/lib/products";
 import type { Product } from "@/lib/types";
 
-export default function Home() {
-  const products: Product[] = getProducts();
+export default async function Home() {
+  const products: Product[] = await getProducts(); // ✅ ahora es async
   const brands = [...new Set(products.map((p) => p.brand))];
   const capacityOptions = [...new Set(products.map((p) => p.capacity))].sort(
     (a, b) => parseInt(a) - parseInt(b)
@@ -30,6 +30,7 @@ export default function Home() {
           </p>
         </div>
       </header>
+
       <div className="container mx-auto px-4 py-12">
         <ProductCatalog
           products={products}
