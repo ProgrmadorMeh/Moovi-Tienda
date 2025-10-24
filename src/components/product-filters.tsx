@@ -110,7 +110,7 @@ export default function ProductFilters({
         </div>
         <Slider
           min={0}
-          max={1000000}
+          max={10000000}
           step={50}
           value={filters.priceRange}
           onValueChange={handlePriceChange}

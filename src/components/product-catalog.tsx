@@ -20,7 +20,7 @@ export default function ProductCatalog({
   const [filters, setFilters] = useState({
     brand: "all",
     capacity: "all",
-    priceRange: [0, 1000000],
+    priceRange: [0, 10000000],
   });
   const [sort, setSort] = useState("price-asc");
 
