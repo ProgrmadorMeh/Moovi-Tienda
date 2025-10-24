@@ -4,7 +4,7 @@ import { getProducts } from "@/lib/products";
 import type { Product } from "@/lib/types";
 
 export default async function Home() {
-  const products: Product[] = await getProducts(); // ✅ ahora es async
+  const products: Product[] = await getProducts();
   const brands = [...new Set(products.map((p) => p.brand))];
   const capacityOptions = [...new Set(products.map((p) => p.capacity))].sort(
     (a, b) => parseInt(a) - parseInt(b)
