@@ -31,6 +31,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const productName = `${product.model}`;
   const hasImage = product.imageUrl && isValidImageUrl(product.imageUrl);
+  const installmentPrice = product.salePrice / 6;
 
   return (
     <Link href={`/products/${product.id}`} className="group">
@@ -45,11 +46,9 @@ export default function ProductCard({ product }: ProductCardProps) {
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
             ) : (
-              <div className="flex h-full w-full flex-col items-center justify-center bg-gray-200">
-                <ImageIcon className="mb-2 h-8 w-8 text-gray-400" />
-                <span className="text-gray-500 font-medium text-lg">
-                  sin imagen
-                </span>
+              <div className="flex h-full w-full flex-col items-center justify-center bg-muted">
+                  <ImageIcon className="mb-2 h-8 w-8 text-gray-400" />
+                  <span className="text-muted-foreground">sin imagen</span>
               </div>
             )}
             {product.uniquePrice && (
@@ -75,28 +74,28 @@ export default function ProductCard({ product }: ProductCardProps) {
           <p className="text-sm text-muted-foreground mt-1">{product.capacity}</p>
 
           <div className="mt-4">
-            {product.originalPrice && (
+            {product.originalPrice && product.originalPrice > product.salePrice && (
               <p suppressHydrationWarning className="text-sm text-muted-foreground line-through">
-                ${product.originalPrice.toLocaleString()}
+                ${product.originalPrice.toLocaleString('es-AR')}
               </p>
             )}
             <div className="flex items-center">
-              <p suppressHydrationWarning className="text-2xl font-bold">${product.salePrice.toLocaleString()}</p>
+              <p suppressHydrationWarning className="text-2xl font-bold">${product.salePrice.toLocaleString('es-AR')}</p>
               {product.discount && (
                 <Badge className="ml-2 bg-green-200 text-green-800">
                   {product.discount}% off
                 </Badge>
               )}
             </div>
-            {product.installments && product.installmentPrice && (
-              <p suppressHydrationWarning className="text-sm text-muted-foreground">
-                Hasta {product.installments} cuotas sin interés de $
-                {product.installmentPrice.toLocaleString()}
-              </p>
-            )}
+
+            <p suppressHydrationWarning className="text-sm text-muted-foreground">
+                o 6 cuotas sin interés de $
+                {installmentPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </p>
+            
             {product.taxedPrice && (
               <p suppressHydrationWarning className="text-xs text-muted-foreground mt-1">
-                Precio s/imp. nac: ${product.taxedPrice.toLocaleString()}
+                Precio s/imp. nac: ${product.taxedPrice.toLocaleString('es-AR')}
               </p>
             )}
           </div>

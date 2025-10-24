@@ -19,4 +19,6 @@ export type Product = {
   installmentPrice?: number;
   taxedPrice?: number;
   shipping?: boolean;
+  name?: string; // Agregado para consistencia en el carrito
+  id_brand: string; // Agregado para la lógica de obtención de productos
 };

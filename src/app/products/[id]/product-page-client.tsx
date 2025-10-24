@@ -6,12 +6,12 @@ import Link from "next/link";
 import { Image as ImageIcon, Truck, ShoppingCart, CreditCard } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
-import Preference from "@/lib/funtion/pago/RealizarCompra";
+import Preference from "@/lib/funtion/pago/RealizarCompra.js";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge"; // Importamos Badge
+import { Badge } from "@/components/ui/badge";
 import type { Product } from "@/lib/types";
 
 interface ProductPageClientProps {
@@ -38,18 +38,30 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   };
 
   const handleBuyNow = async () => {
-    const email = "test.user@example.com"; // ⚠️ Reemplazar con email real
+    // CORRECCIÓN: Usar 'nombre', 'cantidad' y 'precio' para consistencia con el backend.
     const cartForMP = [{
-      id: product.id,
-      title: productName,
-      quantity: 1,
-      unit_price: product.salePrice,
-      currency_id: 'ARS'
+      nombre: productName,
+      cantidad: 1,
+      precio: product.salePrice
     }];
-    await Preference(email, cartForMP);
+
+    // Aquí deberías obtener el email del usuario logueado, por ahora usamos uno de prueba
+    const email = "test.user@example.com"; 
+
+    try {
+      await Preference(email, cartForMP);
+    } catch (error) {
+      console.error("Error al iniciar la compra:", error);
+      toast({
+        variant: "destructive",
+        title: "Error al comprar",
+        description: "No se pudo iniciar el proceso de pago. Inténtalo de nuevo."
+      });
+    }
   };
 
   const hasImage = !!product.imageUrl;
+  const installmentPrice = product.salePrice / 6;
 
   return (
     <div className="container mx-auto max-w-6xl px-4 pt-24 pb-12">
@@ -88,20 +100,19 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           <div className="space-y-2">
             {product.originalPrice && product.originalPrice > product.salePrice && (
               <p suppressHydrationWarning className="text-xl text-muted-foreground line-through">
-                ${product.originalPrice.toLocaleString()}
+                ${product.originalPrice.toLocaleString('es-AR')}
               </p>
             )}
             <div className="flex items-center gap-2">
-              <p suppressHydrationWarning className="text-4xl font-bold">${product.salePrice.toLocaleString()}</p>
+              <p suppressHydrationWarning className="text-4xl font-bold">${product.salePrice.toLocaleString('es-AR')}</p>
               {product.discount && product.discount > 0 && (
                 <Badge className="bg-green-200 text-green-800 text-lg py-1">{product.discount}% OFF</Badge>
               )}
             </div>
-            {product.installments && product.installmentPrice && (
-              <p suppressHydrationWarning className="text-md text-muted-foreground">
-                Hasta <strong>{product.installments} cuotas sin interés</strong> de <strong>${product.installmentPrice.toLocaleString()}</strong>
-              </p>
-            )}
+            
+            <p suppressHydrationWarning className="text-md text-muted-foreground">
+              o <strong>6 cuotas sin interés</strong> de <strong>${installmentPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+            </p>
           </div>
           
           <p className="text-lg text-muted-foreground whitespace-pre-line">
