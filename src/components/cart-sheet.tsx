@@ -40,14 +40,14 @@ export default function CartSheet() {
         />
         <SheetHeader>
           <SheetTitle className="font-headline text-xl font-semibold">
-            Your cart is empty
+            Tu carrito está vacío
           </SheetTitle>
         </SheetHeader>
         <p className="text-center text-muted-foreground">
-          Looks like you haven't added anything to your cart yet.
+          Parece que todavía no has añadido nada a tu carrito.
         </p>
         <Button asChild className="mt-4">
-          <Link href="/">Continue Shopping</Link>
+          <Link href="/">Seguir Comprando</Link>
         </Button>
       </div>
     );
@@ -57,7 +57,7 @@ export default function CartSheet() {
     <div className="flex h-full flex-col">
       <SheetHeader className="p-4">
         <SheetTitle className="font-headline text-lg font-semibold">
-          Shopping Cart ({items.length})
+          Carrito de Compras ({items.length})
         </SheetTitle>
       </SheetHeader>
       <ScrollArea className="flex-grow px-4">
@@ -74,13 +74,13 @@ export default function CartSheet() {
             <span>Subtotal</span>
             <span>${subtotal.toFixed(2)}</span>
           </div>
-          <Button className="w-full" onClick={handleCheckout}>Checkout</Button>
+          <Button className="w-full" onClick={handleCheckout}>Finalizar Compra</Button>
           <Button
             variant="outline"
             className="w-full"
             onClick={clearCart}
           >
-            Clear Cart
+            Vaciar Carrito
           </Button>
         </div>
       </SheetFooter>
@@ -107,20 +107,20 @@ function CartItem({ item, onRemove }: CartItemProps) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-muted">
-            <span className="text-xs text-muted-foreground">No Image</span>
+            <span className="text-xs text-muted-foreground">Sin Imagen</span>
           </div>
         )}
       </div>
       <div className="flex-grow">
         <p className="font-semibold">{productName}</p>
         <p className="text-sm text-muted-foreground">
-          Qty: {item.quantity}
+          Cant: {item.quantity}
         </p>
         <p className="font-bold">${(item.salePrice * item.quantity).toFixed(2)}</p>
       </div>
       <Button variant="ghost" size="icon" onClick={() => onRemove(item.id)}>
         <Trash2 className="h-5 w-5" />
-        <span className="sr-only">Remove</span>
+        <span className="sr-only">Eliminar</span>
       </Button>
     </div>
   );

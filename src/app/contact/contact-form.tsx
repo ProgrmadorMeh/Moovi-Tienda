@@ -20,13 +20,13 @@ import { Send } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
+    message: "El nombre debe tener al menos 2 caracteres.",
   }),
   email: z.string().email({
-    message: "Please enter a valid email address.",
+    message: "Por favor, introduce una dirección de correo válida.",
   }),
   message: z.string().min(10, {
-    message: "Message must be at least 10 characters.",
+    message: "El mensaje debe tener al menos 10 caracteres.",
   }),
 });
 
@@ -48,8 +48,8 @@ export default function ContactForm() {
     console.log(values);
 
     toast({
-      title: "Message Sent!",
-      description: "Thanks for reaching out. We'll be in touch soon.",
+      title: "¡Mensaje Enviado!",
+      description: "Gracias por contactarnos. Te responderemos pronto.",
     });
 
     form.reset();
@@ -63,9 +63,9 @@ export default function ContactForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Nombre</FormLabel>
               <FormControl>
-                <Input placeholder="Your Name" {...field} />
+                <Input placeholder="Tu Nombre" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -76,9 +76,9 @@ export default function ContactForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Correo Electrónico</FormLabel>
               <FormControl>
-                <Input placeholder="your.email@example.com" {...field} />
+                <Input placeholder="tu.correo@ejemplo.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -89,10 +89,10 @@ export default function ContactForm() {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Message</FormLabel>
+              <FormLabel>Mensaje</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="How can we help you?"
+                  placeholder="¿Cómo podemos ayudarte?"
                   className="min-h-[120px]"
                   {...field}
                 />
@@ -103,7 +103,7 @@ export default function ContactForm() {
         />
         <Button type="submit" className="w-full" size="lg">
             <Send className="mr-2 h-4 w-4" />
-          Send Message
+          Enviar Mensaje
         </Button>
       </form>
     </Form>

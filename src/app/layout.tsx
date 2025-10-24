@@ -22,7 +22,7 @@ const ptSans = PT_Sans({
 export const metadata: Metadata = {
   title: "MooviTech",
   description:
-    "Explore the latest in mobile technology with MooviTech. Find the perfect smartphone to fit your lifestyle.",
+    "Explora lo último en tecnología móvil con MooviTech. Encuentra el smartphone perfecto para tu estilo de vida.",
 };
 
 export default function RootLayout({
@@ -31,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="es" className="dark">
       <body
         className={cn(
           "min-h-screen font-body antialiased",

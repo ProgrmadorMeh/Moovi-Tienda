@@ -86,10 +86,10 @@ export default function ProductCatalog({
         ) : (
           <div className="flex h-full min-h-[40vh] flex-col items-center justify-center rounded-lg border border-dashed bg-card p-8 text-center">
             <h3 className="font-headline text-2xl font-semibold">
-              No Products Found
+              No se Encontraron Productos
             </h3>
             <p className="mt-2 text-muted-foreground">
-              Try adjusting your filters to find what you're looking for.
+              Intenta ajustar tus filtros para encontrar lo que buscas.
             </p>
           </div>
         )}

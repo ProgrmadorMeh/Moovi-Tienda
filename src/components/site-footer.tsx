@@ -8,11 +8,11 @@ export default function SiteFooter() {
           <Smartphone className="h-5 w-5 text-primary" />
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
             <span className="font-headline font-semibold">MooviTech</span> -
-            Your portal to the future.
+            Tu portal al futuro.
           </p>
         </div>
         <p className="text-center text-sm text-muted-foreground md:text-left">
-          © {new Date().getFullYear()} MooviTech. All rights reserved.
+          © {new Date().getFullYear()} MooviTech. Todos los derechos reservados.
         </p>
       </div>
     </footer>

@@ -48,19 +48,19 @@ export default function ProductFilters({
 
   return (
     <div className="space-y-6 rounded-lg border bg-card p-6">
-      <h3 className="font-headline text-2xl font-semibold">Filters</h3>
+      <h3 className="font-headline text-2xl font-semibold">Filtros</h3>
 
       <div className="space-y-4">
-        <Label htmlFor="sort">Sort by</Label>
+        <Label htmlFor="sort">Ordenar por</Label>
         <Select value={sort} onValueChange={setSort}>
           <SelectTrigger id="sort">
-            <SelectValue placeholder="Sort by" />
+            <SelectValue placeholder="Ordenar por" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="price-asc">Price: Low to High</SelectItem>
-            <SelectItem value="price-desc">Price: High to Low</SelectItem>
-            <SelectItem value="name-asc">Name: A to Z</SelectItem>
-            <SelectItem value="name-desc">Name: Z to A</SelectItem>
+            <SelectItem value="price-asc">Precio: Menor a Mayor</SelectItem>
+            <SelectItem value="price-desc">Precio: Mayor a Menor</SelectItem>
+            <SelectItem value="name-asc">Nombre: A a Z</SelectItem>
+            <SelectItem value="name-desc">Nombre: Z a A</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -71,10 +71,10 @@ export default function ProductFilters({
         <Label htmlFor="brand">Marca</Label>
         <Select value={filters.brand} onValueChange={handleBrandChange}>
           <SelectTrigger id="brand">
-            <SelectValue placeholder="Select a brand" />
+            <SelectValue placeholder="Selecciona una marca" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Brands</SelectItem>
+            <SelectItem value="all">Todas las Marcas</SelectItem>
             {brands.map((brand) => (
               <SelectItem key={brand} value={brand}>
                 {brand}
@@ -88,10 +88,10 @@ export default function ProductFilters({
         <Label htmlFor="capacity">Almacenamiento</Label>
         <Select value={filters.capacity} onValueChange={handleCapacityChange}>
           <SelectTrigger id="capacity">
-            <SelectValue placeholder="Select capacity" />
+            <SelectValue placeholder="Selecciona capacidad" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Capacities</SelectItem>
+            <SelectItem value="all">Todas las Capacidades</SelectItem>
             {capacityOptions.map((capacity) => (
               <SelectItem key={capacity} value={capacity}>
                 {capacity}

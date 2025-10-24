@@ -20,8 +20,8 @@ export default function SiteHeader() {
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
 
   const navLinks = [
-    { href: '/', label: 'Products' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/', label: 'Productos' },
+    { href: '/contact', label: 'Contacto' },
   ];
 
   return (
@@ -61,7 +61,7 @@ export default function SiteHeader() {
                   </span>
                 )}
                 <ShoppingCart className="w-5 h-5" />
-                <span className="sr-only">Open shopping cart</span>
+                <span className="sr-only">Abrir carrito de compras</span>
               </Button>
             </SheetTrigger>
             <SheetContent>
