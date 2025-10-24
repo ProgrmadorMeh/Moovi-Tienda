@@ -61,7 +61,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   };
 
   const hasImage = !!product.imageUrl;
-  const installmentPrice = product.salePrice / 6;
+  const installmentPrice = product.installments ? product.salePrice / product.installments : 0;
 
   return (
     <div className="container mx-auto max-w-6xl px-4 pt-24 pb-12">
@@ -110,9 +110,11 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               )}
             </div>
             
-            <p suppressHydrationWarning className="text-md text-muted-foreground">
-              o <strong>6 cuotas sin interés</strong> de <strong>${installmentPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-            </p>
+            {product.installments && product.installments > 0 && (
+              <p suppressHydrationWarning className="text-md text-muted-foreground">
+                o <strong>{product.installments} cuotas sin interés</strong> de <strong>${installmentPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+              </p>
+            )}
           </div>
           
           <p className="text-lg text-muted-foreground whitespace-pre-line">

@@ -19,19 +19,9 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const isValidImageUrl = (url?: string) => {
-    if (!url) return false;
-    try {
-      const parsed = new URL(url);
-      return parsed.protocol === "http:" || parsed.protocol === "https:";
-    } catch {
-      return false;
-    }
-  };
-
   const productName = `${product.model}`;
-  const hasImage = product.imageUrl && isValidImageUrl(product.imageUrl);
-  const installmentPrice = product.salePrice / 6;
+  const hasImage = product.imageUrl && product.imageUrl.trim() !== "";
+  const installmentPrice = product.installments ? product.salePrice / product.installments : 0;
 
   return (
     <Link href={`/products/${product.id}`} className="group">
@@ -47,8 +37,8 @@ export default function ProductCard({ product }: ProductCardProps) {
               />
             ) : (
               <div className="flex h-full w-full flex-col items-center justify-center bg-muted">
-                  <ImageIcon className="mb-2 h-8 w-8 text-gray-400" />
-                  <span className="text-muted-foreground">sin imagen</span>
+                <ImageIcon className="mb-2 h-8 w-8 text-gray-400" />
+                <span className="text-muted-foreground">sin imagen</span>
               </div>
             )}
             {product.uniquePrice && (
@@ -88,10 +78,12 @@ export default function ProductCard({ product }: ProductCardProps) {
               )}
             </div>
 
-            <p suppressHydrationWarning className="text-sm text-muted-foreground">
-                o 6 cuotas sin interés de $
-                {installmentPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </p>
+            {product.installments && product.installments > 0 && (
+              <p suppressHydrationWarning className="text-sm text-muted-foreground">
+                  o {product.installments} cuotas sin interés de $
+                  {installmentPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </p>
+            )}
             
             {product.taxedPrice && (
               <p suppressHydrationWarning className="text-xs text-muted-foreground mt-1">
