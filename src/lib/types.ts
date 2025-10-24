@@ -11,4 +11,12 @@ export type Product = {
   imageUrl?: string | null;
   lastUpdate: string;
   imei?: string;
+  uniquePrice?: boolean;
+  payInBill?: boolean;
+  originalPrice?: number;
+  discount?: number;
+  installments?: number;
+  installmentPrice?: number;
+  taxedPrice?: number;
+  shipping?: boolean;
 };

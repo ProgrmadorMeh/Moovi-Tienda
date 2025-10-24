@@ -25,8 +25,8 @@ export async function POST(req) {
       items,
       payer: { email },
       back_urls: {
-        success: "https://tusitio.com/success",
-        failure: "https://tusitio.com/failure",
+        success: "https://6000-firebase-studio-1759795962538.cluster-ocv3ypmyqfbqysslgd7zlhmxek.cloudworkstations.dev/compra-exitosa",
+        failure: "https://6000-firebase-studio-1759795962538.cluster-ocv3ypmyqfbqysslgd7zlhmxek.cloudworkstations.dev/pago-fallido",
         pending: "https://tusitio.com/pending",
       },
       auto_return: "approved",

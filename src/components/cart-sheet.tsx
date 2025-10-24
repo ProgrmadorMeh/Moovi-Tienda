@@ -1,127 +1,127 @@
+
 'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { useCartStore, type CartItem as CartItemType } from "@/lib/cart-store";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Trash2, ShoppingCart } from "lucide-react";
-import Preference from "@/lib/funtion/pago/RealizarCompra";
+import Image from 'next/image';
+import Link from 'next/link';
+import { X, Plus, Minus, ShoppingCart } from 'lucide-react';
+import { useCartStore, CartItem } from '@/lib/cart-store';
+import {
+  SheetHeader,
+  SheetTitle,
+  SheetFooter,
+  SheetClose,
+} from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
 
 export default function CartSheet() {
-  const { items, removeFromCart, clearCart } = useCartStore();
-  const subtotal = items.reduce(
-    (acc, item) => acc + item.salePrice * item.quantity,
-    0
-  );
+  const {
+    items,
+    getSubtotal,
+  } = useCartStore();
 
-  const handleCheckout = async () => {
-    if (items.length === 0) return;
-
-    const email = "test.user@example.com"; // TODO: Reemplazar con el email del usuario logueado
-    const cartItemsForApi = items.map(item => ({
-      nombre: `${item.brand} ${item.model}`,
-      cantidad: Number(item.quantity),
-      precio: Number(item.salePrice),
-    }));
-
-    await Preference(email, cartItemsForApi);
-  };
-
-
-  if (items.length === 0) {
-    return (
-      <div className="flex h-full flex-col items-center justify-center space-y-4 p-4">
-        <ShoppingCart
-          className="h-24 w-24 text-muted-foreground"
-          strokeWidth={1}
-        />
-        <SheetHeader>
-          <SheetTitle className="font-headline text-xl font-semibold">
-            Tu carrito está vacío
-          </SheetTitle>
-        </SheetHeader>
-        <p className="text-center text-muted-foreground">
-          Parece que todavía no has añadido nada a tu carrito.
-        </p>
-        <Button asChild className="mt-4">
-          <Link href="/">Seguir Comprando</Link>
-        </Button>
-      </div>
-    );
-  }
+  const subtotal = getSubtotal();
 
   return (
-    <div className="flex h-full flex-col">
-      <SheetHeader className="p-4">
-        <SheetTitle className="font-headline text-lg font-semibold">
-          Carrito de Compras ({items.length})
-        </SheetTitle>
+    <>
+      <SheetHeader>
+        <SheetTitle className="text-xl">Tu Carrito</SheetTitle>
       </SheetHeader>
-      <ScrollArea className="flex-grow px-4">
-        <div className="space-y-4">
-          {items.map((item) => (
-            <CartItem key={item.id} item={item} onRemove={removeFromCart} />
-          ))}
+
+      {items.length === 0 ? (
+        <div className="flex h-full flex-col items-center justify-center space-y-4">
+          <ShoppingCart size={48} className="text-gray-400" />
+          <p className="text-center text-lg text-gray-500">
+            Tu carrito está vacío
+          </p>
+          <SheetClose asChild>
+            <Link href="/">
+              <Button variant="outline">Seguir Comprando</Button>
+            </Link>
+          </SheetClose>
         </div>
-      </ScrollArea>
-      <SheetFooter className="p-4">
-        <div className="w-full space-y-4">
-          <Separator />
-          <div className="flex justify-between font-semibold">
-            <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
+      ) : (
+        <div className="flex h-full flex-col justify-between">
+          {/* Lista de productos */}
+          <div className="flex-1 overflow-y-auto pr-4">
+            {items.map((item) => (
+              <CartItemRow key={item.id} item={item} />
+            ))}
           </div>
-          <Button className="w-full" onClick={handleCheckout}>Finalizar Compra</Button>
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={clearCart}
-          >
-            Vaciar Carrito
-          </Button>
+
+          {/* Footer del carrito */}
+          <SheetFooter className="flex-col space-y-4 border-t pt-6 sm:flex-col sm:space-y-4">
+            <div className="flex w-full justify-between text-lg font-semibold">
+              <span>Subtotal:</span>
+              <span>${subtotal.toFixed(2)}</span>
+            </div>
+
+            <div className="grid w-full grid-cols-2 gap-4">
+              <SheetClose asChild>
+                <Link href="/carrito" passHref>
+                  <Button variant="outline">Ver Carrito</Button>
+                </Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link href="/checkout" passHref>
+                  <Button>Finalizar Compra</Button>
+                </Link>
+              </SheetClose>
+            </div>
+          </SheetFooter>
         </div>
-      </SheetFooter>
-    </div>
+      )}
+    </>
   );
 }
 
-interface CartItemProps {
-  item: CartItemType;
-  onRemove: (productId: string) => void;
-}
+// --- Componente para cada fila del carrito ---
 
-function CartItem({ item, onRemove }: CartItemProps) {
-  const productName = `${item.brand} ${item.model}`;
+function CartItemRow({ item }: { item: CartItem }) {
+  const { updateQuantity, removeItem } = useCartStore();
+
   return (
-    <div className="flex items-center space-x-4">
-      <div className="relative h-20 w-20 overflow-hidden rounded-md border">
-        {item.imageUrl ? (
-          <Image
-            src={item.imageUrl}
-            alt={productName}
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-muted">
-            <span className="text-xs text-muted-foreground">Sin Imagen</span>
-          </div>
-        )}
+    <div className="flex items-start space-x-4 py-4">
+      <div className="relative h-24 w-24 flex-shrink-0">
+        <Image
+          src={item.imageUrl}
+          alt={item.model}
+          fill
+          className="rounded-md object-cover"
+        />
       </div>
-      <div className="flex-grow">
-        <p className="font-semibold">{productName}</p>
-        <p className="text-sm text-muted-foreground">
-          Cant: {item.quantity}
-        </p>
-        <p className="font-bold">${(item.salePrice * item.quantity).toFixed(2)}</p>
+
+      <div className="flex-1">
+        <h4 className="font-semibold">{item.model}</h4>
+        <p className="text-sm text-gray-500">${item.salePrice.toFixed(2)}</p>
+
+        <div className="mt-2 flex items-center rounded-md border w-fit">
+          <button 
+            onClick={() => updateQuantity(item.id, item.quantity - 1)} 
+            className="px-2 py-1 text-gray-600 hover:bg-gray-100 rounded-l-md transition"
+            aria-label="Restar uno"
+          >
+            <Minus size={16} />
+          </button>
+          <span className="border-x px-3 py-1 text-sm font-medium">
+            {item.quantity}
+          </span>
+          <button 
+            onClick={() => updateQuantity(item.id, item.quantity + 1)} 
+            className="px-2 py-1 text-gray-600 hover:bg-gray-100 rounded-r-md transition"
+            aria-label="Añadir uno"
+          >
+            <Plus size={16} />
+          </button>
+        </div>
       </div>
-      <Button variant="ghost" size="icon" onClick={() => onRemove(item.id)}>
-        <Trash2 className="h-5 w-5" />
-        <span className="sr-only">Eliminar</span>
-      </Button>
+
+      <button 
+        onClick={() => removeItem(item.id)}
+        className="text-gray-400 hover:text-red-600 transition"
+        aria-label="Eliminar producto"
+      >
+        <X size={18} />
+      </button>
     </div>
   );
 }

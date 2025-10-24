@@ -1,12 +1,23 @@
 import Image from "next/image";
-import ProductCatalog from "@/components/product-catalog";
-import { getProducts } from "@/lib/products";
+import ProductSections from "@/components/product-sections"; // ✅ NUEVO
+import {
+  getProducts,
+  getFeaturedProducts,
+  getDiscountedProducts,
+} from "@/lib/products"; // ✅ NUEVO
+import { getAccessories } from "@/lib/accessories"; // ✅ NUEVO
 import type { Product } from "@/lib/types";
 
 export default async function Home() {
-  const products: Product[] = await getProducts();
-  const brands = [...new Set(products.map((p) => p.brand))];
-  const capacityOptions = [...new Set(products.map((p) => p.capacity))].sort(
+  // Obtenemos todos los datos necesarios para las secciones
+  const allProducts: Product[] = await getProducts();
+  const featuredProducts: Product[] = await getFeaturedProducts(); // ✅ NUEVO
+  const discountedProducts: Product[] = await getDiscountedProducts(); // ✅ NUEVO
+  const accessories: Product[] = await getAccessories(); // ✅ NUEVO
+
+  // Los filtros solo se usan para la sección "Celulares"
+  const brands = [...new Set(allProducts.map((p) => p.brand))];
+  const capacityOptions = [...new Set(allProducts.map((p) => p.capacity))].sort(
     (a, b) => parseInt(a) - parseInt(b)
   );
 
@@ -32,8 +43,12 @@ export default async function Home() {
       </header>
 
       <div className="container mx-auto px-4 py-12">
-        <ProductCatalog
-          products={products}
+        {/* ✅ Renderizamos el nuevo componente de secciones */}
+        <ProductSections
+          allProducts={allProducts}
+          featuredProducts={featuredProducts}
+          discountedProducts={discountedProducts}
+          accessories={accessories}
           brands={brands}
           capacityOptions={capacityOptions}
         />

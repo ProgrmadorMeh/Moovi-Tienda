@@ -78,7 +78,7 @@ export default function ProductCatalog({
       </aside>
       <main className="lg:col-span-3">
         {filteredAndSortedProducts.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
             {filteredAndSortedProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
