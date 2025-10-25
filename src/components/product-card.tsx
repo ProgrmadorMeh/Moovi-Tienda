@@ -23,7 +23,7 @@ interface ProductCardProps {
 export default function ProductCard({ product, onQuickView }: ProductCardProps) {
   const productName = `${product.model}`;
   const hasImage = product.imageUrl && product.imageUrl.trim() !== "";
-  const installmentPrice = product.installments ? product.salePrice / product.installments : 0;
+  const priceWithoutIVA = product.salePrice / 1.21;
 
   return (
     <Card className="group relative h-full overflow-hidden transition-all duration-300 ease-in-out hover:border-primary hover:shadow-lg hover:shadow-primary/10">
@@ -107,16 +107,14 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
               )}
             </div>
 
+            <p suppressHydrationWarning className="text-xs text-muted-foreground mt-1">
+                Precio sin impuestos nacionales: ${priceWithoutIVA.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+            </p>
+
             {product.installments && product.installments > 0 && (
-              <p suppressHydrationWarning className="text-sm text-muted-foreground">
+              <p suppressHydrationWarning className="text-sm text-muted-foreground mt-2">
                   o {product.installments} cuotas sin interés de $
                   {(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </p>
-            )}
-            
-            {product.taxedPrice && (
-              <p suppressHydrationWarning className="text-xs text-muted-foreground mt-1">
-                Precio s/imp. nac: ${product.taxedPrice.toLocaleString('es-AR')}
               </p>
             )}
           </div>
