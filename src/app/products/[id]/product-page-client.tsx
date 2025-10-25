@@ -46,7 +46,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
     }];
 
     // Aquí deberías obtener el email del usuario logueado, por ahora usamos uno de prueba
-    const email = "test.user@example.com"; 
+    const email = "TESTUSER5201355294960029412@testuser.com"; 
 
     try {
       await Preference(email, cartForMP);

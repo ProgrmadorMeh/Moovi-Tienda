@@ -30,6 +30,7 @@ export async function POST(req) {
         pending: "https://tusitio.com/pending",
       },
       auto_return: "approved",
+      sandbox: true,
     };
 
     const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
