@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/sheet';
 import { usePathname } from 'next/navigation';
 import CartSheet from './cart-sheet';
+import FuzzySearch from './fuzzy-search'; // ✅ Importar el nuevo buscador
 
 export default function SiteHeader() {
   const pathname = usePathname();
@@ -48,6 +49,10 @@ export default function SiteHeader() {
           ))}
         </nav>
         <div className="flex flex-1 justify-end items-center space-x-4">
+          {/* ✅ Añadir el componente de búsqueda */}
+          <div className="hidden md:flex w-full max-w-sm">
+             <FuzzySearch />
+          </div>
           <Sheet>
             <SheetTrigger asChild>
               <Button
@@ -70,6 +75,10 @@ export default function SiteHeader() {
           </Sheet>
         </div>
       </div>
+       {/* ✅ Mostrar el buscador en móvil fuera del flujo principal */}
+       <div className="md:hidden p-2 border-t border-white/10">
+          <FuzzySearch />
+        </div>
     </header>
   );
 }
