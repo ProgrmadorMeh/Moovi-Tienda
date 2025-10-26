@@ -75,8 +75,8 @@ export default function ProductSections({
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center space-x-2 whitespace-nowrap border-b-2 px-1 py-3 text-sm font-medium transition-colors duration-200 ease-in-out ${
                 activeTab === tab.id
-                  ? "border-blue-500 text-blue-600"
-                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:border-gray-300 hover:text-foreground"
               }`}
             >
               {tab.icon}
@@ -91,8 +91,6 @@ export default function ProductSections({
         products={activeProducts}
         brands={brands}
         capacityOptions={capacityOptions}
-        // Oculta los filtros si la pestaña no es "Celulares"
-        showFilters={activeTab === "celulares"}
       />
     </div>
   );

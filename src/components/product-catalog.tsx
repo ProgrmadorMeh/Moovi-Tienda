@@ -1,17 +1,20 @@
 
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { Product } from "@/lib/types";
 import ProductCard from "./product-card";
 import ProductFilters from "./product-filters";
 import QuickViewModal from "./quick-view-modal";
+import PaginationControls from "./pagination-controls"; // ✅ NUEVO
 
 interface ProductCatalogProps {
   products: Product[];
   brands: string[];
   capacityOptions: string[];
 }
+
+const PRODUCTS_PER_PAGE = 20; // ✅ Límite de productos por página
 
 export default function ProductCatalog({
   products,
@@ -24,26 +27,27 @@ export default function ProductCatalog({
     priceRange: [0, 10000000],
   });
   const [sort, setSort] = useState("price-asc");
-
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [currentPage, setCurrentPage] = useState(1); // ✅ Estado para paginación
+
+  // Reinicia a la página 1 cuando cambian los filtros o el orden
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, sort]);
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
       const { brand, capacity, priceRange } = filters;
-
       const brandMatch = brand === "all" || product.brand === brand;
-
       const productCapacity = product.capacity || "";
       const filterCapacity = capacity.replace(/gb|bg/i, "").trim();
       const capacityMatch =
         capacity === "all" ||
         productCapacity.toLowerCase().includes(filterCapacity);
-
       const priceMatch =
         product.salePrice !== undefined &&
         product.salePrice >= priceRange[0] &&
         product.salePrice <= priceRange[1];
-
       return brandMatch && capacityMatch && priceMatch;
     });
 
@@ -64,6 +68,19 @@ export default function ProductCatalog({
       }
     });
   }, [products, filters, sort]);
+
+  // ✅ Calcula los productos a mostrar en la página actual
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    return filteredAndSortedProducts.slice(
+      startIndex,
+      startIndex + PRODUCTS_PER_PAGE
+    );
+  }, [filteredAndSortedProducts, currentPage]);
+
+  const totalPages = Math.ceil(
+    filteredAndSortedProducts.length / PRODUCTS_PER_PAGE
+  );
 
   const handleQuickView = (product: Product) => {
     setSelectedProduct(product);
@@ -89,10 +106,14 @@ export default function ProductCatalog({
           </div>
         </aside>
         <main className="lg:col-span-3">
-          {filteredAndSortedProducts.length > 0 ? (
+          {paginatedProducts.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
-              {filteredAndSortedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} onQuickView={handleQuickView} />
+              {paginatedProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onQuickView={handleQuickView}
+                />
               ))}
             </div>
           ) : (
@@ -105,13 +126,22 @@ export default function ProductCatalog({
               </p>
             </div>
           )}
+
+          {/* ✅ Renderiza los controles de paginación */}
+          {totalPages > 1 && (
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </main>
       </div>
       {selectedProduct && (
-        <QuickViewModal 
-          product={selectedProduct} 
-          isOpen={!!selectedProduct} 
-          onClose={handleCloseModal} 
+        <QuickViewModal
+          product={selectedProduct}
+          isOpen={!!selectedProduct}
+          onClose={handleCloseModal}
         />
       )}
     </>
