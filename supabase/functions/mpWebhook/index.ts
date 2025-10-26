@@ -17,26 +17,27 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
-    const paymentId = body.id || body.data?.id;
+    const paymentId = body.data?.id ?? body.id;
 
-    if (!paymentId) {
-      return new Response("Falta el ID de pago", { status: 400 });
-    }
+    if (!paymentId) return new Response("Falta el ID de pago", { status: 400 });
 
-    // Consultar a Mercado Pago
+    // Consultar Mercado Pago
     const res = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
-      headers: {
-        Authorization: `Bearer ${mpAccessToken}`,
-      },
+      headers: { Authorization: `Bearer ${mpAccessToken}` },
     });
     const payment = await res.json();
 
-    console.log("Pago recibido:", payment);
-
-    // Guardar en Supabase
-    const { error } = await supabase
-      .from("orders")
-      .insert([{ payment_id: paymentId, status: payment.status }]);
+    // Insert seguro en Supabase
+    const { error } = await supabase.from("orders").insert([{
+      payment_id: payment.id ?? paymentId,
+      status: payment.status ?? body.action ?? null,
+      amount: payment.transaction_amount ?? null,
+      currency: payment.currency_id ?? null,
+      payer_email: payment.payer?.email ?? null,
+      payment_method: payment.payment_method_id ?? null,
+      date_approved: payment.date_approved ?? null,
+      payment_data: payment ?? null
+    }]);
 
     if (error) throw error;
 
@@ -48,6 +49,8 @@ Deno.serve(async (req) => {
 });
 
 
-// deno run --allow-net --allow-env index.ts
+// npx supabase functions deploy mpWebhook
 // npx supabase functions serve mpWebhook --env-file .env.local --no-verify-jwt
-// curl -X POST http://localhost:8000 -H "Content-Type: application/json" -d '{"id":"1234567890"}'
+/* $bodyJson = '{"id":"123456"}'
+Invoke-RestMethod -Uri "http://127.0.0.1:54321/functions/v1/mpWebhook" -Method POST -Body $bodyJson -ContentType "application/json"
+ */
