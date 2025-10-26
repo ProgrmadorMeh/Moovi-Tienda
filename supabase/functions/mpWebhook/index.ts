@@ -1,32 +1,53 @@
-import { serve } from "https://deno.land/x/sift@0.6.0/mod.ts";
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+// Supabase Edge Function: mpWebhook
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const supabaseUrl = Deno.env.get("URL")!;
-const supabaseKey = Deno.env.get("SERVICE_ROLE_KEY")!;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
+// Variables de entorno
+const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const mpAccessToken = Deno.env.get("MP_ACCESS_TOKEN")!;
 
-serve(async (req) => {
-  if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
+// Crear cliente de Supabase
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Servir función
+Deno.serve(async (req) => {
+  if (req.method !== "POST") {
+    return new Response("Método no permitido", { status: 405 });
+  }
 
   try {
-    const body: any = await req.json();
-    const paymentId: string | undefined = body.id || (body.data && body.data.id);
-    if (!paymentId) return new Response("No payment ID", { status: 400 });
+    const body = await req.json();
+    const paymentId = body.id || body.data?.id;
 
-    // Llamada a Mercado Pago vía fetch
+    if (!paymentId) {
+      return new Response("Falta el ID de pago", { status: 400 });
+    }
+
+    // Consultar a Mercado Pago
     const res = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
-      headers: { Authorization: `Bearer ${mpAccessToken}` },
+      headers: {
+        Authorization: `Bearer ${mpAccessToken}`,
+      },
     });
     const payment = await res.json();
 
-    // Guardar en Supabase
-    await supabase.from("orders").insert([{ payment_id: paymentId, status: payment.status }]);
+    console.log("Pago recibido:", payment);
 
-    return new Response("Webhook recibido", { status: 200 });
-  } catch (error) {
-    console.error(error);
+    // Guardar en Supabase
+    const { error } = await supabase
+      .from("orders")
+      .insert([{ payment_id: paymentId, status: payment.status }]);
+
+    if (error) throw error;
+
+    return new Response("Webhook recibido correctamente", { status: 200 });
+  } catch (err) {
+    console.error("Error procesando webhook:", err);
     return new Response("Error procesando webhook", { status: 500 });
   }
 });
+
+
+// deno run --allow-net --allow-env index.ts
+// npx supabase functions serve mpWebhook --env-file .env.local --no-verify-jwt
+// curl -X POST http://localhost:8000 -H "Content-Type: application/json" -d '{"id":"1234567890"}'
