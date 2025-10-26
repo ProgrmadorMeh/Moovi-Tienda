@@ -1,11 +1,9 @@
-
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
 import type { Product } from "@/lib/types";
 import ProductCard from "./product-card";
 import ProductFilters from "./product-filters";
-import QuickViewModal from "./quick-view-modal";
 import PaginationControls from "./pagination-controls"; // ✅ NUEVO
 
 interface ProductCatalogProps {
@@ -27,7 +25,6 @@ export default function ProductCatalog({
     priceRange: [0, 10000000],
   });
   const [sort, setSort] = useState("price-asc");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [currentPage, setCurrentPage] = useState(1); // ✅ Estado para paginación
 
   // Reinicia a la página 1 cuando cambian los filtros o el orden
@@ -82,14 +79,6 @@ export default function ProductCatalog({
     filteredAndSortedProducts.length / PRODUCTS_PER_PAGE
   );
 
-  const handleQuickView = (product: Product) => {
-    setSelectedProduct(product);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedProduct(null);
-  };
-
   return (
     <>
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
@@ -107,12 +96,12 @@ export default function ProductCatalog({
         </aside>
         <main className="lg:col-span-3">
           {paginatedProducts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {paginatedProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
-                  onQuickView={handleQuickView}
+                  onQuickView={() => {}} // Placeholder
                 />
               ))}
             </div>
@@ -137,13 +126,6 @@ export default function ProductCatalog({
           )}
         </main>
       </div>
-      {selectedProduct && (
-        <QuickViewModal
-          product={selectedProduct}
-          isOpen={!!selectedProduct}
-          onClose={handleCloseModal}
-        />
-      )}
     </>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Smartphone, Star, Tag, Watch } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Product } from "@/lib/types";
 import ProductCatalog from "./product-catalog";
+import { Smartphone, Star, Tag, Watch } from "lucide-react";
 
 interface ProductSectionsProps {
   allProducts: Product[];
@@ -14,30 +14,6 @@ interface ProductSectionsProps {
   capacityOptions: string[];
 }
 
-// Define las pestañas del menú
-const TABS = [
-  {
-    id: "celulares",
-    label: "Celulares",
-    icon: <Smartphone size={20} />,
-  },
-  {
-    id: "destacados",
-    label: "Destacados",
-    icon: <Star size={20} />,
-  },
-  {
-    id: "ofertas",
-    label: "Ofertas",
-    icon: <Tag size={20} />,
-  },
-  {
-    id: "accesorios",
-    label: "Accesorios",
-    icon: <Watch size={20} />,
-  },
-];
-
 export default function ProductSections({
   allProducts,
   featuredProducts,
@@ -46,52 +22,58 @@ export default function ProductSections({
   brands,
   capacityOptions,
 }: ProductSectionsProps) {
-  const [activeTab, setActiveTab] = useState("celulares");
-
-  // Determina qué productos mostrar según la pestaña activa
-  const getActiveProducts = () => {
-    switch (activeTab) {
-      case "destacados":
-        return featuredProducts;
-      case "ofertas":
-        return discountedProducts;
-      case "accesorios":
-        return accessories;
-      default:
-        return allProducts;
-    }
-  };
-
-  const activeProducts = getActiveProducts();
-
   return (
-    <div className="w-full">
-      {/* --- Menú de Navegación --- */}
-      <div className="mb-8 border-b border-gray-200">
-        <nav className="-mb-px flex space-x-6" aria-label="Tabs">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-2 whitespace-nowrap border-b-2 px-1 py-3 text-sm font-medium transition-colors duration-200 ease-in-out ${
-                activeTab === tab.id
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:border-gray-300 hover:text-foreground"
-              }`}
-            >
-              {tab.icon}
-              <span>{tab.label}</span>
-            </button>
-          ))}
-        </nav>
+    <section className="py-12 md:py-16">
+      <div className="container mx-auto">
+        <Tabs defaultValue="celulares" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto bg-violet-50 dark:bg-violet-950 rounded-xl p-2">
+            <TabsTrigger value="celulares" className="flex flex-col gap-2 h-full py-3">
+              <Smartphone className="w-7 h-7" />
+              <span>Celulares</span>
+            </TabsTrigger>
+            <TabsTrigger value="destacados" className="flex flex-col gap-2 h-full py-3">
+                <Star className="w-7 h-7" />
+                <span>Destacados</span>
+            </TabsTrigger>
+            <TabsTrigger value="ofertas" className="flex flex-col gap-2 h-full py-3">
+                <Tag className="w-7 h-7" />
+                <span>Ofertas</span>
+            </TabsTrigger>
+            <TabsTrigger value="accesorios" className="flex flex-col gap-2 h-full py-3">
+                <Watch className="w-7 h-7" />
+                <span>Accesorios</span>
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="celulares">
+            <ProductCatalog
+              products={allProducts}
+              brands={brands}
+              capacityOptions={capacityOptions}
+            />
+          </TabsContent>
+          <TabsContent value="destacados">
+            <ProductCatalog
+              products={featuredProducts}
+              brands={brands}
+              capacityOptions={capacityOptions}
+            />
+          </TabsContent>
+          <TabsContent value="ofertas">
+            <ProductCatalog
+              products={discountedProducts}
+              brands={brands}
+              capacityOptions={capacityOptions}
+            />
+          </TabsContent>
+          <TabsContent value="accesorios">
+            <ProductCatalog
+              products={accessories}
+              brands={brands}
+              capacityOptions={capacityOptions}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
-
-      {/* --- Catálogo de Productos --- */}
-      <ProductCatalog
-        products={activeProducts}
-        brands={brands}
-        capacityOptions={capacityOptions}
-      />
-    </div>
+    </section>
   );
 }

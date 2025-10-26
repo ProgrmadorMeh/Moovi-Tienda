@@ -1,19 +1,13 @@
+'use client';
 
-import Link from "next/link";
 import Image from "next/image";
-import { Eye, Image as ImageIcon, Truck } from "lucide-react";
-
+import Link from "next/link";
+import { ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useCartStore } from "@/lib/cart-store";
+import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "./ui/button";
 
 interface ProductCardProps {
   product: Product;
@@ -21,114 +15,74 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onQuickView }: ProductCardProps) {
-  const productName = `${product.model}`;
+  const { addItem } = useCartStore();
+  const { toast } = useToast();
+
+  const productName = `${product.brand} ${product.model}`;
+
+  const handleAddToCart = () => {
+    addItem(product);
+    toast({
+      title: "✅ Añadido al carrito",
+      description: `${productName} ha sido añadido a tu carrito.`,
+      action: (
+        <Link href="/carrito">
+          <Button variant="secondary">Ver Carrito</Button>
+        </Link>
+      ),
+    });
+  };
+
   const hasImage = product.imageUrl && product.imageUrl.trim() !== "";
-  const priceWithoutIVA = product.salePrice / 1.21;
+  const installmentPrice = (product.installments ?? 0) > 0 ? product.salePrice / product.installments! : 0;
 
   return (
-    <Card className="group relative h-full overflow-hidden transition-all duration-300 ease-in-out hover:border-primary hover:shadow-lg hover:shadow-primary/10">
+    <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg">
       <Link href={`/products/${product.id}`} className="block">
-        <CardHeader className="p-0">
+        <div className="relative aspect-square w-full overflow-hidden">
+          {product.discount && product.discount > 0 && (
+            <Badge
+              variant="destructive"
+              className="absolute top-2 right-2 z-10"
+            >
+              {product.discount}% OFF
+            </Badge>
+          )}
           <div className="relative h-64 w-full">
-            {hasImage ? (
-              <Image
-                src={product.imageUrl!}
-                alt={productName}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-            ) : (
-              <div className="flex h-full w-full flex-col items-center justify-center bg-muted">
-                <ImageIcon className="mb-2 h-8 w-8 text-gray-400" />
-                <span className="text-muted-foreground">sin imagen</span>
-              </div>
-            )}
-            {product.uniquePrice && (
-              <Badge variant="secondary" className="absolute top-2 right-2 bg-blue-500 text-white">
-                Precio único
-              </Badge>
-            )}
-
-            {/* Overlay for Quick View buttons */}
-            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between items-center p-4">
-              <Button
-                variant="secondary"
-                size="icon"
-                className="rounded-full self-end"
-                onClick={(e) => {
-                    e.preventDefault();
-                    onQuickView(product);
-                }}
-                aria-label="Vista Rápida"
-              >
-                <Eye className="h-5 w-5" />
-              </Button>
-              <Button
-                variant="secondary"
-                className="w-full"
-                onClick={(e) => {
-                    e.preventDefault();
-                    onQuickView(product);
-                }}
-              >
-                Vista previa
-              </Button>
-            </div>
-
+            <Image
+              src={hasImage ? product.imageUrl! : "/img/default-product.jpg"}
+              alt={productName}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
           </div>
-        </CardHeader>
-
-        <CardContent className="p-4">
-          {product.payInBill && (
-            <div className="text-sm text-pink-500 bg-pink-100 px-2 py-1 rounded-md inline-block mb-2">
-              Pagalo en tu factura
-            </div>
-          )}
-          <CardDescription className="text-lg text-muted-foreground">
-            {product.brand}
-          </CardDescription>
-          <CardTitle className="font-headline text-xl leading-tight mt-1">
-            {productName}
-          </CardTitle>
-          <p className="text-sm text-muted-foreground mt-1">{product.capacity}</p>
-
-          <div className="mt-4">
-            {product.originalPrice && product.originalPrice > product.salePrice && (
-              <p suppressHydrationWarning className="text-sm text-muted-foreground line-through">
-                ${product.originalPrice.toLocaleString('es-AR')}
-              </p>
-            )}
-            <div className="flex items-center">
-              <p suppressHydrationWarning className="text-2xl font-bold">${product.salePrice.toLocaleString('es-AR')}</p>
-              {product.discount && (
-                <Badge className="ml-2 bg-green-200 text-green-800">
-                  {product.discount}% off
-                </Badge>
-              )}
-            </div>
-
-            <p suppressHydrationWarning className="text-xs text-muted-foreground mt-1">
-                Precio sin impuestos nacionales: ${priceWithoutIVA.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-            </p>
-
-            {product.installments && product.installments > 0 && (
-              <p suppressHydrationWarning className="text-sm text-muted-foreground mt-2">
-                  o {product.installments} cuotas sin interés de $
-                  {(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </p>
-            )}
-          </div>
-        </CardContent>
-
-        <CardFooter className="p-4 pt-0">
-          {product.shipping && (
-            <div className="flex items-center text-blue-500">
-              <Truck className="h-5 w-5 mr-2" />
-              <p className="text-sm font-medium">Envío a domicilio</p>
-            </div>
-          )}
-         </CardFooter>
+        </div>
       </Link>
-    </Card>
+      <div className="flex flex-col p-4">
+        <div className="flex-1">
+          <p className="text-xs font-medium text-primary">{product.brand}</p>
+          <h3 className="truncate font-semibold">{productName}</h3>
+          
+          <div className="mt-2">
+            {product.originalPrice && product.originalPrice > product.salePrice && (
+              <p className="text-xs text-muted-foreground line-through">
+                ${product.originalPrice.toLocaleString("es-AR")}
+              </p>
+            )}
+            <p className="text-lg font-bold">
+              ${product.salePrice.toLocaleString("es-AR")}
+            </p>
+            {installmentPrice > 0 && product.installments && (
+                 <p className="text-xs text-green-600">
+                 o {product.installments} cuotas de ${installmentPrice.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+               </p>
+            )}
+          </div>
+        </div>
+        <Button onClick={handleAddToCart} className="mt-4 w-full">
+          <ShoppingCart className="mr-2 h-4 w-4" /> Agregar al carrito
+        </Button>
+      </div>
+    </div>
   );
 }

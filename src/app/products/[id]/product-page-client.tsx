@@ -61,7 +61,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   };
 
   const hasImage = !!product.imageUrl;
-  const installmentPrice = product.installments ? product.salePrice / product.installments : 0;
+  const installmentPrice = (product.installments ?? 0) > 0 ? product.salePrice / product.installments! : 0;
 
   return (
     <div className="container mx-auto max-w-6xl px-4 pt-24 pb-12">
