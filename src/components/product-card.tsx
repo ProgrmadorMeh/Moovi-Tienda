@@ -34,12 +34,11 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
   };
 
   const hasImage = product.imageUrl && product.imageUrl.trim() !== "";
-  const installmentPrice = (product.installments ?? 0) > 0 ? product.salePrice / product.installments! : 0;
   
-  // Condiciones de visualización más estrictas
-  const showDiscount = product.discount && product.discount > 0;
-  const showOriginalPrice = product.originalPrice && product.originalPrice > product.salePrice;
-
+  // Condiciones de visualización más estrictas para evitar ceros o valores no deseados
+  const showDiscount = typeof product.discount === 'number' && product.discount > 0;
+  const showOriginalPrice = typeof product.originalPrice === 'number' && product.originalPrice > product.salePrice;
+  const showInstallments = typeof product.installments === 'number' && product.installments > 0;
 
   return (
     <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg">
@@ -77,9 +76,9 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
             <p className="text-lg font-bold">
               ${product.salePrice.toLocaleString("es-AR")}
             </p>
-            {installmentPrice > 0 && product.installments && (
+            {showInstallments && (
                  <p className="text-xs text-green-600">
-                 o {product.installments} cuotas de ${installmentPrice.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                 o {product.installments} cuotas de ${(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                </p>
             )}
           </div>
