@@ -1,21 +1,24 @@
 import Image from "next/image";
-import ProductSections from "@/components/product-sections"; // ✅ NUEVO
+import ProductSections from "@/components/product-sections";
 import {
   getProducts,
   getFeaturedProducts,
   getDiscountedProducts,
-} from "@/lib/products"; // ✅ NUEVO
-import { getAccessories } from "@/lib/accessories"; // ✅ NUEVO
+  getAllItems, // ✅ Importa esta
+} from "@/lib/products";
 import type { Product } from "@/lib/types";
 
 export default async function Home() {
-  // Obtenemos todos los datos necesarios para las secciones
+  // ✅ Usa la función que ya une celulares + accesorios
+  const allItems: Product[] = await getAllItems();
   const allProducts: Product[] = await getProducts();
-  const featuredProducts: Product[] = await getFeaturedProducts(); // ✅ NUEVO
-  const discountedProducts: Product[] = await getDiscountedProducts(); // ✅ NUEVO
-  const accessories: Product[] = await getAccessories(); // ✅ NUEVO
+  const featuredProducts: Product[] = await getFeaturedProducts();
+  const discountedProducts: Product[] = await getDiscountedProducts();
 
-  // Los filtros solo se usan para la sección "Celulares"
+  // ✅ Filtra accesorios desde allItems (ya con brandName)
+  const accessories = allItems.filter((p) => p.category === "accesorio");
+
+  // Filtros solo para celulares
   const brands = [...new Set(allProducts.map((p) => p.brand))];
   const capacityOptions = [...new Set(allProducts.map((p) => p.capacity))].sort(
     (a, b) => parseInt(a) - parseInt(b)
@@ -43,7 +46,6 @@ export default async function Home() {
       </header>
 
       <div className="container mx-auto px-4 py-12">
-        {/* ✅ Renderizamos el nuevo componente de secciones */}
         <ProductSections
           allProducts={allProducts}
           featuredProducts={featuredProducts}
