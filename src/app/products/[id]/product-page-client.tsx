@@ -60,11 +60,11 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   };
 
   const hasImage = !!product.imageUrl;
-  const installmentPrice = (product.installments ?? 0) > 0 ? product.salePrice / product.installments! : 0;
   
-  // Condiciones de visualización más estrictas
   const showDiscount = product.discount && product.discount > 0;
   const showOriginalPrice = product.originalPrice && product.originalPrice > product.salePrice;
+  const showInstallments = typeof product.installments === 'number' && product.installments > 0;
+  const installmentPrice = showInstallments ? product.salePrice / product.installments! : 0;
 
 
   return (
@@ -87,6 +87,11 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   <span className="text-gray-500 font-medium text-lg">sin imagen</span>
                 </div>
               )}
+               {showDiscount && (
+                <Badge variant="destructive" className="absolute top-3 right-3 text-base">
+                  {product.discount}% OFF
+                </Badge>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -102,19 +107,16 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
           {/* SECCIÓN DE PRECIOS Y DESCUENTOS */}
           <div className="space-y-2">
-            {showOriginalPrice && (
-              <p suppressHydrationWarning className="text-xl text-muted-foreground line-through">
-                ${product.originalPrice!.toLocaleString('es-AR')}
-              </p>
-            )}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               <p suppressHydrationWarning className="text-4xl font-bold">${product.salePrice.toLocaleString('es-AR')}</p>
-              {showDiscount && (
-                <Badge className="bg-green-200 text-green-800 text-lg py-1">{product.discount}% OFF</Badge>
+              {showOriginalPrice && (
+                <p suppressHydrationWarning className="text-2xl text-muted-foreground line-through">
+                  ${product.originalPrice!.toLocaleString('es-AR')}
+                </p>
               )}
             </div>
             
-            {product.installments && product.installments > 0 && (
+            {showInstallments && (
               <p suppressHydrationWarning className="text-md text-muted-foreground">
                 o <strong>{product.installments} cuotas sin interés</strong> de <strong>${installmentPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
               </p>

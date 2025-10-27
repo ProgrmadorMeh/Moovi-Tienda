@@ -10,18 +10,24 @@ let cachedAllProducts: Product[] | null = null;
  */
 function processProducts(products: any[]): Product[] {
   return products.map(p => {
-    // Asegurarse de que los campos numéricos sean números
     const salePrice = Number(p.salePrice) || 0;
     const discount = Number(p.discount) || 0;
     let originalPrice = p.originalPrice ? Number(p.originalPrice) : undefined;
+    const brand = p.marcas?.nombre || 'Sin Marca';
 
-    // Si no hay descuento o el precio original no es mayor, no lo mostramos.
-    if (discount <= 0 || (originalPrice !== undefined && originalPrice <= salePrice)) {
+    // Si hay descuento, calculamos el precio original para asegurar que se muestre tachado
+    if (discount > 0) {
+      // Si el precio original no existe o es menor/igual al de venta, lo calculamos
+      // para reflejar el descuento correctamente.
+      const calculatedOriginal = salePrice / (1 - discount / 100);
+      if (!originalPrice || originalPrice <= salePrice) {
+        originalPrice = calculatedOriginal;
+      }
+    } else {
+      // Si no hay descuento, no debe haber precio original.
       originalPrice = undefined;
     }
     
-    const brand = p.marcas?.nombre || 'Sin Marca';
-
     return {
       ...p,
       salePrice,

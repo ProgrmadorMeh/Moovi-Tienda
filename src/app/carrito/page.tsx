@@ -117,7 +117,6 @@ function CartPageItemRow({ item }: { item: CartItem }) {
         }
     };
     
-    // Condiciones de visualización más estrictas
     const showDiscount = item.discount && item.discount > 0;
     const showOriginalPrice = item.originalPrice && item.originalPrice > item.salePrice;
 
@@ -127,7 +126,7 @@ function CartPageItemRow({ item }: { item: CartItem }) {
             
             <div className="flex-1">
                 <h3 className="text-lg font-semibold">{item.model}</h3>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-baseline gap-2 mt-1">
                   <p className="text-lg font-semibold">${item.salePrice.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</p>
                   {showOriginalPrice && (
                     <p className="text-sm text-gray-400 line-through">
