@@ -1,5 +1,5 @@
 // app/products/[id]/page.tsx
-import { getProductById } from "@/lib/funtion/metodos/methodGetById";
+import { methodGetById } from "@/lib/funtion/metodos/methodGetById";
 import { defaultBase } from "@/lib/types";
 import ProductCard from "@/components/product-card";
 import type { Product } from "@/lib/types";
@@ -15,7 +15,9 @@ export default async function ProductPage({ params }: PageProps) {
   const { id } = params;
 
   // Traer producto por ID
-  const productFromDb: Product | undefined = await getProductById(id);
+  const result = await methodGetById(id);
+  const productFromDb: Product | undefined = result.data;
+
 
   // Aplicar valores por defecto
   const product: Product | null = productFromDb
@@ -34,7 +36,7 @@ export default async function ProductPage({ params }: PageProps) {
 
   // Renderizar ProductCard con el producto encontrado
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 pt-32">
       <ProductCard product={product} onQuickView={() => {}} />
     </div>
   );
