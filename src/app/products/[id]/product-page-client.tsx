@@ -62,6 +62,9 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
   const hasImage = !!product.imageUrl;
   const installmentPrice = (product.installments ?? 0) > 0 ? product.salePrice / product.installments! : 0;
+  const showDiscount = product.discount && product.discount > 0;
+  const showOriginalPrice = product.originalPrice && product.originalPrice > product.salePrice;
+
 
   return (
     <div className="container mx-auto max-w-6xl px-4 pt-24 pb-12">
@@ -98,16 +101,14 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
           {/* SECCIÓN DE PRECIOS Y DESCUENTOS */}
           <div className="space-y-2">
-            {/* CORRECCIÓN: Mostrar solo si el precio original es mayor al de venta */}
-            {product.originalPrice && product.originalPrice > product.salePrice && (
+            {showOriginalPrice && (
               <p suppressHydrationWarning className="text-xl text-muted-foreground line-through">
-                ${product.originalPrice.toLocaleString('es-AR')}
+                ${product.originalPrice!.toLocaleString('es-AR')}
               </p>
             )}
             <div className="flex items-center gap-2">
               <p suppressHydrationWarning className="text-4xl font-bold">${product.salePrice.toLocaleString('es-AR')}</p>
-              {/* CORRECCIÓN: Mostrar solo si el descuento es real */}
-              {product.discount && product.discount > 0 && (
+              {showDiscount && (
                 <Badge className="bg-green-200 text-green-800 text-lg py-1">{product.discount}% OFF</Badge>
               )}
             </div>

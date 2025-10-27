@@ -35,13 +35,15 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
 
   const hasImage = product.imageUrl && product.imageUrl.trim() !== "";
   const installmentPrice = (product.installments ?? 0) > 0 ? product.salePrice / product.installments! : 0;
+  const showDiscount = product.discount && product.discount > 0;
+  const showOriginalPrice = product.originalPrice && product.originalPrice > product.salePrice;
+
 
   return (
     <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg">
       <Link href={`/products/${product.id}`} className="block">
         <div className="relative aspect-square w-full overflow-hidden">
-          {/* CORRECCIÓN: Mostrar solo si el descuento es real y mayor a 0 */}
-          {product.discount && product.discount > 0 && (
+          {showDiscount && (
             <Badge
               variant="destructive"
               className="absolute top-2 right-2 z-10"
@@ -61,12 +63,11 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
       </Link>
       <div className="flex flex-col p-4">
         <div className="flex-1">
-          <p className="text-xs font-medium text-primary">{product.brand}</p>
+          <p className="text-xs font-medium text-primary">{product.brand || 'Sin Marca'}</p>
           <h3 className="truncate font-semibold">{productName}</h3>
           
           <div className="mt-2">
-            {/* CORRECCIÓN: Mostrar solo si el precio original es mayor al de venta */}
-            {product.originalPrice && product.originalPrice > product.salePrice && (
+            {showOriginalPrice && (
               <p className="text-xs text-muted-foreground line-through">
                 ${product.originalPrice.toLocaleString("es-AR")}
               </p>

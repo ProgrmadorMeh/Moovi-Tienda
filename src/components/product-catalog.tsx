@@ -16,7 +16,8 @@ const PRODUCTS_PER_PAGE = 20;
 
 // ✅ Type guard para identificar celulares
 function isCellphone(product: Product): product is Cellphone {
-  return (product as Cellphone).imei !== undefined;
+  // Un producto es un celular si tiene la propiedad 'imei' o 'capacity' y no es un accesorio
+  return 'capacity' in product && product.capacity !== undefined;
 }
 
 export default function ProductCatalog({
@@ -43,16 +44,13 @@ export default function ProductCatalog({
       // Filtrar por marca
       const brandMatch = brand === "all" || product.brand === brand;
 
-      // Filtrar por capacidad solo si es un celular
-      const filterCapacity = capacity.replace(/gb|bg/i, "").trim();
+      // Filtrar por capacidad SOLO si es un celular y el filtro no es 'all'
       const capacityMatch =
         capacity === "all" ||
-        (isCellphone(product) &&
-          product.capacity.toLowerCase().includes(filterCapacity));
+        (isCellphone(product) && product.capacity === capacity);
 
       // Filtrar por precio
       const priceMatch =
-        product.salePrice !== undefined &&
         product.salePrice >= priceRange[0] &&
         product.salePrice <= priceRange[1];
 
