@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Product } from "@/lib/types";
 import ProductCatalog from "./product-catalog";
 import { Smartphone, Star, Tag, Watch } from "lucide-react";
+import { defaultBase } from "@/lib/types";
 
 interface ProductSectionsProps {
   allProducts: Product[];
@@ -22,6 +23,18 @@ export default function ProductSections({
   brands,
   capacityOptions,
 }: ProductSectionsProps) {
+  // Aplicar valores por defecto si algún campo viene vacío o undefined
+  const applyDefaults = (products: Product[]) =>
+    products.map((p) => ({
+      ...defaultBase,
+      ...p,
+    }));
+
+  const allProductsWithDefaults = applyDefaults(allProducts);
+  const featuredProductsWithDefaults = applyDefaults(featuredProducts);
+  const discountedProductsWithDefaults = applyDefaults(discountedProducts);
+  const accessoriesWithDefaults = applyDefaults(accessories);
+
   return (
     <section className="py-12 md:py-16">
       <div className="container mx-auto">
@@ -32,42 +45,46 @@ export default function ProductSections({
               <span>Celulares</span>
             </TabsTrigger>
             <TabsTrigger value="destacados" className="flex flex-col gap-2 h-full py-3">
-                <Star className="w-7 h-7" />
-                <span>Destacados</span>
+              <Star className="w-7 h-7" />
+              <span>Destacados</span>
             </TabsTrigger>
             <TabsTrigger value="ofertas" className="flex flex-col gap-2 h-full py-3">
-                <Tag className="w-7 h-7" />
-                <span>Ofertas</span>
+              <Tag className="w-7 h-7" />
+              <span>Ofertas</span>
             </TabsTrigger>
             <TabsTrigger value="accesorios" className="flex flex-col gap-2 h-full py-3">
-                <Watch className="w-7 h-7" />
-                <span>Accesorios</span>
+              <Watch className="w-7 h-7" />
+              <span>Accesorios</span>
             </TabsTrigger>
           </TabsList>
+
           <TabsContent value="celulares">
             <ProductCatalog
-              products={allProducts}
+              products={allProductsWithDefaults}
               brands={brands}
               capacityOptions={capacityOptions}
             />
           </TabsContent>
+
           <TabsContent value="destacados">
             <ProductCatalog
-              products={featuredProducts}
+              products={featuredProductsWithDefaults}
               brands={brands}
               capacityOptions={capacityOptions}
             />
           </TabsContent>
+
           <TabsContent value="ofertas">
             <ProductCatalog
-              products={discountedProducts}
+              products={discountedProductsWithDefaults}
               brands={brands}
               capacityOptions={capacityOptions}
             />
           </TabsContent>
+
           <TabsContent value="accesorios">
             <ProductCatalog
-              products={accessories}
+              products={accessoriesWithDefaults}
               brands={brands}
               capacityOptions={capacityOptions}
             />

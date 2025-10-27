@@ -1,24 +1,33 @@
 import Image from "next/image";
 import ProductSections from "@/components/product-sections";
-import {
-  getProducts,
-  getFeaturedProducts,
-  getDiscountedProducts,
-  getAllItems, // ✅ Importa esta
-} from "@/lib/products";
-import type { Product } from "@/lib/types";
+import { getAllProductsCached } from "@lib/data"; // ✅ Función combinada celulares + accesorios con cache
+import type { Product, Cellphone, Accessory } from "@/lib/types";
+import { defaultBase } from "@lib/types";
 
 export default async function Home() {
-  // ✅ Usa la función que ya une celulares + accesorios
-  const allItems: Product[] = await getAllItems();
-  const allProducts: Product[] = await getProducts();
-  const featuredProducts: Product[] = await getFeaturedProducts();
-  const discountedProducts: Product[] = await getDiscountedProducts();
+  // ✅ Trae todos los productos combinados usando cache
+  const allItems: Product[] = await getAllProductsCached();
 
-  // ✅ Filtra accesorios desde allItems (ya con brandName)
-  const accessories = allItems.filter((p) => p.category === "accesorio");
+  // Separar productos por tipo usando type guards
+  const allProductsRaw: Cellphone[] = allItems.filter(
+    (p): p is Cellphone => "capacity" in p
+  );
+  const accessoriesRaw: Accessory[] = allItems.filter(
+    (p): p is Accessory => "category" in p
+  );
 
-  // Filtros solo para celulares
+  // Aplicar valores por defecto solo a los productos correspondientes
+  const allProducts: Cellphone[] = allProductsRaw.map(p => ({
+    ...defaultBase,
+    ...p,
+  }));
+
+  const accessories: Accessory[] = accessoriesRaw.map(p => ({
+    ...defaultBase,
+    ...p,
+  }));
+
+  // Filtrar marcas y capacidades solo para celulares
   const brands = [...new Set(allProducts.map((p) => p.brand))];
   const capacityOptions = [...new Set(allProducts.map((p) => p.capacity))].sort(
     (a, b) => parseInt(a) - parseInt(b)
@@ -48,8 +57,8 @@ export default async function Home() {
       <div className="container mx-auto px-4 py-12">
         <ProductSections
           allProducts={allProducts}
-          featuredProducts={featuredProducts}
-          discountedProducts={discountedProducts}
+          featuredProducts={allProducts.filter((p) => p.discount > 0)}
+          discountedProducts={allProducts.filter((p) => p.discount > 0)}
           accessories={accessories}
           brands={brands}
           capacityOptions={capacityOptions}

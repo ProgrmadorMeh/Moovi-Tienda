@@ -1,11 +1,6 @@
-import { supabase } from '../../supabaseClient';
+import { supabase } from '../../supabaseClient'
 
-/**
- * Obtiene una lista de registros de una tabla específica de Supabase.
- * @param {string} tabla - El nombre de la tabla de la que se quieren obtener los registros.
- * @returns {Promise<{ success: boolean, message: string, data: any[] | null }>}
- */
-export async function methodGetList(tabla) {
+export async function methodGetList(tabla, filtros = {}, campos = "*") {
   if (!tabla) {
     return {
       success: false,
@@ -15,10 +10,30 @@ export async function methodGetList(tabla) {
   }
 
   try {
-    const { data, error } = await supabase.from(tabla).select("*");
+    const condiciones = Object.entries(filtros)
+      .filter(([_, valor]) => valor && valor.toString().trim() !== '')
+      .map(([campo, valor]) => `${campo}.ilike.%${valor.toString().trim()}%`)
+      .join(',');
+
+    let selectQuery = campos;
+
+    if (tabla === "celulares" || tabla === "accesorios") {
+      selectQuery = `
+        *,
+        marcas(nombre) AS brand_name,
+        (salePrice * (1 - discount / 100)) AS finalPrice
+      `;
+    }
+
+    let query = supabase.from(tabla).select(selectQuery);
+
+    if (condiciones) {
+      query = query.or(condiciones);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
-      console.error(`❌ Error al buscar en tabla "${tabla}":`, error);
       return {
         success: false,
         message: `Error al buscar en tabla "${tabla}": ${error.message}`,
@@ -26,22 +41,28 @@ export async function methodGetList(tabla) {
       };
     }
 
-    if (!data) {
+    // Convertir campos a number si aplica
+    const parsedData = (data ?? []).map((item) => {
+      if (tabla === "celulares" || tabla === "accesorios") {
         return {
-            success: true,
-            message: `No se encontraron registros en la tabla "${tabla}".`,
-            data: [], // Corregido: Devolver array vacío
+          ...item,
+          salePrice: item.salePrice !== undefined ? Number(item.salePrice) : item.salePrice,
+          discount: item.discount !== undefined ? Number(item.discount) : item.discount,
+          finalPrice: item.finalPrice !== undefined ? Number(item.finalPrice) : item.finalPrice,
         };
-    }
+      }
+      return item;
+    });
 
     return {
       success: true,
-      message: `Se encontraron ${data.length} registros en la tabla "${tabla}".`,
-      data,
+      message: parsedData.length
+        ? `Se encontraron ${parsedData.length} registros en la tabla "${tabla}".`
+        : `No se encontraron registros en la tabla "${tabla}" con los filtros proporcionados.`,
+      data: parsedData,
     };
 
   } catch (error) {
-    console.error(`❌ Error inesperado en methodGetList para tabla "${tabla}":`, error);
     return {
       success: false,
       message: `Error inesperado: ${error.message}`,
@@ -49,4 +70,3 @@ export async function methodGetList(tabla) {
     };
   }
 }
-

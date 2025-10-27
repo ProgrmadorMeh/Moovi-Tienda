@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Product } from "@/lib/types";
+import { getAllProductsCached } from "@/lib/data";
 
 // --- TIPOS Y ESTADO INICIAL ---
 
@@ -12,6 +13,7 @@ interface CartState {
   items: CartItem[];
   coupon: Coupon | null;
   shippingCost: number;
+  allProducts: Product[]; // guardamos todos los productos para usar en el carrito o búsqueda
 }
 
 interface Coupon {
@@ -22,7 +24,8 @@ interface Coupon {
 const INITIAL_STATE: CartState = {
   items: [],
   coupon: null,
-  shippingCost: 0, // Iniciaremos el costo de envío en 0
+  shippingCost: 0,
+  allProducts: [],
 };
 
 // --- STORE ---
@@ -34,38 +37,48 @@ export const useCartStore = create(
 
       // --- ACCIONES ---
 
+      loadProducts: async () => {
+        const products = await getAllProductsCached();
+        // Aplicamos la transformación de precios como antes
+        const transformed = products.map(p => {
+          if (p.discount && p.discount > 0) {
+            return {
+              ...p,
+              originalPrice: p.salePrice,
+              salePrice: p.salePrice * (1 - p.discount / 100),
+            };
+          }
+          return { ...p, originalPrice: p.salePrice };
+        });
+        set({ allProducts: transformed });
+      },
+
       addItem: (product) => {
         set((state) => {
-          // --- Lógica de Precios con Descuento Dinámico ---
           let finalSalePrice = product.salePrice;
-          let displayOriginalPrice: number | undefined = undefined;
+          let displayOriginalPrice: number | undefined = product.originalPrice;
 
-          // Si el producto tiene un descuento, calculamos el precio final.
-          // El `salePrice` de la base de datos se convierte en el `originalPrice` para mostrar.
           if (product.discount && product.discount > 0) {
-            displayOriginalPrice = product.salePrice; // Precio de DB es el "antes"
-            finalSalePrice = product.salePrice * (1 - product.discount / 100); // Precio final es el "ahora"
+            displayOriginalPrice = product.salePrice;
+            finalSalePrice = product.salePrice * (1 - product.discount / 100);
           }
 
           const productForCart: Product = {
             ...product,
-            salePrice: finalSalePrice, // Precio que se usa para cálculos
-            originalPrice: displayOriginalPrice, // Precio para mostrar tachado
+            salePrice: finalSalePrice,
+            originalPrice: displayOriginalPrice ?? finalSalePrice,
           };
-          // --- Fin de la lógica ---
 
           const existingItem = state.items.find((item) => item.id === product.id);
           let updatedItems;
 
           if (existingItem) {
-            // Si el ítem ya existe, solo incrementa su cantidad
             updatedItems = state.items.map((item) =>
               item.id === product.id
                 ? { ...item, quantity: item.quantity + 1 }
                 : item
             );
           } else {
-            // Si es nuevo, lo añade con cantidad 1 y los precios ya calculados
             updatedItems = [...state.items, { ...productForCart, quantity: 1 }];
           }
 
@@ -95,10 +108,8 @@ export const useCartStore = create(
       clearCart: () => set(INITIAL_STATE),
 
       // --- SELECTORES ---
-
       getSubtotal: () => {
         return get().items.reduce(
-          // El `salePrice` del item ya es el precio final con descuento
           (acc, item) => acc + item.salePrice * item.quantity,
           0
         );
@@ -115,14 +126,15 @@ export const useCartStore = create(
       },
     }),
     {
-      name: "cart-storage", // Nombre para persistir en localStorage
+      name: "cart-storage",
     }
   )
 );
 
-// --- INTERFACE DE ACCIONES (para tipado) ---
+// --- INTERFACE DE ACCIONES ---
 
 interface CartActions {
+  loadProducts: () => Promise<void>;
   addItem: (product: Product) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, newQuantity: number) => void;

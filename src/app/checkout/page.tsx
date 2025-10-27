@@ -9,6 +9,9 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Preference from '@/lib/funtion/pago/RealizarCompra.js';
+import PrivateRoute from '@/components/PrivateRoute';
+import { useAuth } from '@/context/AuthContext';
+
 
 const getShippingOptions = async (postalCode: string): Promise<{id: string, name: string, cost: number}[]> => {
   console.log(`Buscando opciones de envío para el CP: ${postalCode}`);
@@ -39,7 +42,7 @@ const getShippingOptions = async (postalCode: string): Promise<{id: string, name
   return [];
 };
 
-export default function CheckoutPage() {
+function CheckoutPageContent() {
   const { items, coupon, getSubtotal, getTotal, setShippingCost, shippingCost } = useCartStore();
   const router = useRouter();
   const { toast } = useToast();
@@ -48,6 +51,7 @@ export default function CheckoutPage() {
   const [isLoadingShipping, setIsLoadingShipping] = useState(false);
   const [selectedShipping, setSelectedShipping] = useState<string | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (items.length === 0) {
@@ -97,17 +101,15 @@ export default function CheckoutPage() {
         return;
     }
 
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get('email') as string;
+    const email = user?.email;
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast({ variant: "destructive", description: 'Por favor, introduce un email válido.' });
+    if (!email) {
+      toast({ variant: "destructive", description: 'No se pudo obtener el email del usuario.' });
       return;
     }
 
-    // CORRECCIÓN: Usar 'nombre', 'cantidad' y 'precio' para consistencia con el backend.
     const cartForMP = items.map(item => ({
-      nombre: item.name, 
+      nombre: item.model, 
       cantidad: item.quantity,
       precio: item.salePrice,
     }));
@@ -145,7 +147,7 @@ export default function CheckoutPage() {
           <div className="rounded-lg border bg-white/5 p-6">
             <h2 className="text-xl font-semibold mb-4">1. Datos de Contacto y Envío</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2"><Label htmlFor="email">Email</Label><Input id="email" name="email" type="email" placeholder="tu@email.com" required /></div>
+              <div className="md:col-span-2"><Label htmlFor="email">Email</Label><Input id="email" name="email" type="email" placeholder="tu@email.com" required value={user?.email || ''} readOnly /></div>
               <div><Label htmlFor="nombre">Nombre</Label><Input id="nombre" required /></div>
               <div><Label htmlFor="apellido">Apellido</Label><Input id="apellido" required /></div>
               <div className="md:col-span-2"><Label htmlFor="direccion">Dirección</Label><Input id="direccion" placeholder="Calle, número, piso" required /></div>
@@ -205,5 +207,13 @@ export default function CheckoutPage() {
 
       </form>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <PrivateRoute>
+      <CheckoutPageContent />
+    </PrivateRoute>
   );
 }
