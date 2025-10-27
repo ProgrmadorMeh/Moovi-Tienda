@@ -39,36 +39,11 @@ export const useCartStore = create(
 
       loadProducts: async () => {
         const products = await getAllProductsCached();
-        // Aplicamos la transformación de precios como antes
-        const transformed = products.map(p => {
-          if (p.discount && p.discount > 0) {
-            return {
-              ...p,
-              originalPrice: p.salePrice,
-              salePrice: p.salePrice * (1 - p.discount / 100),
-            };
-          }
-          return { ...p, originalPrice: p.salePrice };
-        });
-        set({ allProducts: transformed });
+        set({ allProducts: products });
       },
 
       addItem: (product) => {
         set((state) => {
-          let finalSalePrice = product.salePrice;
-          let displayOriginalPrice: number | undefined = product.originalPrice;
-
-          if (product.discount && product.discount > 0) {
-            displayOriginalPrice = product.salePrice;
-            finalSalePrice = product.salePrice * (1 - product.discount / 100);
-          }
-
-          const productForCart: Product = {
-            ...product,
-            salePrice: finalSalePrice,
-            originalPrice: displayOriginalPrice ?? finalSalePrice,
-          };
-
           const existingItem = state.items.find((item) => item.id === product.id);
           let updatedItems;
 
@@ -79,7 +54,7 @@ export const useCartStore = create(
                 : item
             );
           } else {
-            updatedItems = [...state.items, { ...productForCart, quantity: 1 }];
+            updatedItems = [...state.items, { ...product, quantity: 1 }];
           }
 
           return { items: updatedItems };

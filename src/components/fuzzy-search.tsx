@@ -53,20 +53,7 @@ export default function FuzzySearch() {
       setIsLoading(true);
       const items = await getAllProductsCached();
 
-      // Aplicar precios finales si hay descuento
-      const transformedItems = items.map(product => {
-        let finalPrice = product.salePrice;
-        let originalPrice = product.salePrice;
-
-        if (product.discount && product.discount > 0) {
-          originalPrice = product.salePrice;
-          finalPrice = product.salePrice * (1 - product.discount / 100);
-        }
-
-        return { ...product, originalPrice, finalPrice };
-      });
-
-      setAllProducts(transformedItems);
+      setAllProducts(items);
       setIsLoading(false);
     };
     fetchProducts();
@@ -130,13 +117,13 @@ export default function FuzzySearch() {
                     <div className="flex-1">
                       <p className="font-semibold text-sm">{item.brand} {item.model}</p>
                       <div className="flex gap-2 items-baseline text-xs">
-                        {item.originalPrice !== item.finalPrice && (
+                        {item.originalPrice && item.originalPrice > item.salePrice && (
                           <span className="line-through text-muted-foreground">
                             ${item.originalPrice.toLocaleString('es-AR')}
                           </span>
                         )}
-                        <span className="text-muted-foreground">
-                          ${item.finalPrice.toLocaleString('es-AR')}
+                        <span className="font-semibold">
+                          ${item.salePrice.toLocaleString('es-AR')}
                         </span>
                       </div>
                     </div>
