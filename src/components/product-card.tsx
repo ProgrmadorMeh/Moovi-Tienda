@@ -40,6 +40,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
     <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg">
       <Link href={`/products/${product.id}`} className="block">
         <div className="relative aspect-square w-full overflow-hidden">
+          {/* CORRECCIÓN: Mostrar solo si el descuento es real */}
           {product.discount && product.discount > 0 && (
             <Badge
               variant="destructive"
@@ -64,6 +65,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           <h3 className="truncate font-semibold">{productName}</h3>
           
           <div className="mt-2">
+            {/* CORRECCIÓN: Mostrar solo si el precio original es mayor al de venta */}
             {product.originalPrice && product.originalPrice > product.salePrice && (
               <p className="text-xs text-muted-foreground line-through">
                 ${product.originalPrice.toLocaleString("es-AR")}

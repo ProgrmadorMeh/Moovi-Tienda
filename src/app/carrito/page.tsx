@@ -126,11 +126,13 @@ function CartPageItemRow({ item }: { item: CartItem }) {
                 {/* Lógica de Precios con Descuento */}
                 <div className="flex items-center gap-2 mt-1">
                   <p className="text-lg font-semibold">${item.salePrice.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</p>
+                  {/* CORRECCIÓN: Mostrar solo si el precio original es mayor al de venta */}
                   {item.originalPrice && item.originalPrice > item.salePrice && (
                     <p className="text-sm text-gray-400 line-through">
                       ${item.originalPrice.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                     </p>
                   )}
+                   {/* CORRECCIÓN: Mostrar solo si el descuento es real */}
                   {item.discount && item.discount > 0 && (
                       <Badge variant="destructive">{item.discount}% OFF</Badge>
                   )}

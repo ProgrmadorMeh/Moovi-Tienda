@@ -1,47 +1,77 @@
 import { methodGetList } from "@/lib/funtion/metodos/methodGetList";
 import type { Cellphone, Accessory, Product } from "@/lib/types";
 
-
 // ----------------- CACHE -----------------
 
-let cachedCellphones: Cellphone[] | null = null;
-let cachedAccessories: Accessory[] | null = null;
+let cachedAllProducts: Product[] | null = null;
 
 /**
- * Obtiene celulares con cache en memoria.
- * @param refresh - Si es true, fuerza recargar desde Supabase
+ * Procesa una lista de productos para asegurar que la lógica de precios sea consistente.
+ * Si no hay descuento, el originalPrice se establece como undefined.
  */
-export async function getCellphonesCached(refresh = false): Promise<Cellphone[]> {
-  if (!refresh && cachedCellphones) return cachedCellphones;
+function processProducts(products: Product[]): Product[] {
+  return products.map(p => {
+    // Asegurarse de que los campos numéricos sean números
+    const salePrice = Number(p.salePrice) || 0;
+    const discount = Number(p.discount) || 0;
+    let originalPrice = p.originalPrice ? Number(p.originalPrice) : undefined;
 
-  const resp = await methodGetList("celulares");
-  console.log("📱 Celulares:", resp.message);
+    // Si no hay descuento o el precio original no es mayor, no lo mostramos.
+    if (discount <= 0 || (originalPrice !== undefined && originalPrice <= salePrice)) {
+      originalPrice = undefined;
+    }
 
-  cachedCellphones = (resp.data ?? []) as Cellphone[];
-  return cachedCellphones;
+    return {
+      ...p,
+      salePrice,
+      discount,
+      originalPrice,
+    };
+  });
 }
 
+
 /**
- * Obtiene accesorios con cache en memoria.
+ * Obtiene todos los productos combinados (celulares + accesorios) con cache
+ * y aplica la lógica de precios correcta.
  * @param refresh - Si es true, fuerza recargar desde Supabase
- */
-export async function getAccessoriesCached(refresh = false): Promise<Accessory[]> {
-  if (!refresh && cachedAccessories) return cachedAccessories;
-
-  const resp = await methodGetList("accesorios");
-  console.log("🎧 Accesorios:", resp.message);
-
-  cachedAccessories = (resp.data ?? []) as Accessory[];
-  return cachedAccessories;
-}
-
-/**
- * Obtiene todos los productos combinados (celulares + accesorios)
  */
 export async function getAllProductsCached(refresh = false): Promise<Product[]> {
-  const [cellphones, accessories] = await Promise.all([
-    getCellphonesCached(refresh),
-    getAccessoriesCached(refresh),
+  if (!refresh && cachedAllProducts) {
+    return cachedAllProducts;
+  }
+
+  const [cellphonesRes, accessoriesRes] = await Promise.all([
+    methodGetList("celulares"),
+    methodGetList("accesorios"),
   ]);
-  return [...cellphones, ...accessories];
+
+  console.log("📱 Celulares:", cellphonesRes.message);
+  console.log("🎧 Accesorios:", accessoriesRes.message);
+  
+  const allProductsRaw = [
+    ...(cellphonesRes.data ?? []) as Cellphone[],
+    ...(accessoriesRes.data ?? []) as Accessory[],
+  ];
+
+  // Aplicar la lógica de precios centralizada
+  cachedAllProducts = processProducts(allProductsRaw);
+  
+  return cachedAllProducts;
+}
+
+/**
+ * Obtiene solo celulares, ya procesados.
+ */
+export async function getCellphonesCached(refresh = false): Promise<Cellphone[]> {
+  const allProducts = await getAllProductsCached(refresh);
+  return allProducts.filter((p): p is Cellphone => "capacity" in p);
+}
+
+/**
+ * Obtiene solo accesorios, ya procesados.
+ */
+export async function getAccessoriesCached(refresh = false): Promise<Accessory[]> {
+  const allProducts = await getAllProductsCached(refresh);
+  return allProducts.filter((p): p is Accessory => "category" in p);
 }

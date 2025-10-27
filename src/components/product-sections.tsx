@@ -1,16 +1,15 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Product } from "@/lib/types";
+import type { Product, Cellphone, Accessory } from "@/lib/types";
 import ProductCatalog from "./product-catalog";
 import { Smartphone, Star, Tag, Watch } from "lucide-react";
-import { defaultBase } from "@/lib/types";
 
 interface ProductSectionsProps {
-  allProducts: Product[];
-  featuredProducts: Product[];
-  discountedProducts: Product[];
-  accessories: Product[];
+  allProducts: Cellphone[];
+  featuredProducts: Cellphone[];
+  discountedProducts: Cellphone[];
+  accessories: Accessory[];
   brands: string[];
   capacityOptions: string[];
 }
@@ -23,17 +22,6 @@ export default function ProductSections({
   brands,
   capacityOptions,
 }: ProductSectionsProps) {
-  // Aplicar valores por defecto si algún campo viene vacío o undefined
-  const applyDefaults = (products: Product[]) =>
-    products.map((p) => ({
-      ...defaultBase,
-      ...p,
-    }));
-
-  const allProductsWithDefaults = applyDefaults(allProducts);
-  const featuredProductsWithDefaults = applyDefaults(featuredProducts);
-  const discountedProductsWithDefaults = applyDefaults(discountedProducts);
-  const accessoriesWithDefaults = applyDefaults(accessories);
 
   return (
     <section className="py-12 md:py-16">
@@ -60,7 +48,7 @@ export default function ProductSections({
 
           <TabsContent value="celulares">
             <ProductCatalog
-              products={allProductsWithDefaults}
+              products={allProducts}
               brands={brands}
               capacityOptions={capacityOptions}
             />
@@ -68,7 +56,7 @@ export default function ProductSections({
 
           <TabsContent value="destacados">
             <ProductCatalog
-              products={featuredProductsWithDefaults}
+              products={featuredProducts}
               brands={brands}
               capacityOptions={capacityOptions}
             />
@@ -76,7 +64,7 @@ export default function ProductSections({
 
           <TabsContent value="ofertas">
             <ProductCatalog
-              products={discountedProductsWithDefaults}
+              products={discountedProducts}
               brands={brands}
               capacityOptions={capacityOptions}
             />
@@ -84,9 +72,9 @@ export default function ProductSections({
 
           <TabsContent value="accesorios">
             <ProductCatalog
-              products={accessoriesWithDefaults}
+              products={accessories}
               brands={brands}
-              capacityOptions={capacityOptions}
+              capacityOptions={[]} // Accesorios no tienen filtro de capacidad
             />
           </TabsContent>
         </Tabs>

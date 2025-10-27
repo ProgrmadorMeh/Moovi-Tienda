@@ -46,7 +46,7 @@ export const defaultBase = {
   model: "Sin especificar",
   description: "Sin descripción.",
   salePrice: 0,
-  originalPrice: 0,
+  originalPrice: undefined, // CORRECCIÓN: Por defecto es undefined
   discount: 0,
   stock: 0,
   brand: "Marca Desconocida",

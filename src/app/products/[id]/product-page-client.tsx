@@ -98,6 +98,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
           {/* SECCIÓN DE PRECIOS Y DESCUENTOS */}
           <div className="space-y-2">
+            {/* CORRECCIÓN: Mostrar solo si el precio original es mayor al de venta */}
             {product.originalPrice && product.originalPrice > product.salePrice && (
               <p suppressHydrationWarning className="text-xl text-muted-foreground line-through">
                 ${product.originalPrice.toLocaleString('es-AR')}
@@ -105,6 +106,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             )}
             <div className="flex items-center gap-2">
               <p suppressHydrationWarning className="text-4xl font-bold">${product.salePrice.toLocaleString('es-AR')}</p>
+              {/* CORRECCIÓN: Mostrar solo si el descuento es real */}
               {product.discount && product.discount > 0 && (
                 <Badge className="bg-green-200 text-green-800 text-lg py-1">{product.discount}% OFF</Badge>
               )}

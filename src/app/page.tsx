@@ -1,31 +1,13 @@
 import Image from "next/image";
 import ProductSections from "@/components/product-sections";
-import { getAllProductsCached } from "@lib/data"; // ✅ Función combinada celulares + accesorios con cache
+// ✅ Importa las funciones que obtienen productos ya procesados
+import { getCellphonesCached, getAccessoriesCached } from "@lib/data"; 
 import type { Product, Cellphone, Accessory } from "@/lib/types";
-import { defaultBase } from "@lib/types";
 
 export default async function Home() {
-  // ✅ Trae todos los productos combinados usando cache
-  const allItems: Product[] = await getAllProductsCached();
-
-  // Separar productos por tipo usando type guards
-  const allProductsRaw: Cellphone[] = allItems.filter(
-    (p): p is Cellphone => "capacity" in p
-  );
-  const accessoriesRaw: Accessory[] = allItems.filter(
-    (p): p is Accessory => "category" in p
-  );
-
-  // Aplicar valores por defecto solo a los productos correspondientes
-  const allProducts: Cellphone[] = allProductsRaw.map(p => ({
-    ...defaultBase,
-    ...p,
-  }));
-
-  const accessories: Accessory[] = accessoriesRaw.map(p => ({
-    ...defaultBase,
-    ...p,
-  }));
+  // ✅ Trae celulares y accesorios ya procesados por separado
+  const allProducts: Cellphone[] = await getCellphonesCached();
+  const accessories: Accessory[] = await getAccessoriesCached();
 
   // Filtrar marcas y capacidades solo para celulares
   const brands = [...new Set(allProducts.map((p) => p.brand))];
@@ -57,6 +39,7 @@ export default async function Home() {
       <div className="container mx-auto px-4 py-12">
         <ProductSections
           allProducts={allProducts}
+          // Los productos destacados y con descuento ahora se filtran desde la lista de celulares ya procesada
           featuredProducts={allProducts.filter((p) => p.discount > 0)}
           discountedProducts={allProducts.filter((p) => p.discount > 0)}
           accessories={accessories}
