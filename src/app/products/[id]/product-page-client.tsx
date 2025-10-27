@@ -38,7 +38,6 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   };
 
   const handleBuyNow = async () => {
-    // CORRECCIÓN: Usar 'nombre', 'cantidad' y 'precio' para consistencia con el backend.
     const cartForMP = [{
       nombre: productName,
       cantidad: 1,
@@ -62,6 +61,8 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
   const hasImage = !!product.imageUrl;
   const installmentPrice = (product.installments ?? 0) > 0 ? product.salePrice / product.installments! : 0;
+  
+  // Condiciones de visualización más estrictas
   const showDiscount = product.discount && product.discount > 0;
   const showOriginalPrice = product.originalPrice && product.originalPrice > product.salePrice;
 

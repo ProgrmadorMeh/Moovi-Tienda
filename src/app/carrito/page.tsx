@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useCartStore, CartItem } from '@/lib/cart-store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge'; // Importar Badge
+import { Badge } from '@/components/ui/badge';
 import { Plus, Minus, X, Tag, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -116,6 +116,10 @@ function CartPageItemRow({ item }: { item: CartItem }) {
             updateQuantity(item.id, newQuantity);
         }
     };
+    
+    // Condiciones de visualización más estrictas
+    const showDiscount = item.discount && item.discount > 0;
+    const showOriginalPrice = item.originalPrice && item.originalPrice > item.salePrice;
 
     return (
         <div className="flex flex-col rounded-lg border bg-white/5 p-4 sm:flex-row sm:items-center sm:space-x-6">
@@ -123,17 +127,14 @@ function CartPageItemRow({ item }: { item: CartItem }) {
             
             <div className="flex-1">
                 <h3 className="text-lg font-semibold">{item.model}</h3>
-                {/* Lógica de Precios con Descuento */}
                 <div className="flex items-center gap-2 mt-1">
                   <p className="text-lg font-semibold">${item.salePrice.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</p>
-                  {/* CORRECCIÓN: Mostrar solo si el precio original es mayor al de venta */}
-                  {item.originalPrice && item.originalPrice > item.salePrice && (
+                  {showOriginalPrice && (
                     <p className="text-sm text-gray-400 line-through">
-                      ${item.originalPrice.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                      ${item.originalPrice!.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                     </p>
                   )}
-                   {/* CORRECCIÓN: Mostrar solo si el descuento es real */}
-                  {item.discount && item.discount > 0 && (
+                  {showDiscount && (
                       <Badge variant="destructive">{item.discount}% OFF</Badge>
                   )}
                 </div>

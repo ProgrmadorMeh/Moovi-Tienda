@@ -20,7 +20,6 @@ function processProducts(products: any[]): Product[] {
       originalPrice = undefined;
     }
     
-    // CORRECCIÓN: Asignar el nombre de la marca desde el objeto anidado `marcas`
     const brand = p.marcas?.nombre || 'Sin Marca';
 
     return {
@@ -28,7 +27,7 @@ function processProducts(products: any[]): Product[] {
       salePrice,
       discount,
       originalPrice,
-      brand, // Asignar la marca procesada
+      brand, 
     };
   });
 }
@@ -57,7 +56,6 @@ export async function getAllProductsCached(refresh = false): Promise<Product[]> 
     ...(accessoriesRes.data ?? []) as any[],
   ];
 
-  // Aplicar la lógica de precios y marcas centralizada
   cachedAllProducts = processProducts(allProductsRaw);
   
   return cachedAllProducts;

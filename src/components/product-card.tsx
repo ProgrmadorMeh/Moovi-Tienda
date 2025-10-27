@@ -35,6 +35,8 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
 
   const hasImage = product.imageUrl && product.imageUrl.trim() !== "";
   const installmentPrice = (product.installments ?? 0) > 0 ? product.salePrice / product.installments! : 0;
+  
+  // Condiciones de visualización más estrictas
   const showDiscount = product.discount && product.discount > 0;
   const showOriginalPrice = product.originalPrice && product.originalPrice > product.salePrice;
 
@@ -53,7 +55,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           )}
           <div className="relative h-64 w-full">
             <Image
-              src={hasImage ? product.imageUrl! : "/img/default-product.jpg"}
+              src={hasImage ? product.imageUrl! : "https://pwxpxouatzzxvvvszdnx.supabase.co/storage/v1/object/public/celImagen/place.jpg"}
               alt={productName}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -69,7 +71,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           <div className="mt-2">
             {showOriginalPrice && (
               <p className="text-xs text-muted-foreground line-through">
-                ${product.originalPrice.toLocaleString("es-AR")}
+                ${product.originalPrice!.toLocaleString("es-AR")}
               </p>
             )}
             <p className="text-lg font-bold">
