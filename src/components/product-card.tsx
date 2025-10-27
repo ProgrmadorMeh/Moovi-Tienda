@@ -35,8 +35,8 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
 
   const hasImage = product.imageUrl && product.imageUrl.trim() !== "";
   
-  const showDiscount = typeof product.discount === 'number' && product.discount > 0;
-  const showOriginalPrice = typeof product.originalPrice === 'number' && product.originalPrice > product.salePrice;
+  const showDiscount = product.discount && product.discount > 0;
+  const showOriginalPrice = product.originalPrice && product.originalPrice > product.salePrice;
   const showInstallments = typeof product.installments === 'number' && product.installments > 0;
   const installmentPrice = showInstallments ? product.salePrice / product.installments! : 0;
 

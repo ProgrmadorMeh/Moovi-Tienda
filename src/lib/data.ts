@@ -10,29 +10,25 @@ let cachedAllProducts: Product[] | null = null;
  */
 function processProducts(products: any[]): Product[] {
   return products.map(p => {
-    const salePrice = Number(p.salePrice) || 0;
+    const basePrice = Number(p.salePrice) || 0;
     const discount = Number(p.discount) || 0;
-    let originalPrice = p.originalPrice ? Number(p.originalPrice) : undefined;
     const brand = p.marcas?.nombre || 'Sin Marca';
 
-    // Si hay descuento, calculamos el precio original para asegurar que se muestre tachado
+    let finalSalePrice = basePrice;
+    let originalPrice: number | undefined = undefined;
+
     if (discount > 0) {
-      // Si el precio original no existe o es menor/igual al de venta, lo calculamos
-      // para reflejar el descuento correctamente.
-      const calculatedOriginal = salePrice / (1 - discount / 100);
-      if (!originalPrice || originalPrice <= salePrice) {
-        originalPrice = calculatedOriginal;
-      }
-    } else {
-      // Si no hay descuento, no debe haber precio original.
-      originalPrice = undefined;
+      // Si hay descuento, el precio base es el original.
+      originalPrice = basePrice;
+      // Y el precio de venta es el precio base menos el descuento.
+      finalSalePrice = basePrice * (1 - discount / 100);
     }
     
     return {
       ...p,
-      salePrice,
+      salePrice: finalSalePrice,
+      originalPrice: originalPrice,
       discount,
-      originalPrice,
       brand, 
     };
   });
@@ -49,14 +45,21 @@ export async function getAllProductsCached(refresh = false): Promise<Product[]> 
     return cachedAllProducts;
   }
 
-  const [cellphonesRes, accessoriesRes] = await Promise.all([
+  const results = await Promise.all([
     methodGetList("celulares"),
     methodGetList("accesorios"),
   ]);
 
-  console.log("📱 Celulares:", cellphonesRes.data?.length);
-  console.log("🎧 Accesorios:", accessoriesRes.data?.length);
+  const cellphonesRes = results[0];
+  const accessoriesRes = results[1];
   
+  if (cellphonesRes.data) {
+    console.log("📱 Celulares:", cellphonesRes.data.length);
+  }
+  if (accessoriesRes.data) {
+    console.log("🎧 Accesorios:", accessoriesRes.data.length);
+  }
+
   const allProductsRaw = [
     ...(cellphonesRes.data ?? []) as any[],
     ...(accessoriesRes.data ?? []) as any[],
