@@ -40,7 +40,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
     <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg">
       <Link href={`/products/${product.id}`} className="block">
         <div className="relative aspect-square w-full overflow-hidden">
-          {/* CORRECCIÓN: Mostrar solo si el descuento es real */}
+          {/* CORRECCIÓN: Mostrar solo si el descuento es real y mayor a 0 */}
           {product.discount && product.discount > 0 && (
             <Badge
               variant="destructive"

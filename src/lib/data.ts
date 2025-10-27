@@ -6,10 +6,9 @@ import type { Cellphone, Accessory, Product } from "@/lib/types";
 let cachedAllProducts: Product[] | null = null;
 
 /**
- * Procesa una lista de productos para asegurar que la lógica de precios sea consistente.
- * Si no hay descuento, el originalPrice se establece como undefined.
+ * Procesa una lista de productos para asegurar que la lógica de precios y marcas sea consistente.
  */
-function processProducts(products: Product[]): Product[] {
+function processProducts(products: any[]): Product[] {
   return products.map(p => {
     // Asegurarse de que los campos numéricos sean números
     const salePrice = Number(p.salePrice) || 0;
@@ -20,12 +19,16 @@ function processProducts(products: Product[]): Product[] {
     if (discount <= 0 || (originalPrice !== undefined && originalPrice <= salePrice)) {
       originalPrice = undefined;
     }
+    
+    // CORRECCIÓN: Asignar el nombre de la marca desde el objeto anidado `marcas`
+    const brand = p.marcas?.nombre || 'Sin Marca';
 
     return {
       ...p,
       salePrice,
       discount,
       originalPrice,
+      brand, // Asignar la marca procesada
     };
   });
 }
@@ -33,7 +36,7 @@ function processProducts(products: Product[]): Product[] {
 
 /**
  * Obtiene todos los productos combinados (celulares + accesorios) con cache
- * y aplica la lógica de precios correcta.
+ * y aplica la lógica de precios y marcas correcta.
  * @param refresh - Si es true, fuerza recargar desde Supabase
  */
 export async function getAllProductsCached(refresh = false): Promise<Product[]> {
@@ -46,15 +49,15 @@ export async function getAllProductsCached(refresh = false): Promise<Product[]> 
     methodGetList("accesorios"),
   ]);
 
-  console.log("📱 Celulares:", cellphonesRes.message);
-  console.log("🎧 Accesorios:", accessoriesRes.message);
+  console.log("📱 Celulares:", cellphonesRes.data?.length);
+  console.log("🎧 Accesorios:", accessoriesRes.data?.length);
   
   const allProductsRaw = [
-    ...(cellphonesRes.data ?? []) as Cellphone[],
-    ...(accessoriesRes.data ?? []) as Accessory[],
+    ...(cellphonesRes.data ?? []) as any[],
+    ...(accessoriesRes.data ?? []) as any[],
   ];
 
-  // Aplicar la lógica de precios centralizada
+  // Aplicar la lógica de precios y marcas centralizada
   cachedAllProducts = processProducts(allProductsRaw);
   
   return cachedAllProducts;
