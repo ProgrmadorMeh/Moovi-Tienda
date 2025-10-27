@@ -34,16 +34,12 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
   };
 
   const hasImage = product.imageUrl && product.imageUrl.trim() !== "";
-  
-  const showDiscount = product.discount && product.discount > 0;
-  const showOriginalPrice = product.originalPrice && product.originalPrice > product.salePrice;
-  const showInstallments = typeof product.installments === 'number' && product.installments > 0;
 
   return (
     <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg">
       <Link href={`/products/${product.id}`} className="block">
         <div className="relative aspect-square w-full overflow-hidden">
-          {showDiscount && (
+          {(product.discount ?? 0) > 0 && (
             <Badge
               variant="destructive"
               className="absolute top-2 right-2 z-10"
@@ -67,7 +63,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           <h3 className="truncate font-semibold">{productName}</h3>
           
           <div className="mt-2">
-            {showOriginalPrice && (
+            {(product.originalPrice && product.originalPrice > product.salePrice) && (
               <p className="text-xs text-muted-foreground line-through">
                 ${product.originalPrice!.toLocaleString("es-AR")}
               </p>
@@ -75,9 +71,9 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
             <p className="text-lg font-bold">
               ${product.salePrice.toLocaleString("es-AR")}
             </p>
-            {showInstallments && (
+            {(product.installments ?? 0) > 0 && (
                  <p className="text-xs text-green-600">
-                 o {product.installments} cuotas de ${(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                 o {product.installments} cuotas de ${(product.salePrice / product.installments!).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                </p>
             )}
           </div>
