@@ -38,7 +38,6 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
   const showDiscount = product.discount && product.discount > 0;
   const showOriginalPrice = product.originalPrice && product.originalPrice > product.salePrice;
   const showInstallments = typeof product.installments === 'number' && product.installments > 0;
-  const installmentPrice = showInstallments ? product.salePrice / product.installments! : 0;
 
   return (
     <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg">
@@ -78,7 +77,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
             </p>
             {showInstallments && (
                  <p className="text-xs text-green-600">
-                 o {product.installments} cuotas de ${installmentPrice.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                 o {product.installments} cuotas de ${(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                </p>
             )}
           </div>
