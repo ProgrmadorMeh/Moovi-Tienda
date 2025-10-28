@@ -100,7 +100,7 @@ export default function FuzzySearch() {
           {results.length > 0 ? (
             <ul>
               {results.map(({ item }) => {
-                let imageSrc = defaultBase.imageUrl;
+                let imageSrc = defaultBase.imageUrl as string;
                 if (item.imageUrl) {
                   if (Array.isArray(item.imageUrl) && item.imageUrl.length > 0 && item.imageUrl[0]) {
                     imageSrc = item.imageUrl[0];
@@ -120,7 +120,8 @@ export default function FuzzySearch() {
                       <Image
                         src={imageSrc}
                         alt={item.model}
-                        fill
+                        width={64}
+                        height={64}
                         className="rounded-md object-cover"
                       />
                     </div>

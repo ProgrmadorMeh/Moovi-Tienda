@@ -35,7 +35,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
   };
 
   // 🔹 Determinar la imagen a usar
-  let imageSrc = defaultBase.imageUrl;
+  let imageSrc = defaultBase.imageUrl as string;
 
   if (product.imageUrl) {
     if (Array.isArray(product.imageUrl) && product.imageUrl.length > 0 && product.imageUrl[0]) {
@@ -67,14 +67,12 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
               <span>Envío Seguro</span>
             </Badge>
           )}
-          <div className="relative h-64 w-full">
-            <Image
-              src={imageSrc}
-              alt={productName}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-          </div>
+          <Image
+            src={imageSrc}
+            alt={productName}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+          />
         </div>
       </Link>
 
