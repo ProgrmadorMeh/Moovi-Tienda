@@ -15,24 +15,16 @@ const ProductSpecs = ({ product }) => {
   ];
 
   return (
-    <Card className="mt-12">
-      <CardHeader>
-        <CardTitle className="flex items-center">
-          <FileText className="mr-2 h-6 w-6 text-primary" />
-          Ficha Técnica
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ul className="space-y-4">
+    <div className="py-4">
+        <ul className="space-y-4 text-base">
           {techSpecs.map((spec, index) => (
-            <li key={index} className="flex justify-between border-b pb-2">
-              <span className="font-semibold text-muted-foreground">{spec.label}</span>
-              <span className="text-right">{spec.value}</span>
+            <li key={index} className="flex justify-between border-b pb-3">
+              <span className="font-medium text-muted-foreground">{spec.label}</span>
+              <span className="text-right text-foreground">{spec.value}</span>
             </li>
           ))}
         </ul>
-      </CardContent>
-    </Card>
+    </div>
   );
 };
 
