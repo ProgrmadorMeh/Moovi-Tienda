@@ -53,7 +53,7 @@ export default function SiteHeader() {
   };
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-white/20 bg-header-background bg-cover bg-center">
+    <header className="fixed top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-sm">
       <div className="container flex h-16 items-center">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <Smartphone className="h-6 w-6 text-primary" />
