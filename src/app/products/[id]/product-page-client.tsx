@@ -14,6 +14,8 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import type { Product } from "@/lib/types";
 import { useRouter } from "next/navigation";
+import ProductSpecs from "@/components/product-specs";
+import AccessoriesCarousel from "@/components/accessories-carousel";
 
 interface ProductPageClientProps {
   product: Product;
@@ -52,7 +54,6 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   return (
     <div className="container mx-auto max-w-6xl px-4 pt-24 pb-12">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
-        {/* Imagen del producto */}
         <div className="md:sticky md:top-20 md:self-start">
           <Card className="overflow-hidden">
             <CardContent className="relative aspect-square p-0">
@@ -78,16 +79,14 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           </Card>
         </div>
 
-        {/* Información del producto */}
         <div className="space-y-6">
-          <div>
+           <div>
             <p className="text-sm font-medium text-primary">{product.brand}</p>
             <h1 className="font-headline text-4xl font-bold tracking-tight lg:text-5xl">
               {productName}
             </h1>
           </div>
 
-          {/* SECCIÓN DE PRECIOS Y DESCUENTOS */}
           <div className="space-y-2">
             <div className="flex items-center gap-4">
               <p suppressHydrationWarning className="text-4xl font-bold">${product.salePrice.toLocaleString('es-AR')}</p>
@@ -113,7 +112,6 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             {product.description}
           </p>
 
-          {/* Envío */}
           {product.shipping && (
             <div className="flex items-center text-blue-500 text-md font-medium">
                 <Truck className="h-5 w-5 mr-2" />
@@ -121,7 +119,6 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             </div>
           )}
 
-          {/* Botones de acción */}
           <div className="flex flex-col space-y-4 pt-4">
             <Button size="lg" className="w-full text-lg" onClick={handleAddToCart}>
               <ShoppingCart className="mr-2 h-5 w-5" /> Añadir al Carrito
@@ -138,7 +135,6 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
           <Separator />
 
-          {/* Detalles del producto */}
           <div>
             <h3 className="font-headline text-2xl font-semibold">Detalles</h3>
             <ul className="mt-4 space-y-2 text-muted-foreground">
@@ -157,6 +153,11 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             </ul>
           </div>
         </div>
+      </div>
+
+      <div className="mt-16">
+        <ProductSpecs product={product} />
+        <AccessoriesCarousel brand={product.brand} currentProductId={product.id} />
       </div>
     </div>
   );
