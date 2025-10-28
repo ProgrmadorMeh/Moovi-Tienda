@@ -5,6 +5,7 @@ import type { Product, Cellphone } from "@/lib/types";
 import ProductCard from "./product-card";
 import ProductFilters from "./product-filters";
 import PaginationControls from "./pagination-controls";
+import QuickViewModal from "./quick-view-modal";
 
 interface ProductCatalogProps {
   products: Product[];
@@ -14,9 +15,7 @@ interface ProductCatalogProps {
 
 const PRODUCTS_PER_PAGE = 20;
 
-// ✅ Type guard para identificar celulares
 function isCellphone(product: Product): product is Cellphone {
-  // Un producto es un celular si tiene la propiedad 'imei' o 'capacity' y no es un accesorio
   return 'capacity' in product && product.capacity !== undefined;
 }
 
@@ -32,6 +31,7 @@ export default function ProductCatalog({
   });
   const [sort, setSort] = useState("price-asc");
   const [currentPage, setCurrentPage] = useState(1);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -40,24 +40,16 @@ export default function ProductCatalog({
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
       const { brand, capacity, priceRange } = filters;
-
-      // Filtrar por marca
       const brandMatch = brand === "all" || product.brand === brand;
-
-      // Filtrar por capacidad SOLO si es un celular y el filtro no es 'all'
       const capacityMatch =
         capacity === "all" ||
         (isCellphone(product) && product.capacity === capacity);
-
-      // Filtrar por precio
       const priceMatch =
         product.salePrice >= priceRange[0] &&
         product.salePrice <= priceRange[1];
-
       return brandMatch && capacityMatch && priceMatch;
     });
 
-    // Ordenar
     return filtered.sort((a, b) => {
       const aName = `${a.brand} ${a.model}`;
       const bName = `${b.brand} ${b.model}`;
@@ -89,49 +81,59 @@ export default function ProductCatalog({
   );
 
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
-      <aside className="lg:col-span-1">
-        <div className="sticky top-20">
-          <ProductFilters
-            brands={brands}
-            capacityOptions={capacityOptions}
-            filters={filters}
-            setFilters={setFilters}
-            sort={sort}
-            setSort={setSort}
-          />
-        </div>
-      </aside>
-      <main className="lg:col-span-3">
-        {paginatedProducts.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {paginatedProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onQuickView={() => {}}
-              />
-            ))}
+    <>
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+        <aside className="lg:col-span-1">
+          <div className="sticky top-20">
+            <ProductFilters
+              brands={brands}
+              capacityOptions={capacityOptions}
+              filters={filters}
+              setFilters={setFilters}
+              sort={sort}
+              setSort={setSort}
+            />
           </div>
-        ) : (
-          <div className="flex h-full min-h-[40vh] flex-col items-center justify-center rounded-lg border border-dashed bg-card p-8 text-center">
-            <h3 className="font-headline text-2xl font-semibold">
-              No se Encontraron Productos
-            </h3>
-            <p className="mt-2 text-muted-foreground">
-              Intenta ajustar tus filtros para encontrar lo que buscas.
-            </p>
-          </div>
-        )}
+        </aside>
+        <main className="lg:col-span-3">
+          {paginatedProducts.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              {paginatedProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onQuickView={setQuickViewProduct}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex h-full min-h-[40vh] flex-col items-center justify-center rounded-lg border border-dashed bg-card p-8 text-center">
+              <h3 className="font-headline text-2xl font-semibold">
+                No se Encontraron Productos
+              </h3>
+              <p className="mt-2 text-muted-foreground">
+                Intenta ajustar tus filtros para encontrar lo que buscas.
+              </p>
+            </div>
+          )}
 
-        {totalPages > 1 && (
-          <PaginationControls
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        )}
-      </main>
-    </div>
+          {totalPages > 1 && (
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
+        </main>
+      </div>
+
+      {quickViewProduct && (
+        <QuickViewModal
+          product={quickViewProduct}
+          isOpen={!!quickViewProduct}
+          onClose={() => setQuickViewProduct(null)}
+        />
+      )}
+    </>
   );
 }

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
@@ -57,6 +57,20 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           </div>
         </div>
       </Link>
+       {/* Botón de Vista Rápida que aparece al hacer hover */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <Button
+          variant="secondary"
+          className="shadow-lg"
+          onClick={(e) => {
+            e.stopPropagation(); // Evita que el link de la tarjeta se active
+            onQuickView(product);
+          }}
+        >
+          <Eye className="mr-2 h-4 w-4" />
+          Vista Rápida
+        </Button>
+      </div>
       <div className="flex flex-col p-4">
         <div className="flex-1">
           <p className="text-xl font-medium text-primary">{product.brand || 'Sin Marca'}</p>
@@ -71,9 +85,9 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
             <p className="text-lg font-bold">
               ${product.salePrice.toLocaleString("es-AR")}
             </p>
-            {(product.installments ?? 0) > 0 && (
+            {product.installments > 0 && (
                  <p className="text-xs text-green-600">
-                 o {product.installments} cuotas de ${(product.salePrice / product.installments!).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                 o {product.installments} cuotas de ${(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                </p>
             )}
           </div>
