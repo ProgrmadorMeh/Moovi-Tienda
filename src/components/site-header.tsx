@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet';
@@ -123,6 +125,9 @@ export default function SiteHeader() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left">
+                <SheetHeader>
+                  <SheetTitle className="sr-only">Menú Principal</SheetTitle>
+                </SheetHeader>
                 <div className="flex flex-col p-6">
                     <Link href="/" className="mb-8 flex items-center space-x-2" onClick={() => setIsMobileMenuOpen(false)}>
                         <Smartphone className="h-6 w-6 text-primary" />
