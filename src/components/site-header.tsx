@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Smartphone, ShoppingCart, Menu } from 'lucide-react';
+import { Smartphone, ShoppingCart, Menu, User } from 'lucide-react';
 import { useCartStore } from '@/lib/cart-store';
 
 import { cn } from '@/lib/utils';
@@ -13,6 +13,13 @@ import {
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 import { usePathname } from 'next/navigation';
 import CartSheet from './cart-sheet';
 import FuzzySearch from './fuzzy-search';
@@ -61,6 +68,24 @@ export default function SiteHeader() {
           <div className="hidden w-full max-w-xs lg:flex">
             <FuzzySearch />
           </div>
+
+          {/* Menú de Usuario */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="relative text-foreground hover:bg-accent hover:text-accent-foreground">
+                <User className="h-5 w-5" />
+                <span className="sr-only">Abrir menú de usuario</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link href="/login">Iniciar Sesión</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/register">Registrarse</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* Botón de Carrito */}
           <Sheet>
