@@ -40,26 +40,9 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
     });
   };
 
-  const handleBuyNow = async () => {
-    // Para testeo, se puede usar un email harcodeado o pedirlo en un prompt
-    const testEmail = "test@example.com";
-    
-    const cartForMP = [{
-      nombre: productName,
-      cantidad: 1,
-      precio: product.salePrice
-    }];
-
-    try {
-      await Preference(testEmail, cartForMP);
-    } catch (error) {
-      console.error("Error al iniciar la compra:", error);
-      toast({
-        variant: "destructive",
-        title: "Error al comprar",
-        description: "No se pudo iniciar el proceso de pago. Inténtalo de nuevo."
-      });
-    }
+  const handleBuyNow = () => {
+    addItem(product);
+    router.push('/checkout');
   };
 
   const hasImage = !!product.imageUrl;
