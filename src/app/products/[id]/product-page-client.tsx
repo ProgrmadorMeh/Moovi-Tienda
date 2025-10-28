@@ -42,10 +42,8 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   };
 
   const handleBuyNow = async () => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
+    // Para testeo, se puede usar un email harcodeado o pedirlo en un prompt
+    const testEmail = "test@example.com";
     
     const cartForMP = [{
       nombre: productName,
@@ -54,7 +52,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
     }];
 
     try {
-      await Preference(user.email!, cartForMP);
+      await Preference(testEmail, cartForMP);
     } catch (error) {
       console.error("Error al iniciar la compra:", error);
       toast({

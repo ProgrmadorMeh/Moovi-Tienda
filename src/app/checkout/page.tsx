@@ -9,9 +9,6 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Preference from '@/lib/funtion/pago/RealizarCompra.js';
-import PrivateRoute from '@/components/PrivateRoute';
-import { useAuth } from '@/context/AuthContext';
-
 
 const getShippingOptions = async (postalCode: string): Promise<{id: string, name: string, cost: number}[]> => {
   console.log(`Buscando opciones de envío para el CP: ${postalCode}`);
@@ -42,7 +39,7 @@ const getShippingOptions = async (postalCode: string): Promise<{id: string, name
   return [];
 };
 
-function CheckoutPageContent() {
+export default function CheckoutPage() {
   const { items, coupon, getSubtotal, getTotal, setShippingCost, shippingCost } = useCartStore();
   const router = useRouter();
   const { toast } = useToast();
@@ -51,7 +48,7 @@ function CheckoutPageContent() {
   const [isLoadingShipping, setIsLoadingShipping] = useState(false);
   const [selectedShipping, setSelectedShipping] = useState<string | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user } = useAuth();
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     if (items.length === 0) {
@@ -102,11 +99,8 @@ function CheckoutPageContent() {
         return;
     }
 
-    const email = user?.email;
-
     if (!email) {
-      toast({ variant: "destructive", description: 'Debes iniciar sesión para completar la compra.' });
-      router.push('/login');
+      toast({ variant: "destructive", description: 'Por favor, introduce tu dirección de correo electrónico.' });
       return;
     }
 
@@ -149,7 +143,18 @@ function CheckoutPageContent() {
           <div className="rounded-lg border bg-white/5 p-6">
             <h2 className="text-xl font-semibold mb-4">1. Datos de Contacto y Envío</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2"><Label htmlFor="email">Email</Label><Input id="email" name="email" type="email" placeholder="tu@email.com" required value={user?.email || ''} readOnly className="cursor-not-allowed bg-gray-800/50" /></div>
+              <div className="md:col-span-2">
+                <Label htmlFor="email">Email</Label>
+                <Input 
+                  id="email" 
+                  name="email" 
+                  type="email" 
+                  placeholder="tu@email.com" 
+                  required 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)} 
+                />
+              </div>
               <div><Label htmlFor="nombre">Nombre</Label><Input id="nombre" required /></div>
               <div><Label htmlFor="apellido">Apellido</Label><Input id="apellido" required /></div>
               <div className="md:col-span-2"><Label htmlFor="direccion">Dirección</Label><Input id="direccion" placeholder="Calle, número, piso" required /></div>
@@ -212,13 +217,5 @@ function CheckoutPageContent() {
 
       </form>
     </div>
-  );
-}
-
-export default function CheckoutPage() {
-  return (
-    <PrivateRoute>
-      <CheckoutPageContent />
-    </PrivateRoute>
   );
 }
