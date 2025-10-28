@@ -22,8 +22,8 @@ export default async function Home() {
     <>
       <header className="relative flex h-screen items-center justify-center overflow-hidden text-center text-white">
         <Image
-          src="/img/background.png"
-          alt="Imagen de fondo de dispositivos electrónicos"
+          src="https://images.unsplash.com/photo-1550745165-9bc0b252726a?q=80&w=2070&auto=format&fit=crop"
+          alt="Imagen de fondo de tecnología abstracta y moderna"
           fill
           className="object-cover"
           priority
@@ -33,12 +33,12 @@ export default async function Home() {
           <h1 className="font-headline bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-sky-400 text-4xl font-bold tracking-tight md:text-6xl">
             MooviTech
           </h1>
-          <div className="mt-4 text-lg text-gray-200 md:text-xl h-8">
+          <div className="mt-4 text-lg text-gray-200 md:text-xl h-16 md:h-8">
             <Typewriter
               phrases={[
-                "Smartphones de última generación.",
-                "Accesorios exclusivos.",
-                "La mejor tecnología para ti.",
+                "Descubre smartphones de última generación y lleva tu conectividad al siguiente nivel.",
+                "Encuentra accesorios exclusivos diseñados para complementar tu estilo de vida digital.",
+                "Explora nuestra selección curada con la mejor tecnología, garantía y soporte para ti.",
               ]}
               className="text-2xl"
             />
