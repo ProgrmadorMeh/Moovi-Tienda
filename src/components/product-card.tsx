@@ -1,8 +1,9 @@
+
 'use client';
 
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart, Eye } from "lucide-react";
+import { ShoppingCart, Eye, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
@@ -45,6 +46,15 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
               className="absolute top-2 right-2 z-10"
             >
               {product.discount}% OFF
+            </Badge>
+          )}
+          {product.shipping && (
+            <Badge
+              variant="default"
+              className="absolute top-2 left-2 z-10 flex items-center gap-1"
+            >
+              <ShieldCheck size={12} />
+              <span>Envío Seguro</span>
             </Badge>
           )}
           <div className="relative h-64 w-full">
