@@ -8,10 +8,12 @@ import { Button } from '@/components/ui/button';
 import ParticlesComponent from '@/app/Js/animacion_particula.jsx'; // RUTA Y NOMBRE CORREGIDOS
 
 export default function OrderSuccessPage() {
+  const clearCart = useCartStore((state) => state.clearCart);
+
   // Al llegar a esta página, el pago fue exitoso, así que limpiamos el carrito.
   useEffect(() => {
-    useCartStore.getState().clearCart();
-  }, []);
+    clearCart();
+  }, [clearCart]);
 
   return (
     <div className="container mx-auto flex h-screen flex-col items-center justify-center text-center">

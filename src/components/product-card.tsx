@@ -18,7 +18,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
   const { addItem } = useCartStore();
   const { toast } = useToast();
 
-  const productName = `${product.brand} ${product.model}`;
+  const productName = `${product.model}`;
 
   const handleAddToCart = () => {
     addItem(product);
@@ -59,8 +59,8 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
       </Link>
       <div className="flex flex-col p-4">
         <div className="flex-1">
-          <p className="text-xs font-medium text-primary">{product.brand || 'Sin Marca'}</p>
-          <h3 className="truncate font-semibold">{productName}</h3>
+          <p className="text-xl font-medium text-primary">{product.brand || 'Sin Marca'}</p>
+          <p className="text-xl truncate font-semibold">{productName}</p>
           
           <div className="mt-2">
             {(product.originalPrice && product.originalPrice > product.salePrice) && (

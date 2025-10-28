@@ -7,12 +7,14 @@ import { Image as ImageIcon, Truck, ShoppingCart, CreditCard } from "lucide-reac
 import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
 import Preference from "@/lib/funtion/pago/RealizarCompra.js";
+import { useAuth } from "@/context/AuthContext";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import type { Product } from "@/lib/types";
+import { useRouter } from "next/navigation";
 
 interface ProductPageClientProps {
   product: Product;
@@ -21,6 +23,8 @@ interface ProductPageClientProps {
 export default function ProductPageClient({ product }: ProductPageClientProps) {
   const { addItem } = useCartStore();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const router = useRouter();
 
   const productName = `${product.brand} ${product.model}`;
 
@@ -38,17 +42,19 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   };
 
   const handleBuyNow = async () => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    
     const cartForMP = [{
       nombre: productName,
       cantidad: 1,
       precio: product.salePrice
     }];
 
-    // Aquí deberías obtener el email del usuario logueado, por ahora usamos uno de prueba
-    const email = "TESTUSER5201355294960029412@testuser.com"; 
-
     try {
-      await Preference(email, cartForMP);
+      await Preference(user.email!, cartForMP);
     } catch (error) {
       console.error("Error al iniciar la compra:", error);
       toast({
@@ -63,9 +69,6 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   
   const showDiscount = product.discount && product.discount > 0;
   const showOriginalPrice = product.originalPrice && product.originalPrice > product.salePrice;
-  const showInstallments = typeof product.installments === 'number' && product.installments > 0;
-  const installmentPrice = showInstallments ? product.salePrice / product.installments! : 0;
-
 
   return (
     <div className="container mx-auto max-w-6xl px-4 pt-24 pb-12">
@@ -116,10 +119,10 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               )}
             </div>
             
-            {showInstallments && (
-              <p suppressHydrationWarning className="text-md text-muted-foreground">
-                o <strong>{product.installments} cuotas sin interés</strong> de <strong>${installmentPrice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-              </p>
+            {(product.installments ?? 0) > 0 && (
+                 <p className="text-md text-muted-foreground">
+                 o <strong>{product.installments} cuotas sin interés</strong> de <strong>${(product.salePrice / product.installments!).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+               </p>
             )}
           </div>
           

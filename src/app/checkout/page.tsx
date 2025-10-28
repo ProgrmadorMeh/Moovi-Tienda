@@ -55,9 +55,10 @@ function CheckoutPageContent() {
 
   useEffect(() => {
     if (items.length === 0) {
-      router.replace('/carrito');
+      toast({ description: "Tu carrito está vacío. Redirigiendo...", duration: 2000 });
+      setTimeout(() => router.replace('/'), 2000);
     }
-  }, [items, router]);
+  }, [items, router, toast]);
 
   const handleCalculateShipping = async () => {
     if (postalCode.length < 4) {
@@ -104,7 +105,8 @@ function CheckoutPageContent() {
     const email = user?.email;
 
     if (!email) {
-      toast({ variant: "destructive", description: 'No se pudo obtener el email del usuario.' });
+      toast({ variant: "destructive", description: 'Debes iniciar sesión para completar la compra.' });
+      router.push('/login');
       return;
     }
 
@@ -125,8 +127,8 @@ function CheckoutPageContent() {
 
     setIsSubmitting(true);
     try {
-      console.log("Creando preferencia de Mercado Pago con el siguiente carrito:", cartForMP);
       await Preference(email, cartForMP);
+      // La redirección a Mercado Pago la maneja la función Preference
     } catch (error) {
       console.error("Error al llamar a la función Preference:", error);
       toast({ variant: "destructive", description: "Ocurrió un error inesperado al iniciar el pago." });
@@ -147,7 +149,7 @@ function CheckoutPageContent() {
           <div className="rounded-lg border bg-white/5 p-6">
             <h2 className="text-xl font-semibold mb-4">1. Datos de Contacto y Envío</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2"><Label htmlFor="email">Email</Label><Input id="email" name="email" type="email" placeholder="tu@email.com" required value={user?.email || ''} readOnly /></div>
+              <div className="md:col-span-2"><Label htmlFor="email">Email</Label><Input id="email" name="email" type="email" placeholder="tu@email.com" required value={user?.email || ''} readOnly className="cursor-not-allowed bg-gray-800/50" /></div>
               <div><Label htmlFor="nombre">Nombre</Label><Input id="nombre" required /></div>
               <div><Label htmlFor="apellido">Apellido</Label><Input id="apellido" required /></div>
               <div className="md:col-span-2"><Label htmlFor="direccion">Dirección</Label><Input id="direccion" placeholder="Calle, número, piso" required /></div>
@@ -178,6 +180,9 @@ function CheckoutPageContent() {
                   </div>
                 ))}
               </RadioGroup>
+            )}
+            {postalCode && !isLoadingShipping && shippingOptions.length === 0 && (
+              <p className="text-muted-foreground">No hay opciones de envío para el código postal ingresado.</p>
             )}
           </div>
         </div>
