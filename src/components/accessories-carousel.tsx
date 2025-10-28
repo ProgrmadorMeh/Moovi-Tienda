@@ -39,6 +39,9 @@ const AccessoriesCarousel = ({ brand, currentProductId }) => {
             loop: true,
           }
         }}
+        autoplayOptions={{
+            stopOnInteraction: false,
+        }}
       />
     </div>
   );
