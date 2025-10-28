@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Image as ImageIcon, Truck, ShoppingCart, CreditCard, Star, ShieldCheck } from "lucide-react";
+import { Truck, ShoppingCart, CreditCard, Star, ShieldCheck } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,6 +16,7 @@ import type { Product } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import ProductSpecs from "@/components/product-specs";
 import AccessoriesCarousel from "@/components/accessories-carousel";
+import { defaultBase } from "@/lib/types";
 
 interface ProductPageClientProps {
   product: Product;
@@ -23,30 +24,30 @@ interface ProductPageClientProps {
 
 // Datos de ejemplo para la galería
 const placeholderImages = [
-  "https://pwxpxouatzzxvvvszdnx.supabase.co/storage/v1/object/public/celImagen/place.jpg",
-  "https://pwxpxouatzzxvvvszdnx.supabase.co/storage/v1/object/public/celImagen/place.jpg",
-  "https://pwxpxouatzzxvvvszdnx.supabase.co/storage/v1/object/public/celImagen/place.jpg",
-  "https://pwxpxouatzzxvvvszdnx.supabase.co/storage/v1/object/public/celImagen/place.jpg",
+  defaultBase.imageUrl,
+  defaultBase.imageUrl.replace('place', 'place2'),
+  defaultBase.imageUrl.replace('place', 'place3'),
+  defaultBase.imageUrl.replace('place', 'place4'),
 ];
 
 export default function ProductPageClient({ product }: ProductPageClientProps) {
-  // 🔹 Normalizamos las imágenes
-  const productImages: string[] = [];
+  // 🔹 Normalizamos las imágenes para la galería
+  let galleryImages: string[] = [];
 
   if (product.imageUrl) {
     if (Array.isArray(product.imageUrl)) {
-      productImages.push(...product.imageUrl.filter(Boolean));
-    } else if (typeof product.imageUrl === "string" && product.imageUrl.trim() !== "") {
-      productImages.push(product.imageUrl);
+      galleryImages = product.imageUrl.filter(url => typeof url === 'string' && url.length > 0);
+    } else if (typeof product.imageUrl === 'string' && product.imageUrl.length > 0) {
+      galleryImages.push(product.imageUrl);
     }
   }
 
-  // Si no hay imágenes, usamos placeholders
-  if (productImages.length === 0) {
-    productImages.push(...placeholderImages);
+  // Si después de procesar no hay imágenes válidas, usamos los placeholders
+  if (galleryImages.length === 0) {
+    galleryImages = placeholderImages;
   }
 
-  const [mainImage, setMainImage] = useState(productImages[0]);
+  const [mainImage, setMainImage] = useState(galleryImages[0]);
   const { addItem } = useCartStore();
   const { toast } = useToast();
   const router = useRouter();
@@ -93,7 +94,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             </CardContent>
           </Card>
           <div className="mt-2 grid grid-cols-4 gap-2">
-            {productImages.map((img, index) => (
+            {galleryImages.map((img, index) => (
               <div
                 key={index}
                 className={`relative aspect-square cursor-pointer rounded-md border-2 ${mainImage === img ? 'border-primary' : 'border-transparent'} overflow-hidden`}

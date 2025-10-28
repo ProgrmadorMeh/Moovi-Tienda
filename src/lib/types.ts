@@ -10,7 +10,7 @@ type BaseProduct = {
   discount: number;
   stock: number;
   brand: string;
-  imageUrl: string;
+  imageUrl: string | string[] | null; // <-- Acepta una URL, un array de URLs o null
   shipping: boolean;
   installments: number;
   color: string;
@@ -46,7 +46,7 @@ export const defaultBase = {
   model: "Sin especificar",
   description: "Sin descripción.",
   salePrice: 0,
-  originalPrice: undefined, // CORRECCIÓN: Por defecto es undefined
+  originalPrice: undefined,
   discount: 0,
   stock: 0,
   brand: "Marca Desconocida",

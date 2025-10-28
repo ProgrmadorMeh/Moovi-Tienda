@@ -100,7 +100,15 @@ export default function FuzzySearch() {
           {results.length > 0 ? (
             <ul>
               {results.map(({ item }) => {
-                const imageSrc = item.imageUrl || defaultBase.imageUrl;
+                let imageSrc = defaultBase.imageUrl;
+                if (item.imageUrl) {
+                  if (Array.isArray(item.imageUrl) && item.imageUrl.length > 0 && item.imageUrl[0]) {
+                    imageSrc = item.imageUrl[0];
+                  } else if (typeof item.imageUrl === 'string' && item.imageUrl) {
+                    imageSrc = item.imageUrl;
+                  }
+                }
+                
                 return (
                 <li key={item.id}>
                   <Link 

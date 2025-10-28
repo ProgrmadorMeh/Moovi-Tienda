@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge';
 import { useCartStore } from '@/lib/cart-store';
 import { useToast } from '@/hooks/use-toast';
 import type { Product } from '@/lib/types';
+import { defaultBase } from '@/lib/types';
 
 interface QuickViewModalProps {
   product: Product;
@@ -51,25 +52,29 @@ export default function QuickViewModal({
   const showDiscount = (product.discount ?? 0) > 0;
   const showOriginalPrice = product.originalPrice && product.originalPrice > product.salePrice;
 
+  // Determina la imagen a mostrar
+  let imageSrc = defaultBase.imageUrl;
+  if (product.imageUrl) {
+    if (Array.isArray(product.imageUrl) && product.imageUrl.length > 0 && product.imageUrl[0]) {
+      imageSrc = product.imageUrl[0];
+    } else if (typeof product.imageUrl === 'string' && product.imageUrl) {
+      imageSrc = product.imageUrl;
+    }
+  }
+
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[825px]">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Columna de Imagen */}
           <div className="relative aspect-square">
-            {product.imageUrl ? (
-              <Image
-                src={product.imageUrl}
-                alt={product.model}
-                fill
-                className="rounded-md object-cover"
-              />
-            ) : (
-                <div className="flex h-full w-full flex-col items-center justify-center rounded-md bg-muted">
-                    <ImageIcon className="mb-2 h-8 w-8 text-gray-400" />
-                    <span className="text-gray-500">Sin imagen</span>
-                </div>
-            )}
+            <Image
+              src={imageSrc}
+              alt={product.model}
+              fill
+              className="rounded-md object-cover"
+            />
             {showDiscount && (
               <Badge variant="destructive" className="absolute top-3 right-3 text-base">
                 {product.discount}% OFF

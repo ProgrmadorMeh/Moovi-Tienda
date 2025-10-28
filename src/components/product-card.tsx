@@ -8,6 +8,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
+import { defaultBase } from "@/lib/types";
 
 interface ProductCardProps {
   product: Product;
@@ -34,22 +35,16 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
   };
 
   // 🔹 Determinar la imagen a usar
-  let imageSrc = "https://pwxpxouatzzxvvvszdnx.supabase.co/storage/v1/object/public/celImagen/place.jpg"; // fallback
+  let imageSrc = defaultBase.imageUrl;
 
   if (product.imageUrl) {
-    try {
-      // Si es un array, usamos la primera imagen
-      if (Array.isArray(product.imageUrl) && product.imageUrl.length > 0) {
-        imageSrc = product.imageUrl[0];
-      }
-      // Si es un string
-      else if (typeof product.imageUrl === "string" && product.imageUrl.trim() !== "") {
-        imageSrc = product.imageUrl;
-      }
-    } catch (err) {
-      console.warn("Error al procesar imageUrl:", err);
+    if (Array.isArray(product.imageUrl) && product.imageUrl.length > 0 && product.imageUrl[0]) {
+      imageSrc = product.imageUrl[0];
+    } else if (typeof product.imageUrl === "string" && product.imageUrl) {
+      imageSrc = product.imageUrl;
     }
   }
+
 
   return (
     <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg">
