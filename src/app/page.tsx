@@ -30,7 +30,7 @@ export default async function Home() {
         />
         <div className="absolute inset-0 bg-black/60"></div>
         <div className="relative z-10 max-w-3xl px-4">
-          <h1 className="font-headline text-4xl font-bold tracking-tight md:text-6xl">
+          <h1 className="font-headline bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-sky-400 text-4xl font-bold tracking-tight md:text-6xl">
             MooviTech
           </h1>
           <div className="mt-4 text-lg text-gray-200 md:text-xl h-8">
