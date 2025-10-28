@@ -21,7 +21,7 @@ function useClickOutside(ref: React.RefObject<any>, handler: () => void) {
     document.addEventListener('touchstart', listener);
     return () => {
       document.removeEventListener('mousedown', listener);
-      document.removeEventListener('touchstart', listener);
+      document.addEventListener('touchstart', listener);
     };
   }, [ref, handler]);
 }
