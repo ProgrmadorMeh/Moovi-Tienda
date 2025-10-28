@@ -20,14 +20,10 @@ export default async function Home() {
 
   return (
     <>
-      <header className="relative flex h-screen items-center justify-center overflow-hidden text-center text-white">
-        <Image
-          src="https://images.unsplash.com/photo-1550745165-9bc0b252726a?q=80&w=2070&auto=format&fit=crop"
-          alt="Imagen de fondo de tecnología abstracta y moderna"
-          fill
-          className="object-cover"
-          priority
-        />
+      <header 
+        className="relative flex h-screen items-center justify-center overflow-hidden text-center text-white bg-cover bg-center"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1550745165-9bc0b252726a?q=80&w=2070&auto=format&fit=crop')" }}
+      >
         <div className="absolute inset-0 bg-black/60"></div>
         <div className="relative z-10 max-w-3xl px-4">
           <h1 className="font-headline bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-sky-400 text-4xl font-bold tracking-tight md:text-6xl">
