@@ -99,7 +99,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Precio sin impuestos nacionales (IVA 21%): ${(product.salePrice / 1.21).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              Precio sin impuestos nacionales: ${(product.salePrice / 1.21).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
             
             {product.installments > 0 && (
