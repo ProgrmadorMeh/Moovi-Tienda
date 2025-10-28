@@ -1,3 +1,4 @@
+
 import { methodGetList } from "@/lib/funtion/metodos/methodGetList";
 import type { Cellphone, Accessory, Product } from "@/lib/types";
 
@@ -18,9 +19,7 @@ function processProducts(products: any[]): Product[] {
     let originalPrice: number | undefined = undefined;
 
     if (discount > 0) {
-      // Si hay descuento, el precio base es el original.
       originalPrice = basePrice;
-      // Y el precio de venta es el precio base menos el descuento.
       finalSalePrice = basePrice * (1 - discount / 100);
     }
     

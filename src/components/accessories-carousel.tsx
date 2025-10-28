@@ -12,7 +12,7 @@ const AccessoriesCarousel = ({ brand, currentProductId }) => {
     const loadAccessories = async () => {
       const allProducts = await getAllProductsCached();
       const filteredAccessories = allProducts
-        .filter(p => p.brand === brand && p.id !== currentProductId && p.isAccessory)
+        .filter(p => p.brand === brand && p.id !== currentProductId && "category" in p)
         .slice(0, 6);
       setAccessories(filteredAccessories);
     };
@@ -23,10 +23,10 @@ const AccessoriesCarousel = ({ brand, currentProductId }) => {
   }, [brand, currentProductId]);
 
   if (!accessories.length) {
-    return null; // Or a loading spinner
+    return null; // No mostrar nada si no hay accesorios
   }
 
-  const carouselItems = accessories.map(acc => <ProductCard key={acc.id} product={acc} />);
+  const carouselItems = accessories.map(acc => <ProductCard key={acc.id} product={acc} onQuickView={() => {}} />);
 
   return (
     <div className="mt-12">
