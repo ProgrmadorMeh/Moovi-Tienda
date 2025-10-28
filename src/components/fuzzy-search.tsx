@@ -7,7 +7,7 @@ import Fuse, { FuseResult } from 'fuse.js';
 import { Search, Loader2 } from 'lucide-react';
 import { Input } from './ui/input';
 import { getAllProductsCached } from '@/lib/data';
-import { Product } from '@/lib/types';
+import { Product, defaultBase } from '@/lib/types';
 
 
 // --- Hook para detectar clics fuera de un elemento ---
@@ -99,7 +99,9 @@ export default function FuzzySearch() {
         <div className="absolute top-full mt-2 w-full rounded-md border bg-background shadow-lg z-50 max-h-96 overflow-y-auto">
           {results.length > 0 ? (
             <ul>
-              {results.map(({ item }) => (
+              {results.map(({ item }) => {
+                const imageSrc = item.imageUrl || defaultBase.imageUrl;
+                return (
                 <li key={item.id}>
                   <Link 
                     href={`/products/${item.id}`} 
@@ -108,7 +110,7 @@ export default function FuzzySearch() {
                   >
                     <div className="relative h-16 w-16 flex-shrink-0">
                       <Image
-                        src={item.imageUrl || '/img/default-product.jpg'}
+                        src={imageSrc}
                         alt={item.model}
                         fill
                         className="rounded-md object-cover"
@@ -129,7 +131,7 @@ export default function FuzzySearch() {
                     </div>
                   </Link>
                 </li>
-              ))}
+              )})}
             </ul>
           ) : (
             <div className="p-4 text-center text-sm text-muted-foreground">

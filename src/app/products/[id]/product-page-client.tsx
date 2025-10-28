@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from "react";
@@ -31,13 +30,28 @@ const placeholderImages = [
 ];
 
 export default function ProductPageClient({ product }: ProductPageClientProps) {
-  const [mainImage, setMainImage] = useState(product.imageUrl || placeholderImages[0]);
+  // 🔹 Normalizamos las imágenes
+  const productImages: string[] = [];
+
+  if (product.imageUrl) {
+    if (Array.isArray(product.imageUrl)) {
+      productImages.push(...product.imageUrl.filter(Boolean));
+    } else if (typeof product.imageUrl === "string" && product.imageUrl.trim() !== "") {
+      productImages.push(product.imageUrl);
+    }
+  }
+
+  // Si no hay imágenes, usamos placeholders
+  if (productImages.length === 0) {
+    productImages.push(...placeholderImages);
+  }
+
+  const [mainImage, setMainImage] = useState(productImages[0]);
   const { addItem } = useCartStore();
   const { toast } = useToast();
   const router = useRouter();
 
   const productName = `${product.brand} ${product.model}`;
-  const productImages = [product.imageUrl, ...placeholderImages.slice(1)].filter(Boolean) as string[];
 
   const handleAddToCart = () => {
     addItem(product);
@@ -46,7 +60,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       description: `${productName} ha sido añadido a tu carrito.`,
       action: (
         <Link href="/carrito">
-            <Button variant="secondary">Ver Carrito</Button>
+          <Button variant="secondary">Ver Carrito</Button>
         </Link>
       ),
     });
@@ -60,7 +74,6 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   return (
     <div className="container mx-auto max-w-6xl px-4 pt-24 pb-12">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
-        
         {/* --- COLUMNA DE IMÁGENES --- */}
         <div className="md:sticky md:top-24 md:self-start">
           <Card className="overflow-hidden">
@@ -70,7 +83,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                 alt={product.model}
                 fill
                 className="object-cover transition-opacity duration-300"
-                key={mainImage} // Forza el rerender en cambio de imagen
+                key={mainImage}
               />
               {(product.discount ?? 0) > 0 && (
                 <Badge variant="destructive" className="absolute top-3 right-3 text-base">
@@ -94,12 +107,9 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
         {/* --- COLUMNA DE INFORMACIÓN Y COMPRA --- */}
         <div className="space-y-6">
-           <div>
+          <div>
             <p className="text-sm font-medium text-primary">{product.brand}</p>
-            <h1 className="font-headline text-4xl font-bold tracking-tight lg:text-5xl">
-              {productName}
-            </h1>
-            {/* Social Proof: Estrellas y Reseñas */}
+            <h1 className="font-headline text-4xl font-bold tracking-tight lg:text-5xl">{productName}</h1>
             <div className="mt-2 flex items-center gap-2">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
@@ -123,57 +133,50 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             <p className="text-sm text-muted-foreground">
               Precio sin impuestos nacionales: ${(product.salePrice / 1.21).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
-            
+
             {(product.installments ?? 0) > 0 && (
               <p className="text-md font-semibold text-green-500">
                 o <strong>{product.installments} cuotas sin interés</strong> de <strong>${(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</strong>
               </p>
             )}
           </div>
-          
+
           <Separator />
-          
-          {/* Elementos de Confianza */}
+
           <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground sm:grid-cols-3">
-              <div className="flex items-center gap-2"><ShieldCheck className="h-5 w-5 text-primary" /> <span>Compra Segura</span></div>
-              <div className="flex items-center gap-2"><Truck className="h-5 w-5 text-primary" /> <span>Envío Rápido</span></div>
-              <div className="flex items-center gap-2"><CreditCard className="h-5 w-5 text-primary" /> <span>Pagos Flexibles</span></div>
+            <div className="flex items-center gap-2"><ShieldCheck className="h-5 w-5 text-primary" /> <span>Compra Segura</span></div>
+            <div className="flex items-center gap-2"><Truck className="h-5 w-5 text-primary" /> <span>Envío Rápido</span></div>
+            <div className="flex items-center gap-2"><CreditCard className="h-5 w-5 text-primary" /> <span>Pagos Flexibles</span></div>
           </div>
 
           <div className="flex flex-col space-y-4 pt-4">
             <Button size="lg" className="w-full text-lg h-12" onClick={handleAddToCart}>
               <ShoppingCart className="mr-2 h-5 w-5" /> Añadir al Carrito
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full text-lg h-12"
-              onClick={handleBuyNow}
-            >
+            <Button variant="outline" size="lg" className="w-full text-lg h-12" onClick={handleBuyNow}>
               Comprar Ahora
             </Button>
           </div>
-
         </div>
       </div>
 
       {/* --- INFORMACIÓN ADICIONAL (ACORDEÓN) --- */}
       <div className="mt-16">
         <Accordion type="single" collapsible defaultValue="item-1" className="w-full">
-            <AccordionItem value="item-1">
-                <AccordionTrigger className="text-xl font-semibold">Descripción</AccordionTrigger>
-                <AccordionContent className="prose prose-invert max-w-none text-lg text-muted-foreground">
-                    {product.description}
-                </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-                <AccordionTrigger className="text-xl font-semibold">Ficha Técnica</AccordionTrigger>
-                <AccordionContent>
-                    <ProductSpecs product={product} />
-                </AccordionContent>
-            </AccordionItem>
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="text-xl font-semibold">Descripción</AccordionTrigger>
+            <AccordionContent className="prose prose-invert max-w-none text-lg text-muted-foreground">
+              {product.description}
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger className="text-xl font-semibold">Ficha Técnica</AccordionTrigger>
+            <AccordionContent>
+              <ProductSpecs product={product} />
+            </AccordionContent>
+          </AccordionItem>
         </Accordion>
-        
+
         <AccessoriesCarousel brand={product.brand} currentProductId={product.id} />
       </div>
     </div>

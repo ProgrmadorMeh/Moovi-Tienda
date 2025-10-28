@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from "next/image";
@@ -34,7 +33,23 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
     });
   };
 
-  const hasImage = product.imageUrl && product.imageUrl.trim() !== "";
+  // 🔹 Determinar la imagen a usar
+  let imageSrc = "https://pwxpxouatzzxvvvszdnx.supabase.co/storage/v1/object/public/celImagen/place.jpg"; // fallback
+
+  if (product.imageUrl) {
+    try {
+      // Si es un array, usamos la primera imagen
+      if (Array.isArray(product.imageUrl) && product.imageUrl.length > 0) {
+        imageSrc = product.imageUrl[0];
+      }
+      // Si es un string
+      else if (typeof product.imageUrl === "string" && product.imageUrl.trim() !== "") {
+        imageSrc = product.imageUrl;
+      }
+    } catch (err) {
+      console.warn("Error al procesar imageUrl:", err);
+    }
+  }
 
   return (
     <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg">
@@ -59,7 +74,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           )}
           <div className="relative h-64 w-full">
             <Image
-              src={hasImage ? product.imageUrl! : "https://pwxpxouatzzxvvvszdnx.supabase.co/storage/v1/object/public/celImagen/place.jpg"}
+              src={imageSrc}
               alt={productName}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -67,7 +82,8 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           </div>
         </div>
       </Link>
-       {/* Botón de Vista Rápida que aparece al hacer hover */}
+
+      {/* Botón de Vista Rápida que aparece al hacer hover */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <Button
           variant="secondary"
@@ -81,11 +97,12 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           Vista Rápida
         </Button>
       </div>
+
       <div className="flex flex-col p-4">
         <div className="flex-1">
           <p className="text-xl font-medium text-primary">{product.brand || 'Sin Marca'}</p>
           <p className="text-xl truncate font-semibold">{productName}</p>
-          
+
           <div className="mt-2 space-y-1">
             {product.originalPrice && product.originalPrice > product.salePrice && (
               <p className="text-xs text-muted-foreground line-through">
@@ -95,15 +112,15 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
             <p className="text-lg font-bold">
               ${product.salePrice.toLocaleString("es-AR")}
             </p>
-            
+
             <p className="text-xs text-muted-foreground">
               Precio sin impuestos nacionales: ${(product.salePrice / 1.21).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
 
             {(product.installments ?? 0) > 0 && (
-                 <p className="text-xs text-green-600">
-                 o {product.installments} cuotas de ${(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
-               </p>
+              <p className="text-xs text-green-600">
+                o {product.installments} cuotas de ${(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+              </p>
             )}
           </div>
         </div>
