@@ -11,6 +11,7 @@ interface ProductCatalogProps {
   products: Product[];
   brands: string[];
   capacityOptions: string[];
+  onQuickView: (product: Product) => void;
 }
 
 const PRODUCTS_PER_PAGE = 20;
@@ -23,6 +24,7 @@ export default function ProductCatalog({
   products,
   brands,
   capacityOptions,
+  onQuickView,
 }: ProductCatalogProps) {
   const [filters, setFilters] = useState({
     brand: "all",
@@ -31,8 +33,7 @@ export default function ProductCatalog({
   });
   const [sort, setSort] = useState("price-asc");
   const [currentPage, setCurrentPage] = useState(1);
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-
+  
   useEffect(() => {
     setCurrentPage(1);
   }, [filters, sort]);
@@ -102,7 +103,7 @@ export default function ProductCatalog({
                 <ProductCard
                   key={product.id}
                   product={product}
-                  onQuickView={setQuickViewProduct}
+                  onQuickView={onQuickView}
                 />
               ))}
             </div>
@@ -126,14 +127,6 @@ export default function ProductCatalog({
           )}
         </main>
       </div>
-
-      {quickViewProduct && (
-        <QuickViewModal
-          product={quickViewProduct}
-          isOpen={!!quickViewProduct}
-          onClose={() => setQuickViewProduct(null)}
-        />
-      )}
     </>
   );
 }

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Product, Cellphone, Accessory } from "@/lib/types";
 import ProductCatalog from "./product-catalog";
-import ProductCard from "./product-card";
 import QuickViewModal from "./quick-view-modal";
 import { Smartphone, Star, Tag, Watch } from "lucide-react";
 
@@ -45,31 +44,26 @@ export default function ProductSections({
               products={allProducts}
               brands={brands}
               capacityOptions={capacityOptions}
+              onQuickView={setQuickViewProduct}
             />
           </TabsContent>
 
           <TabsContent value="featured">
-             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
-              {featuredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onQuickView={setQuickViewProduct}
-                />
-              ))}
-            </div>
+             <ProductCatalog
+              products={featuredProducts}
+              brands={brands}
+              capacityOptions={capacityOptions}
+              onQuickView={setQuickViewProduct}
+            />
           </TabsContent>
           
           <TabsContent value="discounted">
-             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
-              {discountedProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onQuickView={setQuickViewProduct}
-                />
-              ))}
-            </div>
+             <ProductCatalog
+              products={discountedProducts}
+              brands={brands}
+              capacityOptions={capacityOptions}
+              onQuickView={setQuickViewProduct}
+            />
           </TabsContent>
 
           <TabsContent value="accessories">
@@ -77,6 +71,7 @@ export default function ProductSections({
               products={accessories}
               brands={[...new Set(accessories.map(a => a.brand))]} // Marcas solo de accesorios
               capacityOptions={[]} // Accesorios no tienen filtro de capacidad
+              onQuickView={setQuickViewProduct}
             />
           </TabsContent>
 
