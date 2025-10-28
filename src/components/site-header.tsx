@@ -1,7 +1,8 @@
+
 'use client';
 
 import Link from 'next/link';
-import { Smartphone, ShoppingCart, User, LogOut } from 'lucide-react';
+import { Smartphone, ShoppingCart, User } from 'lucide-react';
 import { useCartStore } from '@/lib/cart-store';
 
 import { cn } from '@/lib/utils';
@@ -11,25 +12,14 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import CartSheet from './cart-sheet';
 import FuzzySearch from './fuzzy-search';
-import { useAuth } from '@/context/AuthContext';
-import { logOut } from '@/lib/funtion/log/logOut';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
 
 export default function SiteHeader() {
   const pathname = usePathname();
-  const router = useRouter();
   const { items } = useCartStore();
-  const { user, loading } = useAuth();
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
-
-  const handleLogout = async () => {
-    await logOut();
-    router.push('/');
-  };
 
   const navLinks = [
     { href: '/', label: 'Productos' },
@@ -63,37 +53,6 @@ export default function SiteHeader() {
           <div className="hidden w-full max-w-sm md:flex">
             <FuzzySearch />
           </div>
-
-          {/* Auth Button */}
-          {!loading && (
-             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative hover:bg-white/10 text-white hover:text-white">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.user_metadata.avatar_url} />
-                    <AvatarFallback><User /></AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {user ? (
-                  <>
-                    <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Cerrar Sesión</span>
-                    </DropdownMenuItem>
-                  </>
-                ) : (
-                  <>
-                    <Link href="/login"><DropdownMenuItem>Iniciar Sesión</DropdownMenuItem></Link>
-                    <Link href="/signup"><DropdownMenuItem>Registrarse</DropdownMenuItem></Link>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
 
           {/* Cart Button */}
           <Sheet>

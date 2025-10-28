@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from "react";
@@ -7,7 +8,6 @@ import { Image as ImageIcon, Truck, ShoppingCart, CreditCard } from "lucide-reac
 import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
 import Preference from "@/lib/funtion/pago/RealizarCompra.js";
-import { useAuth } from "@/context/AuthContext";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,6 @@ interface ProductPageClientProps {
 export default function ProductPageClient({ product }: ProductPageClientProps) {
   const { addItem } = useCartStore();
   const { toast } = useToast();
-  const { user } = useAuth();
   const router = useRouter();
 
   const productName = `${product.brand} ${product.model}`;
@@ -117,9 +116,9 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               )}
             </div>
             
-            {(product.installments ?? 0) > 0 && (
+            {product.installments > 0 && (
                  <p className="text-md text-muted-foreground">
-                 o <strong>{product.installments} cuotas sin interés</strong> de <strong>${(product.salePrice / product.installments!).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+                 o <strong>{product.installments} cuotas sin interés</strong> de <strong>${(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
                </p>
             )}
           </div>
