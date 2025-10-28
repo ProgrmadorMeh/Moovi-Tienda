@@ -76,16 +76,21 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           <p className="text-xl font-medium text-primary">{product.brand || 'Sin Marca'}</p>
           <p className="text-xl truncate font-semibold">{productName}</p>
           
-          <div className="mt-2">
-            {(product.originalPrice && product.originalPrice > product.salePrice) && (
+          <div className="mt-2 space-y-1">
+            {product.originalPrice && product.originalPrice > product.salePrice && (
               <p className="text-xs text-muted-foreground line-through">
-                ${product.originalPrice!.toLocaleString("es-AR")}
+                ${product.originalPrice.toLocaleString("es-AR")}
               </p>
             )}
             <p className="text-lg font-bold">
               ${product.salePrice.toLocaleString("es-AR")}
             </p>
-            {product.installments > 0 && (
+            
+            <p className="text-xs text-muted-foreground">
+              Precio sin impuestos nacionales (IVA 21%): ${(product.salePrice / 1.21).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </p>
+
+            {(product.installments ?? 0) > 0 && (
                  <p className="text-xs text-green-600">
                  o {product.installments} cuotas de ${(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                </p>
