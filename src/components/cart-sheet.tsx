@@ -12,6 +12,7 @@ import {
   SheetClose,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
+import { defaultBase } from '@/lib/types';
 
 export default function CartSheet() {
   const {
@@ -79,11 +80,19 @@ export default function CartSheet() {
 function CartItemRow({ item }: { item: CartItem }) {
   const { updateQuantity, removeItem } = useCartStore();
 
+    // Lógica para asegurar que siempre haya una URL de imagen válida
+    let imageSrc = defaultBase.imageUrl as string;
+    if (Array.isArray(item.imageUrl) && item.imageUrl.length > 0 && item.imageUrl[0]) {
+        imageSrc = item.imageUrl[0];
+    } else if (typeof item.imageUrl === 'string' && item.imageUrl) {
+        imageSrc = item.imageUrl;
+    }
+
   return (
     <div className="flex items-start space-x-4 py-4">
       <div className="relative h-24 w-24 flex-shrink-0">
         <Image
-          src={item.imageUrl}
+          src={imageSrc}
           alt={item.model}
           fill
           className="rounded-md object-cover"
