@@ -29,7 +29,7 @@ export default async function Home() {
           <h1 className="font-headline bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-sky-400 text-4xl font-bold tracking-tight md:text-6xl">
             MooviTech
           </h1>
-          <div className="mt-4 text-lg text-gray-200 md:text-xl h-16 md:h-8">
+          <div className="mt-4 text-lg text-gray-200 md:text-xl h-16 md:h-auto">
             <Typewriter
               phrases={[
                 "Descubre smartphones de última generación y lleva tu conectividad al siguiente nivel.",
