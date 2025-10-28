@@ -1,13 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Product, Cellphone, Accessory } from "@/lib/types";
 import ProductCatalog from "./product-catalog";
-import { Smartphone, Star, Tag, Watch } from "lucide-react";
 import ProductCard from "./product-card";
 import QuickViewModal from "./quick-view-modal";
-import { useState } from "react";
-import { AutoScrollCarousel } from "./ui/auto-scroll-carousel";
+import { Smartphone, Star, Tag, Watch } from "lucide-react";
 
 interface ProductSectionsProps {
   allProducts: Cellphone[];
@@ -26,67 +25,71 @@ export default function ProductSections({
   brands,
   capacityOptions,
 }: ProductSectionsProps) {
-
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-
-  const discountedItems = discountedProducts.map(product => 
-    <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(
+    null
   );
 
   return (
     <>
-    <section className="py-12 md:py-16">
-      <div className="container mx-auto space-y-16">
+      <section className="py-12 md:py-16">
+        <Tabs defaultValue="all" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 h-auto md:grid-cols-4 mb-8">
+            <TabsTrigger value="all" className="py-2.5 text-base gap-2"><Smartphone />Celulares</TabsTrigger>
+            <TabsTrigger value="featured" className="py-2.5 text-base gap-2"><Star />Destacados</TabsTrigger>
+            <TabsTrigger value="discounted" className="py-2.5 text-base gap-2"><Tag />Ofertas</TabsTrigger>
+            <TabsTrigger value="accessories" className="py-2.5 text-base gap-2"><Watch />Accesorios</TabsTrigger>
+          </TabsList>
 
-        {/* Sección de Ofertas */}
-        <div>
-           <div className="text-center mb-8">
-              <h2 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">Ofertas Imperdibles</h2>
-              <p className="mt-2 text-lg text-muted-foreground">Aprovecha nuestros descuentos por tiempo limitado.</p>
-           </div>
-           <AutoScrollCarousel
-              items={discountedItems}
-              carouselOptions={{ opts: { align: "start", loop: true } }}
-              autoplayOptions={{ stopOnInteraction: true }}
+          <TabsContent value="all">
+            <ProductCatalog
+              products={allProducts}
+              brands={brands}
+              capacityOptions={capacityOptions}
             />
-        </div>
+          </TabsContent>
 
-        {/* Sección de Catálogo Principal (Celulares) */}
-        <div>
-          <div className="text-center mb-12">
-            <h2 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">Nuestro Catálogo de Celulares</h2>
-            <p className="mt-2 text-lg text-muted-foreground">Encuentra el dispositivo perfecto que se adapta a tus necesidades.</p>
-          </div>
-          <ProductCatalog
-            products={allProducts}
-            brands={brands}
-            capacityOptions={capacityOptions}
-          />
-        </div>
-
-         {/* Sección de Accesorios */}
-         <div>
-          <div className="text-center mb-12">
-              <h2 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">Completa tu Experiencia</h2>
-              <p className="mt-2 text-lg text-muted-foreground">Descubre los mejores accesorios para tus dispositivos.</p>
+          <TabsContent value="featured">
+             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+              {featuredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onQuickView={setQuickViewProduct}
+                />
+              ))}
             </div>
+          </TabsContent>
+          
+          <TabsContent value="discounted">
+             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+              {discountedProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onQuickView={setQuickViewProduct}
+                />
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="accessories">
             <ProductCatalog
               products={accessories}
               brands={[...new Set(accessories.map(a => a.brand))]} // Marcas solo de accesorios
               capacityOptions={[]} // Accesorios no tienen filtro de capacidad
             />
-        </div>
+          </TabsContent>
 
-      </div>
-    </section>
+        </Tabs>
+      </section>
 
-    {quickViewProduct && (
-      <QuickViewModal
-        product={quickViewProduct}
-        isOpen={!!quickViewProduct}
-        onClose={() => setQuickViewProduct(null)}
-      />
-    )}
+      {quickViewProduct && (
+        <QuickViewModal
+          product={quickViewProduct}
+          isOpen={!!quickViewProduct}
+          onClose={() => setQuickViewProduct(null)}
+        />
+      )}
     </>
   );
 }
