@@ -1,7 +1,9 @@
 import Image from "next/image";
+import Link from 'next/link';
 import ProductSections from "@/components/product-sections";
+import { Button } from "@/components/ui/button";
 // ✅ Importa las funciones que obtienen productos ya procesados
-import { getCellphonesCached, getAccessoriesCached } from "@lib/data"; 
+import { getCellphonesCached, getAccessoriesCached } from "@/lib/data"; 
 import type { Product, Cellphone, Accessory } from "@/lib/types";
 
 export default async function Home() {
@@ -17,7 +19,7 @@ export default async function Home() {
 
   return (
     <>
-      <header className="relative my-16 overflow-hidden py-56 text-center">
+      <header className="relative flex h-screen items-center justify-center overflow-hidden text-center text-white">
         <Image
           src="/img/background.png"
           alt="Imagen de fondo de dispositivos electrónicos"
@@ -25,18 +27,23 @@ export default async function Home() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div className="relative z-10">
-          <h1 className="mb-2 font-headline text-4xl font-bold tracking-tight text-white md:text-5xl">
-            Nuestra Colección de Productos
+        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="relative z-10 max-w-3xl px-4">
+          <h1 className="font-headline text-4xl font-bold tracking-tight md:text-6xl">
+            Tecnología que se adapta a ti
           </h1>
-          <p className="text-lg text-gray-300 md:text-xl">
-            Encuentra el dispositivo perfecto que se adapta a tus necesidades.
+          <p className="mt-4 text-lg text-gray-200 md:text-xl">
+            Explora lo último en smartphones y accesorios. Calidad, garantía y el mejor precio en un solo lugar.
           </p>
+          <div className="mt-8">
+            <Link href="#product-catalog">
+                <Button size="lg">Ver Catálogo</Button>
+            </Link>
+          </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-12">
+      <div id="product-catalog" className="container mx-auto px-4 py-12">
         <ProductSections
           allProducts={allProducts}
           // Los productos destacados y con descuento ahora se filtran desde la lista de celulares ya procesada
