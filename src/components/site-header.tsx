@@ -2,9 +2,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Smartphone, ShoppingCart, Menu, User } from 'lucide-react';
+import { Smartphone, ShoppingCart, Menu, User, LogOut } from 'lucide-react';
 import { useCartStore } from '@/lib/cart-store';
-
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,8 +11,8 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
   SheetClose,
+  SheetTrigger,
 } from '@/components/ui/sheet';
 import {
   DropdownMenu,
@@ -21,15 +20,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import CartSheet from './cart-sheet';
 import FuzzySearch from './fuzzy-search';
 import { useState } from 'react';
+import { useUserStore } from '@/lib/user-store';
+import { logout } from '@/lib/funtion/log/logout';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SiteHeader() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { toast } = useToast();
   const { items } = useCartStore();
+  const { user } = useUserStore();
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -39,6 +45,12 @@ export default function SiteHeader() {
     { href: '/contact', label: 'Contacto' },
     { href: '/faq', label: 'FAQ' },
   ];
+
+  const handleLogout = async () => {
+    await logout();
+    toast({ description: 'Has cerrado sesión.' });
+    router.push('/');
+  };
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-white/20 bg-header-background bg-cover bg-center">
@@ -80,12 +92,30 @@ export default function SiteHeader() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link href="/login">Iniciar Sesión</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/register">Registrarse</Link>
-              </DropdownMenuItem>
+              {user ? (
+                <>
+                  <DropdownMenuLabel>
+                    Hola, {user.user_metadata?.name || user.email}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/mi-cuenta">Mi Cuenta</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout} className="text-red-500 focus:text-red-500">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Cerrar Sesión
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem asChild>
+                    <Link href="/login">Iniciar Sesión</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/register">Registrarse</Link>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -126,7 +156,7 @@ export default function SiteHeader() {
               </SheetTrigger>
               <SheetContent side="left">
                 <SheetHeader>
-                  <SheetTitle className="sr-only">Menú Principal</SheetTitle>
+                   <SheetTitle>Menú Principal</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col p-6">
                     <Link href="/" className="mb-8 flex items-center space-x-2" onClick={() => setIsMobileMenuOpen(false)}>

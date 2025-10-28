@@ -7,6 +7,7 @@ import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import { Toaster } from "@/components/ui/toaster";
 import ParticlesComponent from './Js/animacion_particula.jsx';
+import { AuthProvider } from "@/lib/auth-provider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -40,6 +41,7 @@ export default function RootLayout({
           ptSans.variable
         )}
       >
+        <AuthProvider>
           <ParticlesComponent />
           <div className="relative flex min-h-screen flex-col">
             <SiteHeader />
@@ -47,7 +49,10 @@ export default function RootLayout({
             <SiteFooter />
           </div>
           <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );
 }
+
+    

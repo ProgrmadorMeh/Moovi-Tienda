@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Preference from '@/lib/funtion/pago/RealizarCompra.js';
+import { useUserStore } from '@/lib/user-store';
 
 const getShippingOptions = async (postalCode: string): Promise<{id: string, name: string, cost: number}[]> => {
   console.log(`Buscando opciones de envío para el CP: ${postalCode}`);
@@ -44,6 +45,7 @@ export default function CheckoutPage() {
   const { items, coupon, getSubtotal, getTotal, setShippingCost, shippingCost } = useCartStore();
   const router = useRouter();
   const { toast } = useToast();
+  const { user, loading } = useUserStore();
   const [postalCode, setPostalCode] = useState('');
   const [shippingOptions, setShippingOptions] = useState<any[]>([]);
   const [isLoadingShipping, setIsLoadingShipping] = useState(false);
@@ -52,11 +54,28 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    if (items.length === 0) {
+    // Si no está cargando y no hay usuario, redirigir
+    if (!loading && !user) {
+        toast({
+            variant: "destructive",
+            description: "Necesitas iniciar sesión para continuar.",
+            duration: 3000
+        });
+        router.replace('/login');
+    }
+    // Si el carrito está vacío, redirigir
+    else if (items.length === 0 && !loading) {
       toast({ description: "Tu carrito está vacío. Redirigiendo...", duration: 2000 });
       setTimeout(() => router.replace('/'), 2000);
     }
-  }, [items, router, toast]);
+  }, [user, loading, items, router, toast]);
+
+  // Seteamos el email del usuario si está logueado
+  useEffect(() => {
+    if (user?.email) {
+      setEmail(user.email);
+    }
+  }, [user]);
 
   const handleCalculateShipping = async () => {
     if (postalCode.length < 4) {
@@ -131,8 +150,12 @@ export default function CheckoutPage() {
     }
   };
 
-  if (items.length === 0) {
-    return null; 
+  if (loading || !user || items.length === 0) {
+    return (
+        <div className="container mx-auto flex h-screen items-center justify-center">
+            <p>Cargando...</p>
+        </div>
+    );
   }
 
   return (
@@ -154,6 +177,7 @@ export default function CheckoutPage() {
                   required 
                   value={email} 
                   onChange={(e) => setEmail(e.target.value)} 
+                  readOnly={!!user?.email} // Si el usuario está logueado, no puede cambiar el email
                 />
               </div>
               <div><Label htmlFor="nombre">Nombre</Label><Input id="nombre" required /></div>
@@ -220,3 +244,5 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
+    
