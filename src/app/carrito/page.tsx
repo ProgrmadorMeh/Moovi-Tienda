@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Minus, X, Tag, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { defaultBase } from '@/lib/types';
 
 // Cupones de ejemplo
 const COUPONS = [
@@ -120,9 +121,17 @@ function CartPageItemRow({ item }: { item: CartItem }) {
     const showDiscount = item.discount && item.discount > 0;
     const showOriginalPrice = item.originalPrice && item.originalPrice > item.salePrice;
 
+    // Lógica para asegurar que siempre haya una URL de imagen válida
+    let imageSrc = defaultBase.imageUrl as string;
+    if (Array.isArray(item.imageUrl) && item.imageUrl.length > 0 && item.imageUrl[0]) {
+        imageSrc = item.imageUrl[0];
+    } else if (typeof item.imageUrl === 'string' && item.imageUrl) {
+        imageSrc = item.imageUrl;
+    }
+
     return (
         <div className="flex flex-col rounded-lg border bg-white/5 p-4 sm:flex-row sm:items-center sm:space-x-6">
-            <Image src={item.imageUrl} alt={item.model} width={100} height={100} className="mb-4 rounded-md object-cover sm:mb-0" />
+            <Image src={imageSrc} alt={item.model} width={100} height={100} className="mb-4 rounded-md object-cover sm:mb-0" />
             
             <div className="flex-1">
                 <h3 className="text-lg font-semibold">{item.model}</h3>
