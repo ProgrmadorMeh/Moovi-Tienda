@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { Product, Cellphone } from "@/lib/types";
 import ProductCard from "./product-card";
 import ProductFilters, { priceRanges } from "./product-filters";
@@ -12,6 +12,8 @@ interface ProductCatalogProps {
   brands: string[];
   capacityOptions: string[];
   onQuickView: (product: Product) => void;
+  onPageChange: (page: number) => void;
+  currentPage: number;
 }
 
 const PRODUCTS_PER_PAGE = 20;
@@ -25,6 +27,8 @@ export default function ProductCatalog({
   brands,
   capacityOptions,
   onQuickView,
+  onPageChange,
+  currentPage,
 }: ProductCatalogProps) {
   const [filters, setFilters] = useState({
     brand: "all",
@@ -32,19 +36,10 @@ export default function ProductCatalog({
     price: "all",
   });
   const [sort, setSort] = useState("price-asc");
-  const [currentPage, setCurrentPage] = useState(1);
-  const catalogRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    setCurrentPage(1);
+    onPageChange(1);
   }, [filters, sort]);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    if (catalogRef.current) {
-      catalogRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
@@ -91,7 +86,7 @@ export default function ProductCatalog({
   );
 
   return (
-    <div ref={catalogRef}>
+    <div>
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
         <aside className="lg:col-span-1">
           <div className="sticky top-20">
@@ -131,7 +126,7 @@ export default function ProductCatalog({
             <PaginationControls
               currentPage={currentPage}
               totalPages={totalPages}
-              onPageChange={handlePageChange}
+              onPageChange={onPageChange}
             />
           )}
         </main>

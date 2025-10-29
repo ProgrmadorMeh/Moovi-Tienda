@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Product, Cellphone, Accessory } from "@/lib/types";
 import ProductCatalog from "./product-catalog";
@@ -27,10 +27,20 @@ export default function ProductSections({
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(
     null
   );
+  const [currentPage, setCurrentPage] = useState(1);
+  const catalogRef = useRef<HTMLDivElement>(null);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    if (catalogRef.current) {
+      catalogRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
 
   return (
     <>
-      <section className="py-12 md:py-16">
+      <section ref={catalogRef} className="py-12 md:py-16">
         <Tabs defaultValue="all" className="w-full">
           <TabsList className="grid w-full grid-cols-2 h-auto md:grid-cols-4 mb-8">
             <TabsTrigger value="all" className="py-2.5 text-base gap-2"><Smartphone />Celulares</TabsTrigger>
@@ -45,6 +55,8 @@ export default function ProductSections({
               brands={brands}
               capacityOptions={capacityOptions}
               onQuickView={setQuickViewProduct}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
             />
           </TabsContent>
 
@@ -54,6 +66,8 @@ export default function ProductSections({
               brands={brands}
               capacityOptions={capacityOptions}
               onQuickView={setQuickViewProduct}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
             />
           </TabsContent>
           
@@ -63,6 +77,8 @@ export default function ProductSections({
               brands={brands}
               capacityOptions={capacityOptions}
               onQuickView={setQuickViewProduct}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
             />
           </TabsContent>
 
@@ -72,6 +88,8 @@ export default function ProductSections({
               brands={[...new Set(accessories.map(a => a.brand))]} // Marcas solo de accesorios
               capacityOptions={[]} // Accesorios no tienen filtro de capacidad
               onQuickView={setQuickViewProduct}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
             />
           </TabsContent>
 
