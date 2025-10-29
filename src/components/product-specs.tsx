@@ -1,8 +1,8 @@
-
+import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText } from "lucide-react";
 
-const ProductSpecs = ({ product }) => {
+const ProductSpecs = memo(({ product }) => {
   // Ejemplo de datos de ficha técnica (puedes pasarlos como prop)
   const techSpecs = [
     { label: "Pantalla", value: "6.5 pulgadas Super AMOLED, 120Hz" },
@@ -26,6 +26,8 @@ const ProductSpecs = ({ product }) => {
         </ul>
     </div>
   );
-};
+});
+
+ProductSpecs.displayName = 'ProductSpecs';
 
 export default ProductSpecs;

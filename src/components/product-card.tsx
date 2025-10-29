@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Eye, ShieldCheck } from "lucide-react";
@@ -15,7 +16,7 @@ interface ProductCardProps {
   onQuickView: (product: Product) => void;
 }
 
-export default function ProductCard({ product, onQuickView }: ProductCardProps) {
+const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
   const { addItem } = useCartStore();
   const { toast } = useToast();
 
@@ -123,4 +124,8 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
       </div>
     </div>
   );
-}
+});
+
+ProductCard.displayName = 'ProductCard';
+
+export default ProductCard;

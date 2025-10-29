@@ -1,6 +1,7 @@
-import { supabase } from '../../supabaseClient'
+import { supabase } from '../../supabaseClient';
+import { cache } from 'react';
 
-export async function methodGetList(tabla, filtros = {}, campos = "*") {
+export const methodGetList = cache(async (tabla, filtros = {}, campos = "*") => {
   if (!tabla) {
     return {
       success: false,
@@ -20,8 +21,7 @@ export async function methodGetList(tabla, filtros = {}, campos = "*") {
     if (tabla === "celulares" || tabla === "accesorios") {
       selectQuery = `
         *,
-        marcas(nombre) AS brand_name,
-        (salePrice * (1 - discount / 100)) AS finalPrice
+        marcas(nombre)
       `;
     }
 
@@ -40,26 +40,13 @@ export async function methodGetList(tabla, filtros = {}, campos = "*") {
         data: null,
       };
     }
-
-    // Convertir campos a number si aplica
-    const parsedData = (data ?? []).map((item) => {
-      if (tabla === "celulares" || tabla === "accesorios") {
-        return {
-          ...item,
-          salePrice: item.salePrice !== undefined ? Number(item.salePrice) : item.salePrice,
-          discount: item.discount !== undefined ? Number(item.discount) : item.discount,
-          finalPrice: item.finalPrice !== undefined ? Number(item.finalPrice) : item.finalPrice,
-        };
-      }
-      return item;
-    });
-
+    
     return {
       success: true,
-      message: parsedData.length
-        ? `Se encontraron ${parsedData.length} registros en la tabla "${tabla}".`
+      message: data.length
+        ? `Se encontraron ${data.length} registros en la tabla "${tabla}".`
         : `No se encontraron registros en la tabla "${tabla}" con los filtros proporcionados.`,
-      data: parsedData,
+      data: data,
     };
 
   } catch (error) {
@@ -69,4 +56,4 @@ export async function methodGetList(tabla, filtros = {}, campos = "*") {
       data: null,
     };
   }
-}
+});

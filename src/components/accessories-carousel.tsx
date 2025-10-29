@@ -1,11 +1,10 @@
-
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { getAllProductsCached } from '@/lib/data';
 import ProductCard from "@/components/product-card";
 import { AutoScrollCarousel } from "@/components/ui/auto-scroll-carousel";
-import { type Product } from "@/lib/types";
+import type { Product } from "@/lib/types";
 
-const AccessoriesCarousel = ({ brand, currentProductId }) => {
+const AccessoriesCarousel = memo(({ brand, currentProductId }: { brand: string, currentProductId: string }) => {
   const [accessories, setAccessories] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -45,6 +44,8 @@ const AccessoriesCarousel = ({ brand, currentProductId }) => {
       />
     </div>
   );
-};
+});
+
+AccessoriesCarousel.displayName = 'AccessoriesCarousel';
 
 export default AccessoriesCarousel;

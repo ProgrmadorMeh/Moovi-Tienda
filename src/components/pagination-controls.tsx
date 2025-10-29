@@ -1,6 +1,6 @@
-
 "use client";
 
+import { memo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -10,11 +10,11 @@ interface PaginationControlsProps {
   onPageChange: (page: number) => void;
 }
 
-export default function PaginationControls({
+const PaginationControls = memo(({
   currentPage,
   totalPages,
   onPageChange,
-}: PaginationControlsProps) {
+}: PaginationControlsProps) => {
   const handlePrevious = () => {
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
@@ -54,4 +54,8 @@ export default function PaginationControls({
       </Button>
     </div>
   );
-}
+});
+
+PaginationControls.displayName = 'PaginationControls';
+
+export default PaginationControls;
