@@ -114,7 +114,7 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
           </div>
         </div>
         
-        <div className="mt-4 space-y-4">
+        <div className="mt-4">
             <div className="grid grid-cols-2 gap-2">
                 <Button
                     variant="outline"
@@ -128,7 +128,7 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
                     Agregar
                 </Button>
             </div>
-            <Link href={`/products/${product.id}`} className="w-full">
+            <Link href={`/products/${product.id}`} className="w-full block mt-2">
               <Button className="w-full">
                   <FileText className="mr-2 h-4 w-4" />
                   Ver Detalles
