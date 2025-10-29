@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { defaultBase } from "@/lib/types";
+import { CardParticles } from "./ui/card-particles";
 
 interface ProductCardProps {
   product: Product;
@@ -83,7 +84,8 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
         </div>
       </Link>
       
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-4 relative">
+        <CardParticles />
         <div className="flex-1">
           <p className="text-xl font-medium text-primary">{product.brand || 'Sin Marca'}</p>
           <h3 className="text-2xl truncate font-semibold">{productName}</h3>
@@ -128,7 +130,7 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
                     Agregar
                 </Button>
             </div>
-            <Link href={`/products/${product.id}`} className="w-full block mt-2">
+            <Link href={`/products/${product.id}`} className="w-full block mt-4">
               <Button className="w-full">
                   <FileText className="mr-2 h-4 w-4" />
                   Ver Detalles
