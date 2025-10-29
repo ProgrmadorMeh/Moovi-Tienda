@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useCartStore } from '@/lib/cart-store';
@@ -199,15 +198,19 @@ export default function CheckoutPage() {
             <h2 className="text-xl font-semibold mb-4">2. Método de Envío</h2>
             {isLoadingShipping && <p>Calculando envío...</p>}
             {shippingOptions.length > 0 && (
-              <RadioGroup value={selectedShipping} onValueChange={handleShippingChange}>
+              <RadioGroup value={selectedShipping} onValueChange={handleShippingChange} className="space-y-2">
                 {shippingOptions.map(opt => (
-                  <div key={opt.id} className="flex items-center justify-between rounded-md border p-4">
-                    <Label htmlFor={opt.id} className="flex items-center space-x-3 cursor-pointer">
+                  <Label 
+                    key={opt.id}
+                    htmlFor={opt.id}
+                    className="flex cursor-pointer items-center justify-between rounded-md border p-4 transition-colors hover:bg-accent has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-accent"
+                  >
+                    <div className="flex items-center space-x-3">
                       <RadioGroupItem value={opt.id} id={opt.id} />
                       <span>{opt.name}</span>
-                    </Label>
+                    </div>
                     <span className="font-semibold">${opt.cost.toFixed(2)}</span>
-                  </div>
+                  </Label>
                 ))}
               </RadioGroup>
             )}
@@ -244,5 +247,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-
-    
