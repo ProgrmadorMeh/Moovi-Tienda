@@ -1,5 +1,5 @@
 // No se necesita dotenv en producción con Next.js, las variables se cargan automáticamente
-const accessToken = process.env.MP_ACCESS_TOKEN;
+const accessToken = process.env.NEXT_PUBLIC_MP_ACCESS_TOKEN;
 
 export async function POST(req) {
   if (req.method !== 'POST') {
@@ -11,13 +11,13 @@ export async function POST(req) {
 
   // Verificar si el token de acceso está disponible
   if (!accessToken) {
-    console.error('Error: La variable de entorno MP_ACCESS_TOKEN no está configurada.');
+    console.error('Error: La variable de entorno NEXT_PUBLIC_MP_ACCESS_TOKEN no está configurada.');
     return new Response(
       JSON.stringify({ success: false, message: 'Error de configuración del servidor: el token de pago no está disponible.' }),
       { headers: { 'Content-Type': 'application/json' }, status: 500 }
     );
   }
-  console.log('MP_ACCESS_TOKEN cargado correctamente.');
+  console.log('NEXT_PUBLIC_MP_ACCESS_TOKEN cargado correctamente.');
 
   try {
     const { carrito, email } = await req.json();
