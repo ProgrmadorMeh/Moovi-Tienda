@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Product } from "@/lib/types";
 import { getAllProductsCached } from "@/lib/data";
+import { toast } from "@/hooks/use-toast";
 
 // --- TIPOS Y ESTADO INICIAL ---
 
@@ -45,15 +46,30 @@ export const useCartStore = create(
       addItem: (product) => {
         set((state) => {
           const existingItem = state.items.find((item) => item.id === product.id);
+          const stock = product.stock ?? 0;
           let updatedItems;
 
           if (existingItem) {
+             if (existingItem.quantity >= stock) {
+              toast({
+                variant: 'destructive',
+                description: 'No puedes agregar más productos que el stock disponible.',
+              });
+              return { items: state.items };
+            }
             updatedItems = state.items.map((item) =>
               item.id === product.id
                 ? { ...item, quantity: item.quantity + 1 }
                 : item
             );
           } else {
+             if (stock <= 0) {
+              toast({
+                variant: 'destructive',
+                description: 'Este producto no tiene stock disponible.',
+              });
+              return { items: state.items };
+            }
             updatedItems = [...state.items, { ...product, quantity: 1 }];
           }
 
@@ -70,6 +86,22 @@ export const useCartStore = create(
           if (newQuantity <= 0) {
             return { items: state.items.filter((item) => item.id !== productId) };
           }
+          
+          const itemToUpdate = state.items.find((item) => item.id === productId);
+          const stock = itemToUpdate?.stock ?? 0;
+
+          if (newQuantity > stock) {
+            toast({
+              variant: 'destructive',
+              description: 'No puedes agregar más productos que el stock disponible.',
+            });
+            return {
+              items: state.items.map((item) =>
+                item.id === productId ? { ...item, quantity: stock } : item
+              ),
+            };
+          }
+
           return {
             items: state.items.map((item) =>
               item.id === productId ? { ...item, quantity: newQuantity } : item
