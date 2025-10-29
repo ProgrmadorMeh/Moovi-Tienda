@@ -94,8 +94,7 @@ function CartItemRow({ item }: { item: CartItem }) {
         <Image
           src={imageSrc}
           alt={item.model}
-          width={96}
-          height={96}
+          fill
           className="rounded-md object-cover"
         />
       </div>

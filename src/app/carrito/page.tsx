@@ -131,7 +131,14 @@ function CartPageItemRow({ item }: { item: CartItem }) {
 
     return (
         <div className="flex flex-col rounded-lg border bg-white/5 p-4 sm:flex-row sm:items-center sm:space-x-6">
-            <Image src={imageSrc} alt={item.model} width={100} height={100} className="mb-4 rounded-md object-cover sm:mb-0" />
+            <div className="relative h-[100px] w-[100px] flex-shrink-0 self-start sm:mb-0 mb-4">
+                <Image 
+                    src={imageSrc} 
+                    alt={item.model} 
+                    fill 
+                    className="rounded-md object-cover"
+                />
+            </div>
             
             <div className="flex-1">
                 <h3 className="text-lg font-semibold">{item.model}</h3>

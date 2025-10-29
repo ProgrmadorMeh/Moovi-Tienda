@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { X, Plus, Minus } from 'lucide-react';
 import { useCartStore, CartItem } from '@/lib/cart-store';
+import { defaultBase } from '@/lib/types';
 
 interface MiniCartProps {
   onClose: () => void;
@@ -12,8 +13,6 @@ interface MiniCartProps {
 export default function MiniCart({ onClose }: MiniCartProps) {
   const {
     items,
-    updateQuantity,
-    removeItem,
     getSubtotal,
   } = useCartStore();
 
@@ -77,15 +76,23 @@ export default function MiniCart({ onClose }: MiniCartProps) {
 function CartItemRow({ item }: { item: CartItem }) {
   const { updateQuantity, removeItem } = useCartStore();
 
+  let imageSrc = defaultBase.imageUrl as string;
+  if (Array.isArray(item.imageUrl) && item.imageUrl.length > 0 && item.imageUrl[0]) {
+      imageSrc = item.imageUrl[0];
+  } else if (typeof item.imageUrl === 'string' && item.imageUrl) {
+      imageSrc = item.imageUrl;
+  }
+
   return (
     <div className='flex items-center space-x-3 py-2'>
-      <Image
-        src={item.imageUrl}
-        alt={item.model}
-        width={64}
-        height={64}
-        className='rounded-md object-cover'
-      />
+      <div className="relative h-16 w-16 flex-shrink-0">
+        <Image
+          src={imageSrc}
+          alt={item.model}
+          fill
+          className='rounded-md object-cover'
+        />
+      </div>
       <div className='flex-1'>
         <p className='text-sm font-medium text-gray-800'>{item.model}</p>
         <p className='text-xs text-gray-500'>${item.salePrice.toFixed(2)}</p>
