@@ -3,11 +3,21 @@ const accessToken = process.env.MP_ACCESS_TOKEN;
 
 export async function POST(req) {
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Método no permitido' }), {
+    return new Response(JSON.stringify({ success: false, message: 'Método no permitido' }), {
       status: 405,
       headers: { 'Content-Type': 'application/json' },
-    })
+    });
   }
+
+  // Verificar si el token de acceso está disponible
+  if (!accessToken) {
+    console.error('Error: La variable de entorno MP_ACCESS_TOKEN no está configurada.');
+    return new Response(
+      JSON.stringify({ success: false, message: 'Error de configuración del servidor: el token de pago no está disponible.' }),
+      { headers: { 'Content-Type': 'application/json' }, status: 500 }
+    );
+  }
+  console.log('MP_ACCESS_TOKEN cargado correctamente.');
 
   try {
     const { carrito, email } = await req.json();
@@ -17,7 +27,7 @@ export async function POST(req) {
       unit_price: Number(item.precio) || 0,   // asegurar que es número
       currency_id: 'ARS',
     }));
-    console.log(items)
+    console.log("Items para Mercado Pago:", items);
     
     const preference = {
       items,
@@ -28,7 +38,6 @@ export async function POST(req) {
         pending: "https://tusitio.com/pending",
       },
       auto_return: "approved",
-      sandbox: true,
     };
 
     const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
@@ -38,15 +47,14 @@ export async function POST(req) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(preference),
-    })
+    });
 
-    const data = await response.json()
+    const data = await response.json();
 
     if (!response.ok) {
-        // Si la API de Mercado Pago devuelve un error, lo enviamos al cliente.
-        console.error('Error from Mercado Pago API:', data);
+        console.error('Error desde la API de Mercado Pago:', data);
         return new Response(
-            JSON.stringify({ success: false, message: 'Error from Mercado Pago', error: data }),
+            JSON.stringify({ success: false, message: 'Error desde Mercado Pago', error: data }),
             { headers: { 'Content-Type': 'application/json' }, status: response.status }
         );
     }
@@ -59,12 +67,12 @@ export async function POST(req) {
         id: data.id,
       }),
       { headers: { 'Content-Type': 'application/json' }, status: 200 }
-    )
+    );
   } catch (err) {
-    console.error('Internal Server Error:', err)
+    console.error('Error interno del servidor:', err);
     return new Response(
-      JSON.stringify({ success: false, message: err.message }),
+      JSON.stringify({ success: false, message: err.message || 'Ocurrió un error interno en el servidor.' }),
       { headers: { 'Content-Type': 'application/json' }, status: 500 }
-    )
+    );
   }
 }

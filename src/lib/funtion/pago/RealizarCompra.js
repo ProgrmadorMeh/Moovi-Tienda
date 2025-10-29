@@ -8,7 +8,8 @@ export default async function Preference(email, carrito) {
       body: JSON.stringify(body),
     });
 
-    const data = await res.json();
+    // Siempre intentar parsear el JSON, incluso si hay un error de status.
+    const data = await res.json().catch(() => ({}));
 
     if (res.ok) {
       if (data.success && data.init_point) {
@@ -17,12 +18,12 @@ export default async function Preference(email, carrito) {
       } else {
         // El servidor respondió OK, pero no se pudo crear la preferencia.
         console.error('API succeeded but preference creation failed:', data);
-        alert('Error: No se pudo iniciar el proceso de pago. Por favor, inténtelo de nuevo.');
+        alert(`Error: No se pudo iniciar el proceso de pago. ${data.message || 'Por favor, inténtelo de nuevo.'}`);
       }
     } else {
       // El servidor respondió con un error (4xx, 5xx).
       console.error('Error from API route:', data);
-      const errorMessage = data.error?.message || data.message || 'Ocurrió un error desconocido.';
+      const errorMessage = data.message || 'Ocurrió un error desconocido en el servidor.';
       alert(`Error: ${errorMessage}`);
     }
   } catch (err) {
