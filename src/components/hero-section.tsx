@@ -9,7 +9,7 @@ export default function HeroSection() {
     <section className="relative w-full pt-20">
       <div className="absolute inset-0">
         <Image
-          src="/img/background.png"
+          src="/img/hero-background.png"
           alt="Modern smartphones and gadgets on a stylized background"
           fill
           priority
