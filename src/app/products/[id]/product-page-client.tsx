@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Truck, ShoppingCart, CreditCard, Star, ShieldCheck } from "lucide-react";
+import { Truck, ShoppingCart, CreditCard, Star, ShieldCheck, ArrowLeft } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
 
@@ -74,6 +74,12 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
   return (
     <div className="container mx-auto max-w-6xl px-4 pt-24 pb-12">
+       <div className="mb-4">
+        <Button variant="ghost" onClick={() => router.back()}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Volver al catálogo
+        </Button>
+      </div>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
         {/* --- COLUMNA DE IMÁGENES --- */}
         <div className="md:sticky md:top-24 md:self-start">

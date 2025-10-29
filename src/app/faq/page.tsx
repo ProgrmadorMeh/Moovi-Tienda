@@ -1,7 +1,10 @@
+'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { CreditCard, Mail, Truck, HelpCircle } from 'lucide-react';
+import { CreditCard, Mail, Truck, HelpCircle, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const faqData = [
     {
@@ -51,8 +54,16 @@ const faqData = [
 ];
 
 const FAQPage = () => {
+    const router = useRouter();
+
     return (
         <div className="container mx-auto px-4 py-12 pt-32">
+            <div className="mb-4">
+                <Button variant="ghost" onClick={() => router.back()}>
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Volver
+                </Button>
+            </div>
             <header className="mb-12 rounded-lg bg-card p-8 text-center shadow-lg">
                 <HelpCircle className="mx-auto h-12 w-12 text-primary" />
                 <h1 className="mt-4 text-4xl font-bold tracking-tight md:text-5xl">Preguntas Frecuentes (FAQ)</h1>

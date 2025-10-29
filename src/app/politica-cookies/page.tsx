@@ -1,8 +1,12 @@
+'use client';
 
 import React from 'react';
-import { Cookie, Settings2, MousePointerClick } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Cookie, Settings2, MousePointerClick, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const PoliticaDeCookiesPage = () => {
+  const router = useRouter();
   const sections = [
     {
       icon: <Cookie className="h-8 w-8 text-primary" />,
@@ -33,6 +37,12 @@ const PoliticaDeCookiesPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-12 pt-32">
+      <div className="mb-4">
+        <Button variant="ghost" onClick={() => router.back()}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Volver
+        </Button>
+      </div>
       <header className="mb-12 rounded-lg bg-card p-8 text-center shadow-lg">
         <Cookie className="mx-auto h-12 w-12 text-primary" />
         <h1 className="mt-4 text-4xl font-bold tracking-tight md:text-5xl">Política de Cookies</h1>

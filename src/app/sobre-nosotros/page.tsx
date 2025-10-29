@@ -1,9 +1,21 @@
+'use client';
+
 import Image from "next/image";
-import { Smartphone, Target, Eye, Users } from "lucide-react";
+import { useRouter } from 'next/navigation';
+import { Smartphone, Target, Eye, Users, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function AboutUsPage() {
+  const router = useRouter();
+
   return (
     <div className="container mx-auto max-w-5xl px-4 py-12 pt-32">
+      <div className="mb-4">
+        <Button variant="ghost" onClick={() => router.back()}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Volver
+        </Button>
+      </div>
       <header className="mb-12 text-center">
         <h1 className="font-headline text-4xl font-bold tracking-tight md:text-5xl">
           Sobre MooviTech
