@@ -1,4 +1,5 @@
 
+import { cache } from 'react';
 import { methodGetList } from "@/lib/funtion/metodos/methodGetList";
 import type { Cellphone, Accessory, Product } from "@/lib/types";
 
@@ -39,7 +40,7 @@ function processProducts(products: any[]): Product[] {
  * y aplica la lógica de precios y marcas correcta.
  * @param refresh - Si es true, fuerza recargar desde Supabase
  */
-export async function getAllProductsCached(refresh = false): Promise<Product[]> {
+export const getAllProductsCached = cache(async (refresh = false): Promise<Product[]> => {
   if (!refresh && cachedAllProducts) {
     return cachedAllProducts;
   }
@@ -51,13 +52,6 @@ export async function getAllProductsCached(refresh = false): Promise<Product[]> 
 
   const cellphonesRes = results[0];
   const accessoriesRes = results[1];
-  
-  if (cellphonesRes.data) {
-    console.log("📱 Celulares:", cellphonesRes.data.length);
-  }
-  if (accessoriesRes.data) {
-    console.log("🎧 Accesorios:", accessoriesRes.data.length);
-  }
 
   const allProductsRaw = [
     ...(cellphonesRes.data ?? []) as any[],
@@ -67,7 +61,7 @@ export async function getAllProductsCached(refresh = false): Promise<Product[]> 
   cachedAllProducts = processProducts(allProductsRaw);
   
   return cachedAllProducts;
-}
+});
 
 /**
  * Obtiene solo celulares, ya procesados.
