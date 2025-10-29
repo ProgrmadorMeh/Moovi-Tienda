@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import type { Product, Cellphone } from "@/lib/types";
 import ProductCard from "./product-card";
 import ProductFilters, { priceRanges } from "./product-filters";
@@ -33,10 +33,18 @@ export default function ProductCatalog({
   });
   const [sort, setSort] = useState("price-asc");
   const [currentPage, setCurrentPage] = useState(1);
+  const catalogRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     setCurrentPage(1);
   }, [filters, sort]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    if (catalogRef.current) {
+      catalogRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
@@ -83,7 +91,7 @@ export default function ProductCatalog({
   );
 
   return (
-    <>
+    <div ref={catalogRef}>
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
         <aside className="lg:col-span-1">
           <div className="sticky top-20">
@@ -123,11 +131,11 @@ export default function ProductCatalog({
             <PaginationControls
               currentPage={currentPage}
               totalPages={totalPages}
-              onPageChange={setCurrentPage}
+              onPageChange={handlePageChange}
             />
           )}
         </main>
       </div>
-    </>
+    </div>
   );
 }
