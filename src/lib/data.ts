@@ -8,7 +8,7 @@ import type { Cellphone, Accessory, Product } from "@/lib/types";
 let cachedAllProducts: Product[] | null = null;
 
 /**
- * Procesa una lista de productos para asegurar que la lógica de precios y marcas sea consistente.
+ * Procesa una lista de productos para asegurar que la lógica de precios, marcas e imágenes sea consistente.
  */
 function processProducts(products: any[]): Product[] {
   return products.map(p => {
@@ -24,12 +24,33 @@ function processProducts(products: any[]): Product[] {
       finalSalePrice = basePrice * (1 - discount / 100);
     }
     
+    // --- Procesamiento de Imágenes ---
+    let processedImageUrl: string | string[] | null = p.imageUrl;
+    
+    // Si imageUrl es una cadena que parece un array JSON, intentamos parsearlo
+    if (typeof processedImageUrl === 'string' && processedImageUrl.startsWith('[') && processedImageUrl.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(processedImageUrl);
+        // Nos aseguramos de que el resultado sea un array de strings
+        if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
+          processedImageUrl = parsed;
+        } else {
+           processedImageUrl = null; // Si el formato interior no es el esperado
+        }
+      } catch (e) {
+        console.error("Failed to parse imageUrl string:", processedImageUrl, e);
+        processedImageUrl = null; // Si el parseo falla
+      }
+    }
+    // --- Fin del procesamiento de Imágenes ---
+    
     const processedProduct: Product = {
       ...p,
       salePrice: finalSalePrice,
       originalPrice: originalPrice,
       discount,
       brand, 
+      imageUrl: processedImageUrl, // Usamos la URL procesada
     };
 
     // Si no hay cuotas sin interés, agregar un plan de 6 cuotas con 10% de recargo.

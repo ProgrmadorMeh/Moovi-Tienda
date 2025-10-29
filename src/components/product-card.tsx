@@ -35,7 +35,7 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
     });
   };
 
-  // 🔹 Determinar la imagen a usar
+  // 🔹 Determinar la imagen a usar con un fallback seguro
   let imageSrc = defaultBase.imageUrl as string;
 
   if (product.imageUrl) {
@@ -46,6 +46,12 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
     }
   }
 
+  const handleQuickViewClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onQuickView(product);
+  };
+
 
   return (
     <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg">
@@ -54,7 +60,7 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
           {(product.discount ?? 0) > 0 && (
             <Badge
               variant="destructive"
-              className="absolute top-2 right-2 z-10 text-base"
+              className="absolute top-2 right-2 z-10 text-lg"
             >
               {product.discount}% OFF
             </Badge>
@@ -83,10 +89,7 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
         <Button
           variant="secondary"
           className="shadow-lg"
-          onClick={(e) => {
-            e.stopPropagation(); // Evita que el link de la tarjeta se active
-            onQuickView(product);
-          }}
+          onClick={handleQuickViewClick}
         >
           <Eye className="mr-2 h-4 w-4" />
           Vista Rápida
@@ -96,7 +99,7 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
       <div className="flex flex-col p-4">
         <div className="flex-1">
           <p className="text-xl font-medium text-primary">{product.brand || 'Sin Marca'}</p>
-          <p className="text-xl truncate font-semibold">{productName}</p>
+          <p className="text-2xl truncate font-semibold">{productName}</p>
 
           <div className="mt-2 space-y-1">
             {product.originalPrice && product.originalPrice > product.salePrice && (
