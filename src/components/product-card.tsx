@@ -3,7 +3,7 @@
 import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart, Eye, ShieldCheck } from "lucide-react";
+import { ShoppingCart, Eye, FileText, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
@@ -35,7 +35,6 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
     });
   };
 
-  // 🔹 Determinar la imagen a usar con un fallback seguro
   let imageSrc = defaultBase.imageUrl as string;
 
   if (product.imageUrl) {
@@ -54,7 +53,7 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
 
 
   return (
-    <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg">
+    <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg flex flex-col">
       <Link href={`/products/${product.id}`} className="block">
         <div className="relative aspect-square w-full overflow-hidden">
           {(product.discount ?? 0) > 0 && (
@@ -83,23 +82,11 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
           />
         </div>
       </Link>
-
-      {/* Botón de Vista Rápida que aparece al hacer hover */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <Button
-          variant="secondary"
-          className="shadow-lg"
-          onClick={handleQuickViewClick}
-        >
-          <Eye className="mr-2 h-4 w-4" />
-          Vista Rápida
-        </Button>
-      </div>
-
-      <div className="flex flex-col p-4">
+      
+      <div className="flex flex-1 flex-col p-4">
         <div className="flex-1">
           <p className="text-xl font-medium text-primary">{product.brand || 'Sin Marca'}</p>
-          <p className="text-2xl truncate font-semibold">{productName}</p>
+          <h3 className="text-2xl truncate font-semibold">{productName}</h3>
 
           <div className="mt-2 space-y-1">
             {product.originalPrice && product.originalPrice > product.salePrice && (
@@ -126,9 +113,27 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
             )}
           </div>
         </div>
-        <Button onClick={handleAddToCart} className="mt-4 w-full">
-          <ShoppingCart className="mr-2 h-4 w-4" /> Agregar al carrito
-        </Button>
+        
+        <div className="mt-4 space-y-2">
+            <div className="grid grid-cols-2 gap-2">
+                <Button
+                    variant="outline"
+                    onClick={handleQuickViewClick}
+                >
+                    <Eye className="mr-2 h-4 w-4" />
+                    Vista Rápida
+                </Button>
+                <Link href={`/products/${product.id}`} className="w-full">
+                    <Button variant="outline" className="w-full">
+                        <FileText className="mr-2 h-4 w-4" />
+                        Ver Detalles
+                    </Button>
+                </Link>
+            </div>
+            <Button onClick={handleAddToCart} className="w-full">
+                <ShoppingCart className="mr-2 h-4 w-4" /> Agregar al carrito
+            </Button>
+        </div>
       </div>
     </div>
   );
