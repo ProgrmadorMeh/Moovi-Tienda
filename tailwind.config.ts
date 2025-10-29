@@ -16,9 +16,6 @@ export default {
       },
     },
     extend: {
-      backgroundImage: {
-        'header-background': "url('/img/background.png')",
-      },
       fontFamily: {
         body: ['PT Sans', 'sans-serif'],
         headline: ['Poppins', 'sans-serif'],
