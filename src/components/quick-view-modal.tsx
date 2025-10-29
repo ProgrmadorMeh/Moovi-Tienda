@@ -53,7 +53,7 @@ export default function QuickViewModal({
   const showOriginalPrice = product.originalPrice && product.originalPrice > product.salePrice;
 
   // Determina la imagen a mostrar
-  let imageSrc = defaultBase.imageUrl;
+  let imageSrc = defaultBase.imageUrl as string;
   if (product.imageUrl) {
     if (Array.isArray(product.imageUrl) && product.imageUrl.length > 0 && product.imageUrl[0]) {
       imageSrc = product.imageUrl[0];
