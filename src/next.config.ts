@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
         protocol: "https",
         hostname: "pwxpxouatzzxvvvszdnx.supabase.co", // 👈 agrega tu dominio de Supabase aquí
         pathname: "/storage/v1/object/public/**", // 👈 ruta de tus imágenes

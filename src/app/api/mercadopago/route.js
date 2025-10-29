@@ -1,6 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
+// No se necesita dotenv en producción con Next.js, las variables se cargan automáticamente
 const accessToken = process.env.MP_ACCESS_TOKEN;
 
 export async function POST(req) {
