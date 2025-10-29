@@ -35,7 +35,7 @@ export async function POST(req) {
       back_urls: {
         success: "https://6000-firebase-studio-1759795962538.cluster-ocv3ypmyqfbqysslgd7zlhmxek.cloudworkstations.dev/compra-exitosa",
         failure: "https://6000-firebase-studio-1759795962538.cluster-ocv3ypmyqfbqysslgd7zlhmxek.cloudworkstations.dev/pago-fallido",
-        pending: "https://tusitio.com/pending",
+        pending: "https://6000-firebase-studio-1759795962538.cluster-ocv3ypmyqfbqysslgd7zlhmxek.cloudworkstations.dev/pago-fallido",
       },
       auto_return: "approved",
     };
