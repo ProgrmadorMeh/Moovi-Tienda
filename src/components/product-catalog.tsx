@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import type { Product, Cellphone } from "@/lib/types";
 import ProductCard from "./product-card";
-import ProductFilters from "./product-filters";
+import ProductFilters, { priceRanges } from "./product-filters";
 import PaginationControls from "./pagination-controls";
 import QuickViewModal from "./quick-view-modal";
 
@@ -29,7 +29,7 @@ export default function ProductCatalog({
   const [filters, setFilters] = useState({
     brand: "all",
     capacity: "all",
-    priceRange: [0, 10000000],
+    price: "all",
   });
   const [sort, setSort] = useState("price-asc");
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,14 +40,15 @@ export default function ProductCatalog({
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
-      const { brand, capacity, priceRange } = filters;
+      const { brand, capacity, price } = filters;
       const brandMatch = brand === "all" || product.brand === brand;
       const capacityMatch =
         capacity === "all" ||
         (isCellphone(product) && product.capacity === capacity);
-      const priceMatch =
-        product.salePrice >= priceRange[0] &&
-        product.salePrice <= priceRange[1];
+      
+      const selectedPriceRange = priceRanges.find(r => r.value === price);
+      const priceMatch = price === "all" || (selectedPriceRange && product.salePrice >= selectedPriceRange.min && product.salePrice <= selectedPriceRange.max);
+
       return brandMatch && capacityMatch && priceMatch;
     });
 

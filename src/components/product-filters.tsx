@@ -9,14 +9,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { Separator } from "./ui/separator";
+
+// Definimos los rangos de precios
+export const priceRanges = [
+  { value: "all", label: "Cualquier Precio" },
+  { value: "0-250000", label: "Menos de $250.000", min: 0, max: 250000 },
+  { value: "250000-500000", label: "$250.000 a $500.000", min: 250000, max: 500000 },
+  { value: "500000-1000000", label: "$500.000 a $1.000.000", min: 500000, max: 1000000 },
+  { value: "1000000-2000000", label: "$1.000.000 a $2.000.000", min: 1000000, max: 2000000 },
+  { value: "2000000-99999999", label: "Más de $2.000.000", min: 2000000, max: 99999999 },
+];
 
 type FilterValues = {
   brand: string;
   capacity: string;
-  priceRange: number[];
+  price: string;
 };
+
 interface ProductFiltersProps {
   brands: string[];
   capacityOptions: string[];
@@ -34,16 +44,8 @@ export default function ProductFilters({
   sort,
   setSort,
 }: ProductFiltersProps) {
-  const handleBrandChange = (value: string) => {
-    setFilters({ ...filters, brand: value });
-  };
-
-  const handleCapacityChange = (value: string) => {
-    setFilters({ ...filters, capacity: value });
-  };
-
-  const handlePriceChange = (value: number[]) => {
-    setFilters({ ...filters, priceRange: value });
+  const handleFilterChange = (key: keyof FilterValues, value: string) => {
+    setFilters({ ...filters, [key]: value });
   };
 
   return (
@@ -69,7 +71,7 @@ export default function ProductFilters({
 
       <div className="space-y-4">
         <Label htmlFor="brand">Marca</Label>
-        <Select value={filters.brand} onValueChange={handleBrandChange}>
+        <Select value={filters.brand} onValueChange={(v) => handleFilterChange('brand', v)}>
           <SelectTrigger id="brand">
             <SelectValue placeholder="Selecciona una marca" />
           </SelectTrigger>
@@ -85,8 +87,24 @@ export default function ProductFilters({
       </div>
 
       <div className="space-y-4">
+        <Label htmlFor="price">Precio</Label>
+        <Select value={filters.price} onValueChange={(v) => handleFilterChange('price', v)}>
+          <SelectTrigger id="price">
+            <SelectValue placeholder="Selecciona un rango de precio" />
+          </SelectTrigger>
+          <SelectContent>
+            {priceRanges.map((range) => (
+              <SelectItem key={range.value} value={range.value}>
+                {range.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-4">
         <Label htmlFor="capacity">Almacenamiento</Label>
-        <Select value={filters.capacity} onValueChange={handleCapacityChange}>
+        <Select value={filters.capacity} onValueChange={(v) => handleFilterChange('capacity', v)}>
           <SelectTrigger id="capacity">
             <SelectValue placeholder="Selecciona capacidad" />
           </SelectTrigger>
@@ -99,22 +117,6 @@ export default function ProductFilters({
             ))}
           </SelectContent>
         </Select>
-      </div>
-
-      <div className="space-y-4">
-        <div className="flex justify-between">
-          <Label>Precio</Label>
-          <span className="text-sm text-muted-foreground">
-            ${filters.priceRange[0]} - ${filters.priceRange[1]}
-          </span>
-        </div>
-        <Slider
-          min={0}
-          max={10000000}
-          step={50}
-          value={filters.priceRange}
-          onValueChange={handlePriceChange}
-        />
       </div>
     </div>
   );

@@ -54,7 +54,7 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
           {(product.discount ?? 0) > 0 && (
             <Badge
               variant="destructive"
-              className="absolute top-2 right-2 z-10"
+              className="absolute top-2 right-2 z-10 text-base"
             >
               {product.discount}% OFF
             </Badge>
@@ -64,7 +64,7 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
               variant="default"
               className="absolute top-2 left-2 z-10 flex items-center gap-1"
             >
-              <ShieldCheck size={12} />
+              <ShieldCheck size={24} />
               <span>Envío Seguro</span>
             </Badge>
           )}
@@ -100,22 +100,26 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
 
           <div className="mt-2 space-y-1">
             {product.originalPrice && product.originalPrice > product.salePrice && (
-              <p className="text-xs text-muted-foreground line-through">
+              <p className="text-lg text-muted-foreground line-through">
                 ${product.originalPrice.toLocaleString("es-AR")}
               </p>
             )}
-            <p className="text-lg font-bold">
+            <p className="text-2xl font-bold">
               ${product.salePrice.toLocaleString("es-AR")}
             </p>
 
-            <p className="text-xs text-muted-foreground">
+            <p className="text-lg text-muted-foreground">
               Precio sin impuestos nacionales: ${(product.salePrice / 1.21).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
 
-            {(product.installments ?? 0) > 0 && (
-              <p className="text-xs text-green-600">
-                o {product.installments} cuotas de ${(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
-              </p>
+            {(product.installments ?? 0) > 0 ? (
+                <p className="text-lg text-green-600">
+                    o {product.installments} cuotas sin interés de ${(product.salePrice / product.installments).toLocaleString("es-AR", { minimumFractionDigits: 2 })}
+                </p>
+            ) : (product as any).fees && (
+                <p className="text-lg font-semibold text-green-600">
+                    o {(product as any).fees.count} cuotas de ${((product as any).fees.price).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </p>
             )}
           </div>
         </div>

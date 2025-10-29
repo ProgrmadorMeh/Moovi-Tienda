@@ -24,13 +24,23 @@ function processProducts(products: any[]): Product[] {
       finalSalePrice = basePrice * (1 - discount / 100);
     }
     
-    return {
+    const processedProduct: Product = {
       ...p,
       salePrice: finalSalePrice,
       originalPrice: originalPrice,
       discount,
       brand, 
     };
+
+    // Si no hay cuotas sin interés, agregar un plan de 6 cuotas con 10% de recargo.
+    if (!p.installments) {
+        (processedProduct as any).fees = {
+            count: 6,
+            price: (finalSalePrice * 1.1) / 6,
+        };
+    }
+    
+    return processedProduct;
   });
 }
 

@@ -76,7 +76,7 @@ export default function QuickViewModal({
               className="rounded-md object-cover"
             />
             {showDiscount && (
-              <Badge variant="destructive" className="absolute top-3 right-3 text-base">
+              <Badge variant="destructive" className="absolute top-3 right-3 text-lg">
                 {product.discount}% OFF
               </Badge>
             )}
@@ -98,9 +98,13 @@ export default function QuickViewModal({
                         </p>
                     )}
                 </div>
-                {product.installments > 0 && (
+                {(product.installments ?? 0) > 0 ? (
                     <p className="text-sm text-green-600">
-                        o {product.installments} cuotas de ${(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                        o {product.installments} cuotas sin interés de ${(product.salePrice / product.installments).toLocaleString("es-AR", { minimumFractionDigits: 2 })}
+                    </p>
+                ) : (product as any).fees && (
+                    <p className="text-base font-semibold text-green-600">
+                        o {(product as any).fees.count} cuotas de ${((product as any).fees.price).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
                 )}
             </div>
