@@ -1,5 +1,5 @@
 // app/products/[id]/page.tsx
-import { getAllProductsCached } from "@/lib/data";
+import { getAllProductsCached, getCellphonesCached } from "@/lib/data";
 import { defaultBase, type Product } from "@/lib/types";
 import ProductPageClient from "./product-page-client";
 import { notFound } from 'next/navigation';
