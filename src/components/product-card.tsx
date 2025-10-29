@@ -123,16 +123,17 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
                     <Eye className="mr-2 h-4 w-4" />
                     Vista Rápida
                 </Button>
-                <Link href={`/products/${product.id}`} className="w-full">
-                    <Button variant="outline" className="w-full">
-                        <FileText className="mr-2 h-4 w-4" />
-                        Ver Detalles
-                    </Button>
-                </Link>
+                <Button variant="outline" onClick={handleAddToCart}>
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    Agregar
+                </Button>
             </div>
-            <Button onClick={handleAddToCart} className="w-full">
-                <ShoppingCart className="mr-2 h-4 w-4" /> Agregar al carrito
-            </Button>
+            <Link href={`/products/${product.id}`} className="w-full">
+              <Button className="w-full">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Ver Detalles
+              </Button>
+            </Link>
         </div>
       </div>
     </div>
