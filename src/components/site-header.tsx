@@ -25,7 +25,7 @@ import {
 import { usePathname, useRouter } from 'next/navigation';
 import CartSheet from './cart-sheet';
 import FuzzySearch from './fuzzy-search';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUserStore } from '@/lib/user-store';
 import { logout } from '@/lib/funtion/log/logout';
 import { useToast } from '@/hooks/use-toast';
@@ -37,6 +37,12 @@ export default function SiteHeader() {
   const totalItems = useCartStore((state) => state.getTotalItems());
   const { user } = useUserStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
 
   const navLinks = [
     { href: '/', label: 'Inicio' },
@@ -126,7 +132,7 @@ export default function SiteHeader() {
                 size="icon"
                 className="relative text-foreground hover:bg-accent hover:text-accent-foreground"
               >
-                {totalItems > 0 && (
+                {hasMounted && totalItems > 0 && (
                   <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                     {totalItems}
                   </span>
