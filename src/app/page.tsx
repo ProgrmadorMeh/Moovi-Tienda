@@ -5,7 +5,7 @@ import HeroSection from '@/components/hero-section';
 import ProductSections from "@/components/product-sections";
 import { getCellphonesCached, getAccessoriesCached } from "@/lib/data";
 import type { Cellphone, Accessory } from "@/lib/types";
-import { Loader2 } from 'lucide-react';
+import ProductCardSkeleton from '@/components/product-card-skeleton';
 
 export default function Home() {
   const [allProducts, setAllProducts] = useState<Cellphone[]>([]);
@@ -46,9 +46,10 @@ export default function Home() {
       <HeroSection />
       <div id="product-catalog" className="container mx-auto px-4 py-12">
         {isLoading ? (
-          <div className="flex justify-center items-center min-h-[50vh]">
-            <Loader2 className="h-12 w-12 animate-spin text-primary" />
-            <span className="ml-4 text-xl">Cargando productos...</span>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
           </div>
         ) : (
           <ProductSections
