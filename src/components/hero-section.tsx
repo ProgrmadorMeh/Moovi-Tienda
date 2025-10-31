@@ -21,7 +21,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center text-white bg-cover bg-center bg-no-repeat" style={{backgroundImage: "url('/img/hero-background.png')"}}>
+    <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center text-white">
         <div className="absolute inset-0 bg-black/60 z-0"></div>
       <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center justify-center px-4 text-center text-white">
         <h1 className="font-headline text-4xl font-bold tracking-tight text-transparent bg-gradient-to-r from-indigo-600 to-sky-400 bg-clip-text md:text-6xl">
