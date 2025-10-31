@@ -11,21 +11,13 @@ export default function Typewriter({
   className = "",
 }) {
   const activePhrases = phrases.length > 0 ? phrases : defaultPhrases;
-  const shouldAnimate = phrases.length > 0;
 
   const [display, setDisplay] = useState(activePhrases[0]);
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(activePhrases[0].length);
   const [deleting, setDeleting] = useState(false);
-  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    setHasMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!shouldAnimate || !hasMounted) return;
-
     let timeout;
     const current = activePhrases[phraseIndex % activePhrases.length];
 
@@ -48,7 +40,7 @@ export default function Typewriter({
     }
 
     return () => clearTimeout(timeout);
-  }, [charIndex, deleting, phraseIndex, activePhrases, typeSpeed, deleteSpeed, pause, shouldAnimate, hasMounted]);
+  }, [charIndex, deleting, phraseIndex, activePhrases, typeSpeed, deleteSpeed, pause]);
 
 
   return (
@@ -59,15 +51,13 @@ export default function Typewriter({
     >
       <span className="inline-block leading-tight">
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-sky-400">
-          {hasMounted && shouldAnimate ? display : activePhrases[0]}
+          {display}
         </span>
         {/* Cursor */}
-        {hasMounted && shouldAnimate && (
-            <span
-                className="inline-block ml-1 align-bottom h-6 w-[2px] animate-blink bg-primary"
-                aria-hidden="true"
-            />
-        )}
+        <span
+            className="inline-block ml-1 align-bottom h-6 w-[2px] animate-blink bg-primary"
+            aria-hidden="true"
+        />
       </span>
 
       <style jsx>{`

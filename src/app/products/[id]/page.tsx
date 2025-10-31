@@ -13,8 +13,9 @@ interface PageProps {
 
 // Generamos metadatos dinámicos para cada producto
 export async function generateMetadata({ params }: PageProps) {
+  const awaitedParams = await params;
   const allProducts = await getAllProductsCached();
-  const product = allProducts.find((p) => p.id === (params).id);
+  const product = allProducts.find((p) => p.id === awaitedParams.id);
 
   if (!product) {
     return {
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function ProductDetailPage({ params }: PageProps) {
-  const { id } = params;
+  const { id } = await params;
   const allProducts = await getAllProductsCached();
   const productFromCache = allProducts.find((p) => p.id === id);
 

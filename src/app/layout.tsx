@@ -38,14 +38,14 @@ export default function RootLayout({
     <html lang="es" className="dark">
       <body
         className={cn(
-          "min-h-screen font-body antialiased bg-background",
+          "min-h-screen font-body antialiased bg-background relative",
           poppins.variable,
           ptSans.variable
         )}
       >
         <AuthProvider>
           <ParticlesComponent />
-          <div className="relative flex min-h-dvh flex-col">
+          <div className="flex min-h-dvh flex-col">
             <SiteHeader />
             <main className="flex-1">{children}</main>
             <SiteFooter />

@@ -1,7 +1,5 @@
-import type {NextConfig} from 'next';
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -13,37 +11,26 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
       },
       {
         protocol: "https",
-        hostname: "pwxpxouatzzxvvvszdnx.supabase.co", // 👈 agrega tu dominio de Supabase aquí
-        pathname: "/storage/v1/object/public/**", // 👈 ruta de tus imágenes
+        hostname: "pwxpxouatzzxvvvszdnx.supabase.co",
       },
       {
         protocol: 'https',
         hostname: 'armoto.vtexassets.com',
-        port: '',
-        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'cdn-xiaomi.waugi.com.ar',
-        port: '',
-        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'www.google.com',
-        port: '',
-        pathname: '/**',
       },
     ],
   },
