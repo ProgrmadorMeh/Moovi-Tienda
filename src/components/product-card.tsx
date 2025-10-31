@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from "react";
+import { memo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Eye, FileText, ShieldCheck } from "lucide-react";
@@ -10,16 +10,19 @@ import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { defaultBase } from "@/lib/types";
+import { Skeleton } from "./ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;
   onQuickView: (product: Product) => void;
-  priority?: boolean; // Nueva prop para priorizar la carga
+  priority?: boolean;
 }
 
 const ProductCard = memo(({ product, onQuickView, priority = false }: ProductCardProps) => {
   const { addItem } = useCartStore();
   const { toast } = useToast();
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   const productName = `${product.model}`;
 
@@ -52,11 +55,11 @@ const ProductCard = memo(({ product, onQuickView, priority = false }: ProductCar
     onQuickView(product);
   };
 
-
   return (
     <div className="group relative w-full overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-lg flex flex-col">
       <Link href={`/products/${product.id}`} className="block">
         <div className="relative aspect-square w-full overflow-hidden">
+          {isImageLoading && <Skeleton className="absolute inset-0 h-full w-full" />}
           {(product.discount ?? 0) > 0 && (
             <Badge
               variant="destructive"
@@ -79,8 +82,13 @@ const ProductCard = memo(({ product, onQuickView, priority = false }: ProductCar
             alt={productName}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            priority={priority} // Aplicamos la prioridad aquí
+            className={cn(
+                "object-cover transition-opacity duration-300 group-hover:scale-105",
+                isImageLoading ? "opacity-0" : "opacity-100"
+            )}
+            priority={priority}
+            onLoad={() => setIsImageLoading(false)}
+            onError={() => setIsImageLoading(false)} // También maneja errores de carga
           />
         </div>
       </Link>
