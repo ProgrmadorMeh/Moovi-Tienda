@@ -15,9 +15,10 @@ import { CardParticles } from "./ui/card-particles";
 interface ProductCardProps {
   product: Product;
   onQuickView: (product: Product) => void;
+  priority?: boolean; // Nueva prop para priorizar la carga
 }
 
-const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
+const ProductCard = memo(({ product, onQuickView, priority = false }: ProductCardProps) => {
   const { addItem } = useCartStore();
   const { toast } = useToast();
 
@@ -80,6 +81,7 @@ const ProductCard = memo(({ product, onQuickView }: ProductCardProps) => {
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
+            priority={priority} // Aplicamos la prioridad aquí
           />
         </div>
       </Link>

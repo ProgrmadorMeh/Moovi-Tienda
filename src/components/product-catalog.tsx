@@ -103,11 +103,12 @@ const ProductCatalog = memo(({
         <main className="lg:col-span-3">
           {paginatedProducts.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {paginatedProducts.map((product) => (
+              {paginatedProducts.map((product, index) => (
                 <ProductCard
                   key={product.id}
                   product={product}
                   onQuickView={onQuickView}
+                  priority={currentPage === 1 && index < 4} // Prioriza los primeros 4 en la primera página
                 />
               ))}
             </div>
