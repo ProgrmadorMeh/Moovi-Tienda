@@ -1,6 +1,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import HeroSection from '@/components/hero-section';
 import ProductSections from "@/components/product-sections";
 import { getCellphonesCached, getAccessoriesCached } from "@/lib/data";
 import type { Cellphone, Accessory } from "@/lib/types";
@@ -16,9 +17,8 @@ export default async function Home() {
 
   return (
     <>
-      {/* La HeroSection ha sido movida al nuevo componente HomeHeader */}
-      {/* Este div ahora solo contiene el catálogo de productos */}
-      <div id="product-catalog" className="container mx-auto px-4 py-12 bg-background relative z-10 rounded-t-2xl -mt-32 shadow-2xl">
+      <HeroSection />
+      <div id="product-catalog" className="container mx-auto px-4 py-12">
         <ProductSections
           allProducts={allProducts}
           featuredProducts={allProducts.filter((p) => p.discount > 0)}

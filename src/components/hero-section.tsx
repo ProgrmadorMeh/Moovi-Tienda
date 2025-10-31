@@ -21,8 +21,8 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center">
-      {/* El fondo se maneja ahora en HomeHeader */}
+    <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center text-white bg-cover bg-center bg-no-repeat" style={{backgroundImage: "url('/img/hero-background.png')"}}>
+        <div className="absolute inset-0 bg-black/60 z-0"></div>
       <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center justify-center px-4 text-center text-white">
         <h1 className="font-headline text-4xl font-bold tracking-tight text-transparent bg-gradient-to-r from-indigo-600 to-sky-400 bg-clip-text md:text-6xl">
           MooviTech
@@ -46,8 +46,6 @@ export default function HeroSection() {
           </Link>
         </div>
       </div>
-       {/* Fade-out effect at the bottom */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-background to-transparent"></div>
     </section>
   );
 }

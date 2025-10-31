@@ -4,11 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { type ISourceOptions } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
-import { useParticlesStore } from '@/hooks/use-particles-store';
 
 const ParticlesBackground = () => {
   const [init, setInit] = useState(false);
-  const { showParticles } = useParticlesStore();
 
   useEffect(() => {
     initParticlesEngine(async (engine) => {
@@ -57,7 +55,7 @@ const ParticlesBackground = () => {
     []
   );
 
-  if (!init || !showParticles) {
+  if (!init) {
     return null;
   }
 

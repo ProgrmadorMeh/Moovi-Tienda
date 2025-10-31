@@ -7,7 +7,7 @@ import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/lib/auth-provider";
-import ParticlesBackground from "@/components/particles-background";
+import ParticlesComponent from "@/app/Js/animacion_particula.jsx";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -44,8 +44,8 @@ export default function RootLayout({
         )}
       >
         <AuthProvider>
-          <ParticlesBackground />
           <div className="relative flex min-h-dvh flex-col">
+            <ParticlesComponent />
             <SiteHeader />
             <main className="flex-1">{children}</main>
             <SiteFooter />
