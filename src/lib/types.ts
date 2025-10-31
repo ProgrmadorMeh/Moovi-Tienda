@@ -50,7 +50,7 @@ export const defaultBase = {
   discount: 0,
   stock: 0,
   brand: "Marca Desconocida",
-  imageUrl: "https://pwxpxouatzzxvvvszdnx.supabase.co/storage/v1/object/public/celImagen/place.jpg",
+  imageUrl: "https://pwxpxouatzzxvvvszdnx.supabase.co/storage/v1/object/public/celImagen/place.webp",
   shipping: false,
   installments: 0,
   color: "No especificado",
