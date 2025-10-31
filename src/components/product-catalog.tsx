@@ -38,8 +38,9 @@ const ProductCatalog = memo(({
   const [sort, setSort] = useState("price-asc");
   
   useEffect(() => {
+    // Reset page to 1 when filters or sort order change
     onPageChange(1);
-  }, [filters, sort, onPageChange]);
+  }, [filters, sort]);
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
