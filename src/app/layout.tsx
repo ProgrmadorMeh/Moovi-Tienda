@@ -44,8 +44,8 @@ export default function RootLayout({
         )}
       >
         <AuthProvider>
+          <ParticlesComponent />
           <div className="relative flex min-h-dvh flex-col">
-            <ParticlesComponent />
             <SiteHeader />
             <main className="flex-1">{children}</main>
             <SiteFooter />
