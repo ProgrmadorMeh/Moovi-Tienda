@@ -15,7 +15,7 @@ export default function HeroSection() {
   return (
     <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center text-white">
       <Image
-        src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=2070&auto=format&fit=crop"
+        src="/img/hero-background.webp"
         alt="Fondo de celulares"
         layout="fill"
         objectFit="cover"
