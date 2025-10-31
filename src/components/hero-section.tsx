@@ -28,17 +28,7 @@ export default function HeroSection() {
           MooviTech
         </h1>
         <div className="mt-4 flex min-h-[96px] items-center justify-center text-lg text-gray-200 md:text-xl">
-          {isClient ? (
-            <Typewriter phrases={phrases} className="text-2xl" />
-          ) : (
-            <span className="text-2xl max-w-full md:max-w-[60ch] whitespace-normal break-words align-middle">
-                <span className="inline-block leading-tight">
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-sky-400">
-                        {phrases[0]}
-                    </span>
-                </span>
-            </span>
-          )}
+          <Typewriter phrases={isClient ? phrases : []} className="text-2xl" />
         </div>
         <div className="mt-8">
           <Link href="#product-catalog">
