@@ -17,20 +17,19 @@ export default function Typewriter({
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(activePhrases[0].length);
   const [deleting, setDeleting] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    if (!shouldAnimate) return;
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!shouldAnimate || !hasMounted) return;
 
     let timeout;
     const current = activePhrases[phraseIndex % activePhrases.length];
 
-    // Empezamos a borrar la primera frase estática después de una pausa inicial
-    if (phraseIndex === 0 && charIndex === current.length && !deleting) {
-       timeout = setTimeout(() => {
-            setDeleting(true);
-       }, pause);
-    }
-    else if (!deleting && charIndex <= current.length) {
+    if (!deleting && charIndex <= current.length) {
       timeout = setTimeout(() => {
         setDisplay(current.slice(0, charIndex));
         setCharIndex((i) => i + 1);
@@ -49,7 +48,7 @@ export default function Typewriter({
     }
 
     return () => clearTimeout(timeout);
-  }, [charIndex, deleting, phraseIndex, activePhrases, typeSpeed, deleteSpeed, pause, shouldAnimate]);
+  }, [charIndex, deleting, phraseIndex, activePhrases, typeSpeed, deleteSpeed, pause, shouldAnimate, hasMounted]);
 
 
   return (
@@ -60,10 +59,10 @@ export default function Typewriter({
     >
       <span className="inline-block leading-tight">
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-sky-400">
-          {display}
+          {hasMounted && shouldAnimate ? display : activePhrases[0]}
         </span>
         {/* Cursor */}
-        {shouldAnimate && (
+        {hasMounted && shouldAnimate && (
             <span
                 className="inline-block ml-1 align-bottom h-6 w-[2px] animate-blink bg-primary"
                 aria-hidden="true"
