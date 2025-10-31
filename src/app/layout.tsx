@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import { Toaster } from "@/components/ui/toaster";
-import ParticlesComponent from './Js/animacion_particula.jsx';
 import { AuthProvider } from "@/lib/auth-provider";
+import ParticlesBackground from "@/components/particles-background";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -38,14 +38,14 @@ export default function RootLayout({
     <html lang="es" className="dark">
       <body
         className={cn(
-          "min-h-screen font-body antialiased",
+          "min-h-screen font-body antialiased bg-background",
           poppins.variable,
           ptSans.variable
         )}
       >
         <AuthProvider>
-          <ParticlesComponent />
-          <div className="relative flex min-h-screen flex-col">
+          <ParticlesBackground />
+          <div className="relative flex min-h-dvh flex-col">
             <SiteHeader />
             <main className="flex-1">{children}</main>
             <SiteFooter />

@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -29,8 +28,23 @@ import { useState, useEffect } from 'react';
 import { useUserStore } from '@/lib/user-store';
 import { logout } from '@/lib/funtion/log/logout';
 import { useToast } from '@/hooks/use-toast';
+import HomeHeader from './home-header'; // Importar el nuevo HomeHeader
 
 export default function SiteHeader() {
+  const pathname = usePathname();
+
+  // Si estamos en la página de inicio, renderizamos el HomeHeader especial.
+  if (pathname === '/') {
+    return <HomeHeader />;
+  }
+  
+  // Para todas las demás páginas, renderizamos el header normal.
+  return <DefaultHeader />;
+}
+
+
+// --- Componente para el Header Normal (no en la página de inicio) ---
+function DefaultHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
@@ -58,7 +72,7 @@ export default function SiteHeader() {
   };
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-sm">
       <div className="container flex h-16 items-center">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <Smartphone className="h-6 w-6 text-primary" />
