@@ -3,9 +3,6 @@ import HeroSection from '@/components/hero-section';
 import ProductSections from "@/components/product-sections";
 import { getCellphonesCached, getAccessoriesCached } from "@/lib/data";
 import type { Cellphone, Accessory } from "@/lib/types";
-import ProductCardSkeleton from '@/components/product-card-skeleton';
-import FilterSkeleton from '@/components/filter-skeleton';
-import { Skeleton } from '@/components/ui/skeleton';
 
 export default async function Home() {
   // Fetching data on the server
