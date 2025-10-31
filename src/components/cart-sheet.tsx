@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { defaultBase } from '@/lib/types';
+import { memo } from 'react';
 
 export default function CartSheet() {
   const {
@@ -75,9 +76,9 @@ export default function CartSheet() {
   );
 }
 
-// --- Componente para cada fila del carrito ---
+// --- Componente para cada fila del carrito (Memoizado) ---
 
-function CartItemRow({ item }: { item: CartItem }) {
+const CartItemRow = memo(function CartItemRow({ item }: { item: CartItem }) {
   const { updateQuantity, removeItem } = useCartStore();
 
     // Lógica para asegurar que siempre haya una URL de imagen válida
@@ -133,4 +134,4 @@ function CartItemRow({ item }: { item: CartItem }) {
       </button>
     </div>
   );
-}
+});

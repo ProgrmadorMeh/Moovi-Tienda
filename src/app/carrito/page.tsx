@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Minus, X, Tag, ArrowLeft } from 'lucide-react';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { defaultBase } from '@/lib/types';
 
@@ -106,9 +106,9 @@ export default function CartPage() {
   );
 }
 
-// --- Componente para cada fila de la página de carrito ---
+// --- Componente para cada fila de la página de carrito (Memoizado) ---
 
-function CartPageItemRow({ item }: { item: CartItem }) {
+const CartPageItemRow = memo(function CartPageItemRow({ item }: { item: CartItem }) {
     const { updateQuantity, removeItem } = useCartStore();
 
     const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -175,4 +175,4 @@ function CartPageItemRow({ item }: { item: CartItem }) {
             </div>
         </div>
     );
-}
+});

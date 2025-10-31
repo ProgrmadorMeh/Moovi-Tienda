@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { X, Plus, Minus } from 'lucide-react';
 import { useCartStore, CartItem } from '@/lib/cart-store';
 import { defaultBase } from '@/lib/types';
+import { memo } from 'react';
 
 interface MiniCartProps {
   onClose: () => void;
@@ -71,9 +72,9 @@ export default function MiniCart({ onClose }: MiniCartProps) {
   );
 }
 
-// --- Componente para cada fila del carrito ---
+// --- Componente para cada fila del carrito (Memoizado) ---
 
-function CartItemRow({ item }: { item: CartItem }) {
+const CartItemRow = memo(function CartItemRow({ item }: { item: CartItem }) {
   const { updateQuantity, removeItem } = useCartStore();
 
   let imageSrc = defaultBase.imageUrl as string;
@@ -105,4 +106,4 @@ function CartItemRow({ item }: { item: CartItem }) {
       <button onClick={() => removeItem(item.id)} className='text-gray-400 hover:text-red-500'><X size={16} /></button>
     </div>
   );
-}
+});
