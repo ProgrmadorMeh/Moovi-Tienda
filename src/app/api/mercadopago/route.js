@@ -29,13 +29,16 @@ export async function POST(req) {
     }));
     console.log("Items para Mercado Pago:", items);
     
+    // Usamos URLs relativas para mayor portabilidad
+    const baseUrl = req.headers.get('origin') || 'https://moovitech.com';
+
     const preference = {
       items,
       payer: { email },
       back_urls: {
-        success: "https://6000-firebase-studio-1759795962538.cluster-ocv3ypmyqfbqysslgd7zlhmxek.cloudworkstations.dev/compra-exitosa",
-        failure: "https://6000-firebase-studio-1759795962538.cluster-ocv3ypmyqfbqysslgd7zlhmxek.cloudworkstations.dev/pago-fallido",
-        pending: "https://6000-firebase-studio-1759795962538.cluster-ocv3ypmyqfbqysslgd7zlhmxek.cloudworkstations.dev/pago-fallido",
+        success: `${baseUrl}/compra-exitosa`,
+        failure: `${baseUrl}/pago-fallido`,
+        pending: `${baseUrl}/pago-fallido`,
       },
       auto_return: "approved",
     };
