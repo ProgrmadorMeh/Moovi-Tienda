@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+
 export default function Typewriter({
   phrases = ["Desarrollador Web", "Diseñador UX/UI", "Freelancer"],
   typeSpeed = 80,
@@ -43,14 +44,13 @@ export default function Typewriter({
       className={`inline-block max-w-full md:max-w-[60ch] whitespace-normal break-words align-middle ${className}`}
       aria-live="polite"
     >
-      {/* El texto puede ocupar varias líneas y su tamaño lo controla el padre (p. ej. h1 con clases responsivas) */}
       <span className="inline-block leading-tight">
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-sky-400">
           {display}
         </span>
         {/* Cursor */}
         <span
-          className="inline-block ml-1 align-bottom h-6 w-[2px] animate-blink"
+          className="inline-block ml-1 align-bottom h-6 w-[2px] animate-blink bg-primary"
           aria-hidden="true"
         />
       </span>
@@ -58,17 +58,10 @@ export default function Typewriter({
       <style jsx>{`
         .animate-blink {
           animation: blink 1s steps(2, start) infinite;
-          background-color: #F3E5F5; /* text color fallback for cursor */
         }
         @keyframes blink {
-          0% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0;
-          }
-          100% {
-            opacity: 1;
+          to {
+            visibility: hidden;
           }
         }
       `}</style>
