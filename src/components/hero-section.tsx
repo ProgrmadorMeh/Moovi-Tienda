@@ -2,14 +2,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import Typewriter from '@/components/ui/typewriter';
 
 export default function HeroSection() {
   return (
     <section className="relative w-full h-screen flex items-center justify-center">
       <div className="absolute inset-0">
         <Image
-          src="/img/hero-background.png"
+          src="/img/hero-background.webp"
           alt="Modern smartphones and gadgets on a stylized background"
           fill
           sizes="100vw"
@@ -24,14 +23,25 @@ export default function HeroSection() {
           MooviTech
         </h1>
         <div className="mt-4 flex min-h-[96px] items-center justify-center text-lg text-gray-200 md:text-xl">
-          <Typewriter
-            phrases={[
-              "Descubre smartphones de última generación y lleva tu conectividad al siguiente nivel.",
-              "Encuentra accesorios exclusivos diseñados para complementar tu estilo de vida digital.",
-              "Explora nuestra selección curada con la mejor tecnología, garantía y soporte para ti.",
-            ]}
-            className="text-2xl"
-          />
+          {/* Usamos un SVG para el texto para mejorar el LCP y evitar el layout shift del Typewriter */}
+          <svg width="100%" viewBox="0 0 800 100" xmlns="http://www.w3.org/2000/svg" className="max-w-xl">
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 1 }} />
+                <stop offset="100%" style={{ stopColor: 'hsl(200 100% 50%)', stopOpacity: 1 }} />
+              </linearGradient>
+            </defs>
+            <text
+              x="50%"
+              y="50%"
+              dominantBaseline="middle"
+              textAnchor="middle"
+              fill="url(#gradient)"
+              className="text-2xl md:text-3xl font-body"
+            >
+              Explora lo último en tecnología móvil con MooviTech.
+            </text>
+          </svg>
         </div>
         <div className="mt-8">
           <Link href="#product-catalog">
