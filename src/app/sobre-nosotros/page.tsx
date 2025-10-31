@@ -29,9 +29,11 @@ export default function AboutUsPage() {
         <Image
           src="https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?q=80&w=1974&auto=format&fit=crop"
           alt="Equipo de MooviTech"
-          layout="fill"
-          objectFit="cover"
+          fill
           sizes="100vw"
+          style={{
+            objectFit: "cover",
+          }}
         />
         <div className="absolute inset-0 bg-black/40" />
       </div>
