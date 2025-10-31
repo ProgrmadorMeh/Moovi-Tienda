@@ -1,10 +1,26 @@
 
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Typewriter from './ui/typewriter';
 
+const phrases = [
+  "Explora lo último en tecnología móvil con MooviTech.",
+  "Encuentra el smartphone perfecto para tu estilo de vida.",
+  "Accesorios exclusivos para complementar tu mundo digital.",
+];
+
 export default function HeroSection() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // Este efecto solo se ejecuta en el cliente, después del montaje.
+    setIsClient(true);
+  }, []);
+
   return (
     <section className="relative w-full h-screen flex items-center justify-center">
       <div className="absolute inset-0">
@@ -24,14 +40,17 @@ export default function HeroSection() {
           MooviTech
         </h1>
         <div className="mt-4 flex min-h-[96px] items-center justify-center text-lg text-gray-200 md:text-xl">
-           <Typewriter
-            phrases={[
-              "Explora lo último en tecnología móvil con MooviTech.",
-              "Encuentra el smartphone perfecto para tu estilo de vida.",
-              "Accesorios exclusivos para complementar tu mundo digital.",
-            ]}
-            className="text-2xl"
-          />
+          {isClient ? (
+            <Typewriter phrases={phrases} className="text-2xl" />
+          ) : (
+            <span className="text-2xl max-w-full md:max-w-[60ch] whitespace-normal break-words align-middle">
+                <span className="inline-block leading-tight">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-sky-400">
+                        {phrases[0]}
+                    </span>
+                </span>
+            </span>
+          )}
         </div>
         <div className="mt-8">
           <Link href="#product-catalog">
