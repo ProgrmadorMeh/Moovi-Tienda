@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
 import { useCartStore } from '@/lib/cart-store';
 import { Button } from '@/components/ui/button';
-import ParticlesComponent from '@/app/Js/animacion_particula.jsx'; // RUTA Y NOMBRE CORREGIDOS
 
 export default function OrderSuccessPage() {
   const clearCart = useCartStore((state) => state.clearCart);
@@ -17,8 +16,6 @@ export default function OrderSuccessPage() {
 
   return (
     <div className="container mx-auto flex h-screen flex-col items-center justify-center text-center">
-      {/* El componente de partículas ahora se renderiza directamente */}
-      <ParticlesComponent /> 
       <div className="mb-6">
         <CheckCircle className="mx-auto h-16 w-16 text-green-500" />
       </div>
