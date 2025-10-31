@@ -19,7 +19,7 @@ export default async function Home() {
     <>
       <HeroSection />
 
-      <div id="product-catalog" className="container mx-auto px-4 py-12">
+      <div id="product-catalog" className="container mx-auto px-4 py-12 bg-background relative z-10 -mt-32 rounded-t-2xl shadow-2xl">
         <ProductSections
           allProducts={allProducts}
           featuredProducts={allProducts.filter((p) => p.discount > 0)}

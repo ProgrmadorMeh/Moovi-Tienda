@@ -6,7 +6,7 @@ import Typewriter from '@/components/ui/typewriter';
 
 export default function HeroSection() {
   return (
-    <section className="relative w-full pt-20">
+    <section className="relative w-full h-screen flex items-center justify-center">
       <div className="absolute inset-0">
         <Image
           src="/img/hero-background.png"
@@ -19,7 +19,7 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-black/60" />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[60vh] max-w-3xl flex-col items-center justify-center px-4 text-center text-white">
+      <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center justify-center px-4 text-center text-white">
         <h1 className="font-headline text-4xl font-bold tracking-tight text-transparent bg-gradient-to-r from-indigo-600 to-sky-400 bg-clip-text md:text-6xl">
           MooviTech
         </h1>
@@ -39,7 +39,6 @@ export default function HeroSection() {
           </Link>
         </div>
       </div>
-       <div className="relative z-20 h-48 bg-gradient-to-t from-background to-transparent"></div>
     </section>
   );
 }
