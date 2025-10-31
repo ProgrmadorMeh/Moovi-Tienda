@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Typewriter from './ui/typewriter';
 
@@ -11,6 +10,14 @@ const phrases = [
 ];
 
 export default function HeroSection() {
+
+  const handleScrollToCatalog = () => {
+    const catalogElement = document.getElementById('product-catalog');
+    if (catalogElement) {
+      catalogElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center text-white bg-hero-background bg-cover bg-center">
       <div className="absolute inset-0 bg-black/60 z-0"></div>
@@ -22,9 +29,7 @@ export default function HeroSection() {
           <Typewriter phrases={phrases} className="text-2xl" />
         </div>
         <div className="mt-8">
-          <Link href="#product-catalog">
-            <Button size="lg">Ver Catálogo</Button>
-          </Link>
+          <Button size="lg" onClick={handleScrollToCatalog}>Ver Catálogo</Button>
         </div>
       </div>
     </section>
