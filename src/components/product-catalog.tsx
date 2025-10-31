@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, memo } from "react";
 import type { Product, Cellphone } from "@/lib/types";
 import ProductCard from "./product-card";
 import ProductFilters, { priceRanges } from "./product-filters";
@@ -22,14 +22,14 @@ function isCellphone(product: Product): product is Cellphone {
   return 'capacity' in product && product.capacity !== undefined;
 }
 
-export default function ProductCatalog({
+const ProductCatalog = memo(({
   products,
   brands,
   capacityOptions,
   onQuickView,
   onPageChange,
   currentPage,
-}: ProductCatalogProps) {
+}: ProductCatalogProps) => {
   const [filters, setFilters] = useState({
     brand: "all",
     capacity: "all",
@@ -39,7 +39,7 @@ export default function ProductCatalog({
   
   useEffect(() => {
     onPageChange(1);
-  }, [filters, sort]);
+  }, [filters, sort, onPageChange]);
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
@@ -133,4 +133,8 @@ export default function ProductCatalog({
       </div>
     </div>
   );
-}
+});
+
+ProductCatalog.displayName = 'ProductCatalog';
+
+export default ProductCatalog;
