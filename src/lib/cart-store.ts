@@ -1,3 +1,4 @@
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Product } from "@/lib/types";
@@ -112,7 +113,7 @@ export const useCartStore = create(
 
       applyCoupon: (coupon) => set({ coupon }),
       setShippingCost: (cost) => set({ shippingCost: cost }),
-      clearCart: () => set(INITIAL_STATE),
+      clearCart: () => set((state) => ({...INITIAL_STATE, allProducts: state.allProducts})),
 
       // --- SELECTORES ---
       getSubtotal: () => {
@@ -134,6 +135,8 @@ export const useCartStore = create(
     }),
     {
       name: "cart-storage",
+      // Solo persistimos los items del carrito, no el cupón ni el costo de envío.
+      partialize: (state) => ({ items: state.items }),
     }
   )
 );

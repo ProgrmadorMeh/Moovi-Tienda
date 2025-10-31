@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Minus, X, Tag, ArrowLeft } from 'lucide-react';
-import { useState, memo } from 'react';
+import { useState, memo, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { defaultBase } from '@/lib/types';
 
@@ -18,11 +18,19 @@ const COUPONS = [
 ];
 
 export default function CartPage() {
-  const { items, coupon, shippingCost, getSubtotal, getTotal, applyCoupon } = useCartStore();
+  const { items, coupon, shippingCost, getSubtotal, getTotal, applyCoupon, setShippingCost } = useCartStore();
   const subtotal = getSubtotal();
   const total = getTotal();
   const { toast } = useToast();
-  const [couponCode, setCouponCode] = useState(coupon?.code || '');
+  const [couponCode, setCouponCode] = useState('');
+
+  // Reset coupon and shipping on mount if cart has items
+  useEffect(() => {
+    if (items.length > 0) {
+      applyCoupon(null);
+      setShippingCost(0);
+    }
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   const handleApplyCoupon = () => {
     const foundCoupon = COUPONS.find((c) => c.code === couponCode.toUpperCase());
