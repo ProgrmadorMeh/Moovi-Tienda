@@ -39,6 +39,7 @@ export default function Typewriter({
 
   return (
     <span
+      key={phraseIndex}
       className={`inline-block max-w-full md:max-w-[60ch] whitespace-normal break-words align-middle ${className}`}
       aria-live="polite"
     >
