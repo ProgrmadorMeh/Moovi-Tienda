@@ -6,6 +6,7 @@ import ProductSections from "@/components/product-sections";
 import { getCellphonesCached, getAccessoriesCached } from "@/lib/data";
 import type { Cellphone, Accessory } from "@/lib/types";
 import ProductCardSkeleton from '@/components/product-card-skeleton';
+import FilterSkeleton from '@/components/filter-skeleton';
 
 export default function Home() {
   const [allProducts, setAllProducts] = useState<Cellphone[]>([]);
@@ -46,10 +47,17 @@ export default function Home() {
       <HeroSection />
       <div id="product-catalog" className="container mx-auto px-4 py-12">
         {isLoading ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <ProductCardSkeleton key={i} />
-            ))}
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+            <aside className="lg:col-span-1">
+              <FilterSkeleton />
+            </aside>
+            <main className="lg:col-span-3">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <ProductCardSkeleton key={i} />
+                ))}
+              </div>
+            </main>
           </div>
         ) : (
           <ProductSections
