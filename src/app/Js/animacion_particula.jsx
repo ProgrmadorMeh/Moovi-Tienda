@@ -1,10 +1,16 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Particles from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 
 const ParticlesComponent = () => {
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
   const particlesInit = useCallback(async (engine) => {
     await loadSlim(engine);
   }, []);
@@ -74,6 +80,10 @@ const ParticlesComponent = () => {
     },
     detectRetina: true,
   };
+
+  if (!hasMounted) {
+    return null;
+  }
 
   return (
     <Particles
