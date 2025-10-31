@@ -1,3 +1,4 @@
+
 // app/products/[id]/page.tsx
 import { getAllProductsCached, getCellphonesCached } from "@/lib/data";
 import { defaultBase, type Product } from "@/lib/types";
@@ -13,7 +14,7 @@ interface PageProps {
 // Generamos metadatos dinámicos para cada producto
 export async function generateMetadata({ params }: PageProps) {
   const allProducts = await getAllProductsCached();
-  const product = allProducts.find((p) => p.id === params.id);
+  const product = allProducts.find((p) => p.id === (params).id);
 
   if (!product) {
     return {
