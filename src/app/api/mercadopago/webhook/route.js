@@ -1,15 +1,14 @@
-import { supabase } from "@/lib/supabaseClient"; // Ajusta tu import a la configuración del cliente
-import mercadopago from 'mercadopago'; // Importación estándar
-
-// --- Configuración del SDK de Mercado Pago ---
-// Se configura una sola vez cuando el módulo se carga.
-mercadopago.configure({
-  access_token: process.env.NEXT_PUBLIC_MP_ACCESS_TOKEN,
-});
-
+import { supabase } from "@/lib/supabaseClient";
+import { MercadoPagoConfig, Payment } from 'mercadopago';
 
 export async function POST(req) {
   try {
+    // 1. Instanciar el cliente dentro de la función
+    const client = new MercadoPagoConfig({ 
+        accessToken: process.env.NEXT_PUBLIC_MP_ACCESS_TOKEN,
+        options: { timeout: 5000 }
+    });
+
     const body = await req.json();
     console.log("Cuerpo del webhook recibido:", JSON.stringify(body, null, 2));
 
@@ -23,12 +22,12 @@ export async function POST(req) {
 
     console.log(`Procesando pago con ID: ${paymentId}`);
 
-    // Obtener el pago de Mercado Pago usando el SDK
-    const paymentResult = await mercadopago.payment.findById(paymentId);
-    const payment = paymentResult.body;
+    // 2. Usar la nueva instancia del cliente para las operaciones
+    const paymentInstance = new Payment(client);
+    const payment = await paymentInstance.get({ id: paymentId });
     console.log("Datos del pago obtenidos de Mercado Pago:", payment);
 
-    // Guardar en Supabase
+    // 3. Guardar en Supabase
     const { error } = await supabase.from("orders").insert([
       {
         payment_id: payment.id,
