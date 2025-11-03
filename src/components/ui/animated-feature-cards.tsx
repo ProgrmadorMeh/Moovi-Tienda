@@ -7,38 +7,38 @@ const features = [
   {
     text: "Tecnología Pura: Celulares de Alta Gama",
     icon: Cpu,
-    gradient: "from-cyan-500 to-blue-600",
-    glow: "shadow-blue-500/50",
+    gradient: "from-cyan-500/80 to-blue-600/80",
+    glow: "shadow-lg hover:shadow-2xl shadow-blue-500/60 hover:shadow-blue-400/70",
   },
   {
     text: "Accesorios Exclusivos: Eleva tu Experiencia",
     icon: LifeBuoy,
-    gradient: "from-purple-500 to-indigo-600",
-    glow: "shadow-indigo-500/50",
+    gradient: "from-purple-500/80 to-indigo-600/80",
+    glow: "shadow-lg hover:shadow-2xl shadow-indigo-500/60 hover:shadow-indigo-400/70",
   },
   {
     text: "Envío Ultra Rápido y Seguro: Tu Paz Mental",
     icon: Truck,
-    gradient: "from-green-500 to-teal-600",
-    glow: "shadow-teal-500/50",
+    gradient: "from-green-500/80 to-teal-600/80",
+    glow: "shadow-lg hover:shadow-2xl shadow-teal-500/60 hover:shadow-teal-400/70",
   },
   {
     text: "Ofertas Flash: Siempre un Paso Adelante",
     icon: TicketPercent,
-    gradient: "from-pink-500 to-purple-600",
-    glow: "shadow-purple-500/50",
+    gradient: "from-pink-500/80 to-purple-600/80",
+    glow: "shadow-lg hover:shadow-2xl shadow-purple-500/60 hover:shadow-purple-400/70",
   },
   {
     text: "Pago Seguro, Confiable y Flexible",
     icon: CreditCard,
-    gradient: "from-yellow-500 to-orange-600",
-    glow: "shadow-orange-500/50",
+    gradient: "from-yellow-500/80 to-orange-600/80",
+    glow: "shadow-lg hover:shadow-2xl shadow-orange-500/60 hover:shadow-orange-400/70",
   },
   {
     text: "Soporte VIP: Tu Satisfacción es Nuestra Misión",
     icon: ShieldCheck,
-    gradient: "from-sky-500 to-indigo-500",
-    glow: "shadow-indigo-500/50",
+    gradient: "from-sky-500/80 to-indigo-500/80",
+    glow: "shadow-lg hover:shadow-2xl shadow-indigo-500/60 hover:shadow-indigo-400/70",
   },
 ];
 
@@ -58,17 +58,17 @@ const AnimatedFeatureCards = () => {
             <div
               key={i}
               className={cn(
-                'mx-4 flex-shrink-0 rounded-xl p-6 text-center text-white shadow-lg backdrop-blur-sm',
-                'w-72 h-48', // Ancho y alto fijos para las tarjetas
-                'flex flex-col items-center justify-center space-y-4',
+                'mx-4 flex-shrink-0 rounded-xl p-6 text-center text-white backdrop-blur-sm',
+                'w-64 h-40', // Ancho y alto fijos para las tarjetas
+                'flex flex-col items-center justify-center space-y-3',
                 'transform transition-all duration-300 ease-in-out',
                 'hover:scale-105',
                 `bg-gradient-to-br ${feature.gradient}`,
-                `shadow-lg hover:shadow-2xl ${feature.glow}`
+                feature.glow
               )}
             >
               <Icon className="h-8 w-8 text-white/90" />
-              <p className="text-lg font-semibold leading-tight">{feature.text}</p>
+              <p className="text-base font-semibold leading-tight">{feature.text}</p>
             </div>
           );
         })}
@@ -84,7 +84,7 @@ const AnimatedFeatureCards = () => {
           }
         }
         .animate-scroll-infinite {
-          animation: scroll-infinite 40s linear infinite;
+          animation: scroll-infinite 30s linear infinite;
         }
         .group:hover .animate-scroll-infinite {
             animation-play-state: paused;
