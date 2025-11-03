@@ -84,7 +84,7 @@ const AnimatedFeatureCards = () => {
           }
         }
         .animate-scroll-infinite {
-          animation: scroll-infinite 30s linear infinite;
+          animation: scroll-infinite 20s linear infinite;
         }
         .group:hover .animate-scroll-infinite {
             animation-play-state: paused;
