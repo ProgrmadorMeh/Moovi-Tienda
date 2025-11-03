@@ -47,11 +47,11 @@ const duplicatedFeatures = [...features, ...features];
 
 const AnimatedFeatureCards = () => {
   return (
-    <div className="relative w-full overflow-hidden bg-transparent py-4 group">
+    <div className="relative w-full overflow-hidden bg-transparent py-4">
       <div className="absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-black/80 to-transparent" />
       <div className="absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-black/80 to-transparent" />
       
-      <div className="flex animate-scroll-infinite group-hover:pause">
+      <div className="group/scroller flex animate-scroll-infinite">
         {duplicatedFeatures.map((feature, i) => {
           const Icon = feature.icon;
           return (
@@ -86,7 +86,7 @@ const AnimatedFeatureCards = () => {
         .animate-scroll-infinite {
           animation: scroll-infinite 20s linear infinite;
         }
-        .group:hover .animate-scroll-infinite {
+        .group-hover\/scroller:hover .animate-scroll-infinite {
             animation-play-state: paused;
         }
       `}</style>
