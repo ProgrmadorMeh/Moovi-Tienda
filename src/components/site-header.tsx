@@ -28,7 +28,6 @@ import { useState, useEffect } from 'react';
 import { useUserStore } from '@/lib/user-store';
 import { logout } from '@/lib/funtion/log/logout';
 import { useToast } from '@/hooks/use-toast';
-import AnimatedFeatureCards from './ui/animated-feature-cards';
 
 
 export default function SiteHeader() {
@@ -197,7 +196,6 @@ export default function SiteHeader() {
           </div>
         </div>
       </div>
-      {isHomePage && <AnimatedFeatureCards />}
       <div className="border-t border-border/40 p-2 lg:hidden">
         <FuzzySearch />
       </div>

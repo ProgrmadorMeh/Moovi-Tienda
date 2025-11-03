@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import AnimatedFeatureCards from './ui/animated-feature-cards';
 import Typewriter from './ui/typewriter';
 
 const phrases = [
@@ -19,7 +20,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center text-white bg-hero-background bg-cover bg-center">
+    <section className="relative w-full h-[75vh] min-h-[600px] flex flex-col items-center justify-center text-white bg-hero-background bg-cover bg-center">
       <div className="absolute inset-0 bg-black/60 z-0"></div>
       <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center justify-center px-4 text-center text-white">
         <h1 className="font-headline text-4xl font-bold tracking-tight text-transparent bg-gradient-to-r from-indigo-600 to-sky-400 bg-clip-text md:text-6xl">
@@ -31,6 +32,9 @@ export default function HeroSection() {
         <div className="mt-8">
           <Button size="lg" onClick={handleScrollToCatalog}>Ver Catálogo</Button>
         </div>
+      </div>
+      <div className="relative z-10 w-full mt-12">
+        <AnimatedFeatureCards />
       </div>
     </section>
   );

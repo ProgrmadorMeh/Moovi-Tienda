@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { cn } from '@/lib/utils';
 
@@ -16,8 +15,9 @@ const duplicatedFeatures = [...features, ...features];
 
 const AnimatedFeatureCards = () => {
   return (
-    <div className="relative w-full overflow-hidden bg-transparent py-4">
-      <div className="flex animate-scroll-infinite">
+    <div className="relative w-full overflow-hidden bg-transparent py-4 group">
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/0 to-transparent z-10 w-full" />
+      <div className="flex animate-scroll-infinite group-hover:pause">
         {duplicatedFeatures.map((text, i) => (
           <div
             key={i}
@@ -45,6 +45,9 @@ const AnimatedFeatureCards = () => {
         }
         .animate-scroll-infinite {
           animation: scroll-infinite 40s linear infinite;
+        }
+        .group:hover .animate-scroll-infinite {
+            animation-play-state: paused;
         }
       `}</style>
     </div>
