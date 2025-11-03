@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Send } from "lucide-react";
+import { sendTestEmail } from "@/lib/actions";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -42,14 +43,17 @@ export default function ContactForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // In a real application, you would handle the form submission here,
     // e.g., by sending the data to your backend.
     console.log(values);
 
+    // Call the server action to send the email
+    await sendTestEmail();
+
     toast({
       title: "¡Mensaje Enviado!",
-      description: "Gracias por contactarnos. Te responderemos pronto.",
+      description: "Gracias por contactarnos. También se ha enviado un email de prueba.",
     });
 
     form.reset();
