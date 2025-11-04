@@ -7,6 +7,9 @@ import type { Product, Cellphone, Accessory } from '@/lib/types';
 import ProductCatalog from './product-catalog';
 import QuickViewModal from './quick-view-modal';
 import { Smartphone, Star, Tag, Watch } from 'lucide-react';
+import useProductFilters from '@/hooks/use-product-filters';
+import ProductFilters from './product-filters';
+import PaginationControls from './pagination-controls';
 
 interface ProductSectionsProps {
   allProducts: Cellphone[];
@@ -19,6 +22,8 @@ interface ProductSectionsProps {
   osOptions: string[];
   processorOptions: string[];
 }
+
+const PRODUCTS_PER_PAGE = 20;
 
 export default function ProductSections({
   allProducts,
@@ -34,23 +39,40 @@ export default function ProductSections({
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(
     null
   );
-  const [currentPage, setCurrentPage] = useState(1);
   const catalogRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState('all');
 
-  const handlePageChange = useCallback((page: number) => {
-    setCurrentPage(page);
-    if (catalogRef.current) {
-      catalogRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, []);
+  const productsMap: { [key: string]: Product[] } = {
+    all: allProducts,
+    featured: featuredProducts,
+    discounted: discountedProducts,
+    accessories: accessories,
+  };
+
+  const currentProductList = productsMap[activeTab];
+
+  const {
+    paginatedProducts,
+    filters,
+    setFilters,
+    sort,
+    setSort,
+    currentPage,
+    totalPages,
+    handlePageChange,
+  } = useProductFilters(currentProductList, PRODUCTS_PER_PAGE, catalogRef);
 
   const handleQuickView = useCallback((product: Product) => {
     setQuickViewProduct(product);
   }, []);
 
-  const handleTabChange = () => {
-    setCurrentPage(1);
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
   };
+  
+  // Determinar qué filtros mostrar basados en la pestaña activa
+  const isAccessoryTab = activeTab === 'accessories';
+  const currentBrands = isAccessoryTab ? [...new Set(accessories.map((a) => a.brand))] : brands;
 
   return (
     <>
@@ -75,61 +97,36 @@ export default function ProductSections({
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="all">
-            <ProductCatalog
-              products={allProducts}
-              brands={brands}
-              capacityOptions={capacityOptions}
-              ramOptions={ramOptions}
-              osOptions={osOptions}
-              processorOptions={processorOptions}
-              onQuickView={handleQuickView}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
-          </TabsContent>
-
-          <TabsContent value="featured">
-            <ProductCatalog
-              products={featuredProducts}
-              brands={brands}
-              capacityOptions={capacityOptions}
-              ramOptions={ramOptions}
-              osOptions={osOptions}
-              processorOptions={processorOptions}
-              onQuickView={handleQuickView}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
-          </TabsContent>
-
-          <TabsContent value="discounted">
-            <ProductCatalog
-              products={discountedProducts}
-              brands={brands}
-              capacityOptions={capacityOptions}
-              ramOptions={ramOptions}
-              osOptions={osOptions}
-              processorOptions={processorOptions}
-              onQuickView={handleQuickView}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
-          </TabsContent>
-
-          <TabsContent value="accessories">
-            <ProductCatalog
-              products={accessories}
-              brands={[...new Set(accessories.map((a) => a.brand))]} // Marcas solo de accesorios
-              capacityOptions={[]} // Accesorios no tienen filtro de capacidad
-              ramOptions={[]}
-              osOptions={[]}
-              processorOptions={[]}
-              onQuickView={handleQuickView}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
-          </TabsContent>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+              <aside className="lg:col-span-1">
+                  <div className="sticky top-20">
+                      <ProductFilters
+                          brands={currentBrands}
+                          capacityOptions={isAccessoryTab ? [] : capacityOptions}
+                          ramOptions={isAccessoryTab ? [] : ramOptions}
+                          osOptions={isAccessoryTab ? [] : osOptions}
+                          processorOptions={isAccessoryTab ? [] : processorOptions}
+                          filters={filters}
+                          setFilters={setFilters}
+                          sort={sort}
+                          setSort={setSort}
+                      />
+                  </div>
+              </aside>
+              <main className="lg:col-span-3">
+                  <ProductCatalog
+                      products={paginatedProducts}
+                      onQuickView={handleQuickView}
+                  />
+                  {totalPages > 1 && (
+                      <PaginationControls
+                          currentPage={currentPage}
+                          totalPages={totalPages}
+                          onPageChange={handlePageChange}
+                      />
+                  )}
+              </main>
+          </div>
         </Tabs>
       </section>
 
