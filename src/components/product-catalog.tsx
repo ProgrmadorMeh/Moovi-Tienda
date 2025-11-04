@@ -1,78 +1,43 @@
+
 "use client";
 
-import { useState, useMemo, useEffect, memo } from "react";
-import type { Product, Cellphone } from "@/lib/types";
+import { useState, useMemo } from "react";
+import type { Product } from "@/lib/types";
 import ProductCard from "./product-card";
-import ProductFilters, { priceRanges } from "./product-filters";
+import ProductFilters from "./product-filters";
 import PaginationControls from "./pagination-controls";
-import QuickViewModal from "./quick-view-modal";
+import { useProductFilters } from "@/hooks/use-product-filters";
 
 interface ProductCatalogProps {
   products: Product[];
   brands: string[];
-  capacityOptions: string[];
+  storageOptions: string[];
+  ramOptions: string[];
+  osOptions: string[];
+  processorOptions: string[];
   onQuickView: (product: Product) => void;
-  onPageChange: (page: number) => void;
-  currentPage: number;
 }
 
 const PRODUCTS_PER_PAGE = 20;
 
-function isCellphone(product: Product): product is Cellphone {
-  return 'capacity' in product && product.capacity !== undefined;
-}
-
-const ProductCatalog = memo(({
+export default function ProductCatalog({
   products,
   brands,
-  capacityOptions,
+  storageOptions,
+  ramOptions,
+  osOptions,
+  processorOptions,
   onQuickView,
-  onPageChange,
-  currentPage,
-}: ProductCatalogProps) => {
-  const [filters, setFilters] = useState({
-    brand: "all",
-    capacity: "all",
-    price: "all",
-  });
-  const [sort, setSort] = useState("price-asc");
-  
-  useEffect(() => {
-    // Reset page to 1 when filters or sort order change
-    onPageChange(1);
-  }, [filters, sort]);
-
-  const filteredAndSortedProducts = useMemo(() => {
-    let filtered = products.filter((product) => {
-      const { brand, capacity, price } = filters;
-      const brandMatch = brand === "all" || product.brand === brand;
-      const capacityMatch =
-        capacity === "all" ||
-        (isCellphone(product) && product.capacity === capacity);
-      
-      const selectedPriceRange = priceRanges.find(r => r.value === price);
-      const priceMatch = price === "all" || (selectedPriceRange && product.salePrice >= selectedPriceRange.min && product.salePrice <= selectedPriceRange.max);
-
-      return brandMatch && capacityMatch && priceMatch;
-    });
-
-    return filtered.sort((a, b) => {
-      const aName = `${a.brand} ${a.model}`;
-      const bName = `${b.brand} ${b.model}`;
-      switch (sort) {
-        case "price-asc":
-          return a.salePrice - b.salePrice;
-        case "price-desc":
-          return b.salePrice - a.salePrice;
-        case "name-asc":
-          return aName.localeCompare(bName);
-        case "name-desc":
-          return bName.localeCompare(aName);
-        default:
-          return 0;
-      }
-    });
-  }, [products, filters, sort]);
+}: ProductCatalogProps) {
+  const {
+    filteredAndSortedProducts,
+    filters,
+    sort,
+    currentPage,
+    setCurrentPage,
+    handleFilterChange,
+    handleSortChange,
+  } = useProductFilters(products);
 
   const paginatedProducts = useMemo(() => {
     const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
@@ -93,11 +58,14 @@ const ProductCatalog = memo(({
           <div className="sticky top-20">
             <ProductFilters
               brands={brands}
-              capacityOptions={capacityOptions}
+              storageOptions={storageOptions}
+              ramOptions={ramOptions}
+              osOptions={osOptions}
+              processorOptions={processorOptions}
               filters={filters}
-              setFilters={setFilters}
+              onFilterChange={handleFilterChange}
               sort={sort}
-              setSort={setSort}
+              onSortChange={handleSortChange}
             />
           </div>
         </aside>
@@ -109,7 +77,7 @@ const ProductCatalog = memo(({
                   key={product.id}
                   product={product}
                   onQuickView={onQuickView}
-                  priority={currentPage === 1 && index < 4} // Prioriza los primeros 4 en la primera página
+                  priority={currentPage === 1 && index < 4}
                 />
               ))}
             </div>
@@ -128,15 +96,11 @@ const ProductCatalog = memo(({
             <PaginationControls
               currentPage={currentPage}
               totalPages={totalPages}
-              onPageChange={onPageChange}
+              onPageChange={setCurrentPage}
             />
           )}
         </main>
       </div>
     </div>
   );
-});
-
-ProductCatalog.displayName = 'ProductCatalog';
-
-export default ProductCatalog;
+}

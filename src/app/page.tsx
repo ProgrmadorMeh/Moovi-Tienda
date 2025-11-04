@@ -4,38 +4,44 @@
 import { useState, useEffect } from "react";
 import HeroSection from '@/components/hero-section';
 import ProductSections from "@/components/product-sections";
-import { getCellphonesCached, getAccessoriesCached } from "@/lib/data";
-import type { Product } from "@/lib/types";
-import Loading from "./loading"; // Importamos el esqueleto
+import { getCellphonesCached, getAccessoriesCached, getAllProductsCached } from "@/lib/data";
+import type { Product, Cellphone, Accessory } from "@/lib/types";
+import Loading from "./loading"; 
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const [phones, setPhones] = useState<Product[]>([]);
-  const [accessories, setAccessories] = useState<Product[]>([]);
+  const [phones, setPhones] = useState<Cellphone[]>([]);
+  const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
-  const [capacities, setCapacities] = useState<string[]>([]);
+  const [storageOptions, setStorageOptions] = useState<string[]>([]);
+  const [ramOptions, setRamOptions] = useState<string[]>([]);
+  const [osOptions, setOsOptions] = useState<string[]>([]);
+  const [processorOptions, setProcessorOptions] = useState<string[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
-      // Para simular una carga más lenta y ver el esqueleto:
-      // await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const [fetchedPhones, fetchedAccessories] = await Promise.all([
+      const [fetchedPhones, fetchedAccessories, allProducts] = await Promise.all([
         getCellphonesCached(),
         getAccessoriesCached(),
+        getAllProductsCached(),
       ]);
 
-      const allFetchedProducts = [...fetchedPhones, ...fetchedAccessories];
-      const uniqueBrands = [...new Set(allFetchedProducts.map((p) => p.brand))];
-      const uniqueCapacities = [...new Set(fetchedPhones.map((p) => p.capacity))].sort(
-        (a, b) => parseInt(a) - parseInt(b)
-      );
+      const uniqueBrands = [...new Set(allProducts.map((p) => p.brand))];
+      
+      const uniqueSpecs = (key: string) => [...new Set(
+        fetchedPhones
+          .map(p => p.dataTecnica?.[key])
+          .filter((value): value is string => typeof value === 'string' && value.length > 0)
+      )].sort();
 
       setPhones(fetchedPhones);
       setAccessories(fetchedAccessories);
       setBrands(uniqueBrands);
-      setCapacities(uniqueCapacities);
-
+      setStorageOptions(uniqueSpecs('Almacenamiento'));
+      setRamOptions(uniqueSpecs('RAM'));
+      setOsOptions(uniqueSpecs('Sistema Operativo'));
+      setProcessorOptions(uniqueSpecs('Procesador'));
+      
       setIsLoading(false);
     };
 
@@ -56,7 +62,10 @@ export default function Home() {
           discountedProducts={phones.filter((p) => p.discount > 0)}
           accessories={accessories}
           brands={brands}
-          capacityOptions={capacities}
+          storageOptions={storageOptions}
+          ramOptions={ramOptions}
+          osOptions={osOptions}
+          processorOptions={processorOptions}
         />
       </div>
     </>

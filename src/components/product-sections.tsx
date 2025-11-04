@@ -13,7 +13,10 @@ interface ProductSectionsProps {
   discountedProducts: Cellphone[];
   accessories: Accessory[];
   brands: string[];
-  capacityOptions: string[];
+  storageOptions: string[];
+  ramOptions: string[];
+  osOptions: string[];
+  processorOptions: string[];
 }
 
 export default function ProductSections({
@@ -22,33 +25,23 @@ export default function ProductSections({
   discountedProducts,
   accessories,
   brands,
-  capacityOptions,
+  storageOptions,
+  ramOptions,
+  osOptions,
+  processorOptions,
 }: ProductSectionsProps) {
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(
-    null
-  );
-  const [currentPage, setCurrentPage] = useState(1);
-  const catalogRef = useRef<HTMLDivElement>(null);
-
-  const handlePageChange = useCallback((page: number) => {
-    setCurrentPage(page);
-    if (catalogRef.current) {
-      catalogRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, []);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   const handleQuickView = useCallback((product: Product) => {
     setQuickViewProduct(product);
   }, []);
 
-  const handleTabChange = () => {
-    setCurrentPage(1);
-  };
+  const accessoryBrands = [...new Set(accessories.map((a) => a.brand))];
 
   return (
     <>
-      <section ref={catalogRef} className="py-12 md:py-16">
-        <Tabs defaultValue="all" className="w-full" onValueChange={handleTabChange}>
+      <section className="py-12 md:py-16">
+        <Tabs defaultValue="all" className="w-full">
           <TabsList className="grid w-full grid-cols-2 h-auto md:grid-cols-4 mb-8">
             <TabsTrigger value="all" className="py-2.5 text-base gap-2">
               <Smartphone />
@@ -72,10 +65,11 @@ export default function ProductSections({
             <ProductCatalog
               products={allProducts}
               brands={brands}
-              capacityOptions={capacityOptions}
+              storageOptions={storageOptions}
+              ramOptions={ramOptions}
+              osOptions={osOptions}
+              processorOptions={processorOptions}
               onQuickView={handleQuickView}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
             />
           </TabsContent>
 
@@ -83,10 +77,11 @@ export default function ProductSections({
             <ProductCatalog
               products={featuredProducts}
               brands={brands}
-              capacityOptions={capacityOptions}
+              storageOptions={storageOptions}
+              ramOptions={ramOptions}
+              osOptions={osOptions}
+              processorOptions={processorOptions}
               onQuickView={handleQuickView}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
             />
           </TabsContent>
 
@@ -94,21 +89,23 @@ export default function ProductSections({
             <ProductCatalog
               products={discountedProducts}
               brands={brands}
-              capacityOptions={capacityOptions}
+              storageOptions={storageOptions}
+              ramOptions={ramOptions}
+              osOptions={osOptions}
+              processorOptions={processorOptions}
               onQuickView={handleQuickView}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
             />
           </TabsContent>
 
           <TabsContent value="accessories">
             <ProductCatalog
               products={accessories}
-              brands={[...new Set(accessories.map((a) => a.brand))]} // Marcas solo de accesorios
-              capacityOptions={[]} // Accesorios no tienen filtro de capacidad
+              brands={accessoryBrands}
+              storageOptions={[]}
+              ramOptions={[]}
+              osOptions={[]}
+              processorOptions={[]}
               onQuickView={handleQuickView}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
             />
           </TabsContent>
         </Tabs>
