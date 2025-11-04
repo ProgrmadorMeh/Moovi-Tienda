@@ -41,7 +41,7 @@ export function useProductFilters(products: Product[]) {
         },
       }));
     } else {
-      setFilters(prev => ({ ...prev, [key]: value }));
+      setFilters(prev => ({ ...prev, [key as keyof FilterState]: value }));
     }
     setCurrentPage(1); // Reset page on filter change
   }, []);
@@ -63,11 +63,14 @@ export function useProductFilters(products: Product[]) {
       // Technical Specs Filters
       const techSpecMatch = (specKey: keyof FilterState['techSpecs']) => {
         const selectedSpecs = filters.techSpecs[specKey];
-        if (selectedSpecs.length === 0) return true; // No filter selected, so it's a match
+        // Si no hay filtros seleccionados para esta especificación, no descartar el producto.
+        if (selectedSpecs.length === 0) return true;
         
         const productSpecValue = product.dataTecnica?.[specKey];
-        if (!productSpecValue) return false; // Product doesn't have the spec, so no match
+        // Si el producto no tiene esta especificación, no coincide, pero solo si el filtro está activo.
+        if (!productSpecValue) return false;
 
+        // Si el producto tiene la especificación, comprobar si su valor está en los seleccionados.
         return selectedSpecs.includes(productSpecValue);
       };
 
@@ -76,6 +79,7 @@ export function useProductFilters(products: Product[]) {
       const osMatch = techSpecMatch('Sistema Operativo');
       const processorMatch = techSpecMatch('Procesador');
 
+      // Un producto debe coincidir con todos los filtros activos
       return brandMatch && priceMatch && storageMatch && ramMatch && osMatch && processorMatch;
     });
 
