@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Separator } from "./ui/separator";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
 
 // Definimos los rangos de precios
 export const priceRanges = [
@@ -25,11 +27,17 @@ type FilterValues = {
   brand: string;
   capacity: string;
   price: string;
+  ram: string[];
+  os: string[];
+  processor: string[];
 };
 
 interface ProductFiltersProps {
   brands: string[];
   capacityOptions: string[];
+  ramOptions: string[];
+  osOptions: string[];
+  processorOptions: string[];
   filters: FilterValues;
   setFilters: (filters: FilterValues) => void;
   sort: string;
@@ -39,14 +47,22 @@ interface ProductFiltersProps {
 export default function ProductFilters({
   brands = [],
   capacityOptions = [],
+  ramOptions = [],
+  osOptions = [],
+  processorOptions = [],
   filters,
   setFilters,
   sort,
   setSort,
 }: ProductFiltersProps) {
-  const handleFilterChange = (key: keyof FilterValues, value: string) => {
+  const handleFilterChange = (key: keyof Omit<FilterValues, 'ram' | 'os' | 'processor'>, value: string) => {
     setFilters({ ...filters, [key]: value });
   };
+  
+  const handleToggleGroupChange = (key: 'ram' | 'os' | 'processor', value: string[]) => {
+    setFilters({ ...filters, [key]: value });
+  };
+
 
   return (
     <div className="space-y-6 rounded-lg border bg-card p-6">
@@ -69,6 +85,7 @@ export default function ProductFilters({
 
       <Separator />
 
+      {/* Filtros de Selección Única */}
       <div className="space-y-4">
         <Label htmlFor="brand">Marca</Label>
         <Select value={filters.brand} onValueChange={(v) => handleFilterChange('brand', v)}>
@@ -118,6 +135,42 @@ export default function ProductFilters({
           </SelectContent>
         </Select>
       </div>
+      
+      <Separator />
+
+      {/* Filtros de Etiquetas (Selección Múltiple) */}
+      {ramOptions.length > 0 && (
+        <div className="space-y-3">
+          <Label>RAM</Label>
+          <ToggleGroup type="multiple" value={filters.ram} onValueChange={(value) => handleToggleGroupChange('ram', value)} variant="outline" className="flex-wrap justify-start">
+            {ramOptions.map(ram => (
+              <ToggleGroupItem key={ram} value={ram}>{ram}</ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </div>
+      )}
+
+      {osOptions.length > 0 && (
+        <div className="space-y-3">
+          <Label>Sistema Operativo</Label>
+          <ToggleGroup type="multiple" value={filters.os} onValueChange={(value) => handleToggleGroupChange('os', value)} variant="outline" className="flex-wrap justify-start">
+            {osOptions.map(os => (
+              <ToggleGroupItem key={os} value={os}>{os}</ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </div>
+      )}
+
+      {processorOptions.length > 0 && (
+        <div className="space-y-3">
+          <Label>Procesador</Label>
+          <ToggleGroup type="multiple" value={filters.processor} onValueChange={(value) => handleToggleGroupChange('processor', value)} variant="outline" className="flex-wrap justify-start">
+            {processorOptions.map(proc => (
+              <ToggleGroupItem key={proc} value={proc} className="text-xs">{proc}</ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </div>
+      )}
     </div>
   );
 }

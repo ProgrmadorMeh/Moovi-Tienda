@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo, useEffect, memo } from "react";
@@ -11,6 +12,9 @@ interface ProductCatalogProps {
   products: Product[];
   brands: string[];
   capacityOptions: string[];
+  ramOptions: string[];
+  osOptions: string[];
+  processorOptions: string[];
   onQuickView: (product: Product) => void;
   onPageChange: (page: number) => void;
   currentPage: number;
@@ -22,36 +26,60 @@ function isCellphone(product: Product): product is Cellphone {
   return 'capacity' in product && product.capacity !== undefined;
 }
 
+type Filters = {
+  brand: string;
+  capacity: string;
+  price: string;
+  ram: string[];
+  os: string[];
+  processor: string[];
+};
+
 const ProductCatalog = memo(({
   products,
   brands,
   capacityOptions,
+  ramOptions,
+  osOptions,
+  processorOptions,
   onQuickView,
   onPageChange,
   currentPage,
 }: ProductCatalogProps) => {
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filters>({
     brand: "all",
     capacity: "all",
     price: "all",
+    ram: [],
+    os: [],
+    processor: [],
   });
   const [sort, setSort] = useState("price-asc");
   
   useEffect(() => {
     // Reset page to 1 when filters or sort order change
     onPageChange(1);
-  }, [filters, sort]);
+  }, [filters, sort, onPageChange]);
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
-      const { brand, capacity, price } = filters;
+      const { brand, capacity, price, ram, os, processor } = filters;
+      
       const brandMatch = brand === "all" || product.brand === brand;
+      
       const capacityMatch =
         capacity === "all" ||
         (isCellphone(product) && product.capacity === capacity);
       
       const selectedPriceRange = priceRanges.find(r => r.value === price);
       const priceMatch = price === "all" || (selectedPriceRange && product.salePrice >= selectedPriceRange.min && product.salePrice <= selectedPriceRange.max);
+
+      if (isCellphone(product)) {
+        const ramMatch = ram.length === 0 || (product.dataTecnica?.RAM && ram.includes(product.dataTecnica.RAM));
+        const osMatch = os.length === 0 || (product.dataTecnica?.['Sistema Operativo'] && os.includes(product.dataTecnica['Sistema Operativo']));
+        const processorMatch = processor.length === 0 || (product.dataTecnica?.Procesador && processor.includes(product.dataTecnica.Procesador));
+        return brandMatch && capacityMatch && priceMatch && ramMatch && osMatch && processorMatch;
+      }
 
       return brandMatch && capacityMatch && priceMatch;
     });
@@ -94,6 +122,9 @@ const ProductCatalog = memo(({
             <ProductFilters
               brands={brands}
               capacityOptions={capacityOptions}
+              ramOptions={ramOptions}
+              osOptions={osOptions}
+              processorOptions={processorOptions}
               filters={filters}
               setFilters={setFilters}
               sort={sort}

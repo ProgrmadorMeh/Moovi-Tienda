@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
@@ -14,6 +15,9 @@ interface ProductSectionsProps {
   accessories: Accessory[];
   brands: string[];
   capacityOptions: string[];
+  ramOptions: string[];
+  osOptions: string[];
+  processorOptions: string[];
 }
 
 export default function ProductSections({
@@ -23,6 +27,9 @@ export default function ProductSections({
   accessories,
   brands,
   capacityOptions,
+  ramOptions,
+  osOptions,
+  processorOptions,
 }: ProductSectionsProps) {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(
     null
@@ -73,6 +80,9 @@ export default function ProductSections({
               products={allProducts}
               brands={brands}
               capacityOptions={capacityOptions}
+              ramOptions={ramOptions}
+              osOptions={osOptions}
+              processorOptions={processorOptions}
               onQuickView={handleQuickView}
               currentPage={currentPage}
               onPageChange={handlePageChange}
@@ -84,6 +94,9 @@ export default function ProductSections({
               products={featuredProducts}
               brands={brands}
               capacityOptions={capacityOptions}
+              ramOptions={ramOptions}
+              osOptions={osOptions}
+              processorOptions={processorOptions}
               onQuickView={handleQuickView}
               currentPage={currentPage}
               onPageChange={handlePageChange}
@@ -95,6 +108,9 @@ export default function ProductSections({
               products={discountedProducts}
               brands={brands}
               capacityOptions={capacityOptions}
+              ramOptions={ramOptions}
+              osOptions={osOptions}
+              processorOptions={processorOptions}
               onQuickView={handleQuickView}
               currentPage={currentPage}
               onPageChange={handlePageChange}
@@ -106,6 +122,9 @@ export default function ProductSections({
               products={accessories}
               brands={[...new Set(accessories.map((a) => a.brand))]} // Marcas solo de accesorios
               capacityOptions={[]} // Accesorios no tienen filtro de capacidad
+              ramOptions={[]}
+              osOptions={[]}
+              processorOptions={[]}
               onQuickView={handleQuickView}
               currentPage={currentPage}
               onPageChange={handlePageChange}

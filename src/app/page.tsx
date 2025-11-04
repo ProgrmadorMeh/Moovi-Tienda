@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import HeroSection from '@/components/hero-section';
 import ProductSections from "@/components/product-sections";
 import { getCellphonesCached, getAccessoriesCached } from "@/lib/data";
-import type { Product } from "@/lib/types";
+import type { Product, Cellphone } from "@/lib/types";
 import Loading from "./loading"; // Importamos el esqueleto
 
 export default function Home() {
@@ -14,6 +14,9 @@ export default function Home() {
   const [accessories, setAccessories] = useState<Product[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
   const [capacities, setCapacities] = useState<string[]>([]);
+  const [ramOptions, setRamOptions] = useState<string[]>([]);
+  const [osOptions, setOsOptions] = useState<string[]>([]);
+  const [processorOptions, setProcessorOptions] = useState<string[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -31,10 +34,19 @@ export default function Home() {
         (a, b) => parseInt(a) - parseInt(b)
       );
 
+      const allPhones = fetchedPhones as Cellphone[];
+      const uniqueRam = [...new Set(allPhones.map(p => p.dataTecnica?.RAM).filter(Boolean) as string[])];
+      const uniqueOs = [...new Set(allPhones.map(p => p.dataTecnica?.['Sistema Operativo']).filter(Boolean) as string[])];
+      const uniqueProcessors = [...new Set(allPhones.map(p => p.dataTecnica?.Procesador).filter(Boolean) as string[])];
+
       setPhones(fetchedPhones);
       setAccessories(fetchedAccessories);
       setBrands(uniqueBrands);
       setCapacities(uniqueCapacities);
+      setRamOptions(uniqueRam);
+      setOsOptions(uniqueOs);
+      setProcessorOptions(uniqueProcessors);
+
 
       setIsLoading(false);
     };
@@ -57,6 +69,9 @@ export default function Home() {
           accessories={accessories}
           brands={brands}
           capacityOptions={capacities}
+          ramOptions={ramOptions}
+          osOptions={osOptions}
+          processorOptions={processorOptions}
         />
       </div>
     </>
