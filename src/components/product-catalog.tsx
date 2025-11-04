@@ -6,7 +6,6 @@ import type { Product, Cellphone } from "@/lib/types";
 import ProductCard from "./product-card";
 import ProductFilters, { priceRanges } from "./product-filters";
 import PaginationControls from "./pagination-controls";
-import QuickViewModal from "./quick-view-modal";
 
 interface ProductCatalogProps {
   products: Product[];
@@ -23,9 +22,7 @@ interface ProductCatalogProps {
 const PRODUCTS_PER_PAGE = 20;
 
 function isCellphone(product: Product): product is Cellphone {
-  // A 'cellphone' is defined as a product that is NOT an accessory.
-  // The 'category' field only exists on accessories.
-  return !("category" in product);
+  return "imei" in product && !("category" in product);
 }
 
 type Filters = {
@@ -59,27 +56,25 @@ const ProductCatalog = memo(({
   const [sort, setSort] = useState("price-asc");
   
   useEffect(() => {
-    // Reset page to 1 when filters or sort order change
     onPageChange(1);
   }, [filters, sort, onPageChange]);
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
-      const { brand, price } = filters;
+      const { brand, price, capacity, ram, os, processor } = filters;
       
       const brandMatch = brand === "all" || product.brand === brand;
       
       const selectedPriceRange = priceRanges.find(r => r.value === price);
       const priceMatch = price === "all" || (selectedPriceRange && product.salePrice >= selectedPriceRange.min && product.salePrice <= selectedPriceRange.max);
       
-      // Technical specs filters - only apply to cellphones
       let techSpecsMatch = true;
       if (isCellphone(product)) {
-        const { capacity, ram, os, processor } = filters;
-        const capacityMatch = capacity.length === 0 || (product.dataTecnica?.Almacenamiento && capacity.includes(product.dataTecnica.Almacenamiento));
-        const ramMatch = ram.length === 0 || (product.dataTecnica?.RAM && ram.includes(product.dataTecnica.RAM));
-        const osMatch = os.length === 0 || (product.dataTecnica?.['Sistema Operativo'] && os.includes(product.dataTecnica['Sistema Operativo']));
-        const processorMatch = processor.length === 0 || (product.dataTecnica?.Procesador && processor.includes(product.dataTecnica.Procesador));
+        const p = product as Cellphone;
+        const capacityMatch = capacity.length === 0 || (p.dataTecnica?.Almacenamiento && capacity.includes(p.dataTecnica.Almacenamiento));
+        const ramMatch = ram.length === 0 || (p.dataTecnica?.RAM && ram.includes(p.dataTecnica.RAM));
+        const osMatch = os.length === 0 || (p.dataTecnica?.['Sistema Operativo'] && os.includes(p.dataTecnica['Sistema Operativo']));
+        const processorMatch = processor.length === 0 || (p.dataTecnica?.Procesador && processor.includes(p.dataTecnica.Procesador));
         techSpecsMatch = capacityMatch && ramMatch && osMatch && processorMatch;
       }
 
@@ -142,7 +137,7 @@ const ProductCatalog = memo(({
                   key={product.id}
                   product={product}
                   onQuickView={onQuickView}
-                  priority={currentPage === 1 && index < 4} // Prioriza los primeros 4 en la primera página
+                  priority={currentPage === 1 && index < 4}
                 />
               ))}
             </div>
