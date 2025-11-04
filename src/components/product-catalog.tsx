@@ -23,7 +23,7 @@ interface ProductCatalogProps {
 const PRODUCTS_PER_PAGE = 20;
 
 function isCellphone(product: Product): product is Cellphone {
-  return "imei" in product; // Using a property that is unique to cellphones now
+  return "imei" in product;
 }
 
 type Filters = {
@@ -69,17 +69,18 @@ const ProductCatalog = memo(({
       
       const selectedPriceRange = priceRanges.find(r => r.value === price);
       const priceMatch = price === "all" || (selectedPriceRange && product.salePrice >= selectedPriceRange.min && product.salePrice <= selectedPriceRange.max);
-
+      
+      // Technical specs filters - only apply to cellphones
+      let techSpecsMatch = true;
       if (isCellphone(product)) {
         const capacityMatch = capacity.length === 0 || (product.dataTecnica?.Almacenamiento && capacity.includes(product.dataTecnica.Almacenamiento));
         const ramMatch = ram.length === 0 || (product.dataTecnica?.RAM && ram.includes(product.dataTecnica.RAM));
         const osMatch = os.length === 0 || (product.dataTecnica?.['Sistema Operativo'] && os.includes(product.dataTecnica['Sistema Operativo']));
         const processorMatch = processor.length === 0 || (product.dataTecnica?.Procesador && processor.includes(product.dataTecnica.Procesador));
-        return brandMatch && capacityMatch && priceMatch && ramMatch && osMatch && processorMatch;
+        techSpecsMatch = capacityMatch && ramMatch && osMatch && processorMatch;
       }
 
-      // For accessories, we don't check technical specs
-      return brandMatch && priceMatch;
+      return brandMatch && priceMatch && techSpecsMatch;
     });
 
     return filtered.sort((a, b) => {
