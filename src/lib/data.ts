@@ -27,22 +27,30 @@ function processProducts(products: any[]): Product[] {
     // --- Procesamiento de Imágenes ---
     let processedImageUrl: string | string[] | null = p.imageUrl;
     
-    // Si imageUrl es una cadena que parece un array JSON, intentamos parsearlo
     if (typeof processedImageUrl === 'string' && processedImageUrl.startsWith('[') && processedImageUrl.endsWith(']')) {
       try {
         const parsed = JSON.parse(processedImageUrl);
-        // Nos aseguramos de que el resultado sea un array de strings
         if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
           processedImageUrl = parsed;
         } else {
-           processedImageUrl = null; // Si el formato interior no es el esperado
+           processedImageUrl = null;
         }
       } catch (e) {
         console.error("Failed to parse imageUrl string:", processedImageUrl, e);
-        processedImageUrl = null; // Si el parseo falla
+        processedImageUrl = null;
       }
     }
-    // --- Fin del procesamiento de Imágenes ---
+    
+    // --- Procesamiento de dataTecnica ---
+    let processedDataTecnica = p.dataTecnica;
+    if (typeof processedDataTecnica === 'string') {
+      try {
+        processedDataTecnica = JSON.parse(processedDataTecnica);
+      } catch (e) {
+        console.error("Failed to parse dataTecnica string:", processedDataTecnica, e);
+        processedDataTecnica = {}; // Asignar objeto vacío si el parseo falla
+      }
+    }
     
     const processedProduct: Product = {
       ...p,
@@ -50,10 +58,10 @@ function processProducts(products: any[]): Product[] {
       originalPrice: originalPrice,
       discount,
       brand, 
-      imageUrl: processedImageUrl, // Usamos la URL procesada
+      imageUrl: processedImageUrl,
+      dataTecnica: processedDataTecnica,
     };
 
-    // Si no hay cuotas sin interés, agregar un plan de 6 cuotas con 10% de recargo.
     if (!p.installments) {
         (processedProduct as any).fees = {
             count: 6,
@@ -99,7 +107,7 @@ export const getAllProductsCached = cache(async (refresh = false): Promise<Produ
  */
 export async function getCellphonesCached(refresh = false): Promise<Cellphone[]> {
   const allProducts = await getAllProductsCached(refresh);
-  return allProducts.filter((p): p is Cellphone => "capacity" in p);
+  return allProducts.filter((p): p is Cellphone => p.hasOwnProperty('imei') || p.hasOwnProperty('dataTecnica'));
 }
 
 /**
@@ -109,3 +117,4 @@ export async function getAccessoriesCached(refresh = false): Promise<Accessory[]
   const allProducts = await getAllProductsCached(refresh);
   return allProducts.filter((p): p is Accessory => "category" in p);
 }
+
