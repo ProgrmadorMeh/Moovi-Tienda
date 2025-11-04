@@ -1,29 +1,34 @@
 import { memo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText } from "lucide-react";
+import type { Cellphone, Product } from "@/lib/types";
 
-const ProductSpecs = memo(({ product }) => {
-  // Ejemplo de datos de ficha técnica (puedes pasarlos como prop)
-  const techSpecs = [
-    { label: "Pantalla", value: "6.5 pulgadas Super AMOLED, 120Hz" },
-    { label: "Procesador", value: "Octa-Core 2.4GHz" },
-    { label: "RAM", value: "6 GB" },
-    { label: "Almacenamiento", value: "128 GB (ampliable)" },
-    { label: "Cámara Principal", value: "50 MP + 12 MP + 5 MP" },
-    { label: "Batería", value: "5000 mAh, Carga rápida 25W" },
-    { label: "Sistema Operativo", value: "Android 13" },
-  ];
+// Función para verificar si el producto es un celular
+function isCellphone(product: Product): product is Cellphone {
+  return "capacity" in product;
+}
+
+const ProductSpecs = memo(({ product }: { product: Product }) => {
+  // Asegurarnos de que estamos tratando con un celular y que tiene datos técnicos
+  if (!isCellphone(product) || !product.dataTecnica || Object.keys(product.dataTecnica).length === 0) {
+    return (
+      <div className="py-4 text-center text-muted-foreground">
+        No hay especificaciones técnicas detalladas para este producto.
+      </div>
+    );
+  }
+
+  // Convertimos el objeto de especificaciones en un array para poder mapearlo
+  const techSpecs = Object.entries(product.dataTecnica);
 
   return (
     <div className="py-4">
-        <ul className="space-y-4 text-base">
-          {techSpecs.map((spec, index) => (
-            <li key={index} className="flex justify-between border-b pb-3">
-              <span className="font-medium text-muted-foreground">{spec.label}</span>
-              <span className="text-right text-foreground">{spec.value}</span>
-            </li>
-          ))}
-        </ul>
+      <ul className="space-y-4 text-base">
+        {techSpecs.map(([key, value]) => (
+          <li key={key} className="flex flex-col sm:flex-row sm:justify-between border-b pb-3">
+            <span className="font-medium text-muted-foreground">{key}</span>
+            <span className="text-left sm:text-right text-foreground">{String(value) || 'N/A'}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 });
