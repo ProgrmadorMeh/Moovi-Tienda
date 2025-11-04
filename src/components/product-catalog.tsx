@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import type { Product } from "@/lib/types";
 import ProductCard from "./product-card";
 import ProductFilters from "./product-filters";
@@ -50,6 +50,8 @@ export default function ProductCatalog({
   const totalPages = Math.ceil(
     filteredAndSortedProducts.length / PRODUCTS_PER_PAGE
   );
+
+  console.log("Productos a mostrar en el catálogo:", paginatedProducts);
 
   return (
     <div>
