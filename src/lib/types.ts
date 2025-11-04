@@ -14,12 +14,12 @@ type BaseProduct = {
   shipping: boolean;
   installments: number;
   color: string;
+  dataTecnica?: Record<string, string>; // Usamos un objeto genérico para las especificaciones
 };
 
 // Tipo específico para celulares, extiende la base y añade sus propios campos.
 export type Cellphone = BaseProduct & {
   imei: string;
-  capacity: string;
   // Excluimos campos de accesorios para evitar solapamientos.
   category?: never;
 };
@@ -29,7 +29,7 @@ export type Accessory = BaseProduct & {
   category: string;
   // Excluimos campos de celulares.
   imei?: never;
-  capacity?: never;
+  dataTecnica?: never;
 };
 
 // El tipo `Product` es una unión de `Cellphone` o `Accessory`.
@@ -54,9 +54,9 @@ export const defaultBase = {
   shipping: false,
   installments: 0,
   color: "No especificado",
+  dataTecnica: {},
   // Campos específicos con valores por defecto
   imei: "N/A",
-  capacity: "N/A",
   category: "General",
 };
 

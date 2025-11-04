@@ -25,7 +25,7 @@ export const priceRanges = [
 
 type FilterValues = {
   brand: string;
-  capacity: string;
+  capacity: string[];
   price: string;
   ram: string[];
   os: string[];
@@ -55,11 +55,11 @@ export default function ProductFilters({
   sort,
   setSort,
 }: ProductFiltersProps) {
-  const handleFilterChange = (key: keyof Omit<FilterValues, 'ram' | 'os' | 'processor'>, value: string) => {
+  const handleFilterChange = (key: keyof Omit<FilterValues, 'ram' | 'os' | 'processor' | 'capacity'>, value: string) => {
     setFilters({ ...filters, [key]: value });
   };
   
-  const handleToggleGroupChange = (key: 'ram' | 'os' | 'processor', value: string[]) => {
+  const handleToggleGroupChange = (key: 'ram' | 'os' | 'processor' | 'capacity', value: string[]) => {
     setFilters({ ...filters, [key]: value });
   };
 
@@ -118,27 +118,21 @@ export default function ProductFilters({
           </SelectContent>
         </Select>
       </div>
-
-      <div className="space-y-4">
-        <Label htmlFor="capacity">Almacenamiento</Label>
-        <Select value={filters.capacity} onValueChange={(v) => handleFilterChange('capacity', v)}>
-          <SelectTrigger id="capacity">
-            <SelectValue placeholder="Selecciona capacidad" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas las Capacidades</SelectItem>
-            {capacityOptions.map((capacity) => (
-              <SelectItem key={capacity} value={capacity}>
-                {capacity}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
       
       <Separator />
 
       {/* Filtros de Etiquetas (Selección Múltiple) */}
+      {capacityOptions.length > 0 && (
+        <div className="space-y-3">
+          <Label>Almacenamiento</Label>
+          <ToggleGroup type="multiple" value={filters.capacity} onValueChange={(value) => handleToggleGroupChange('capacity', value)} variant="outline" className="flex-wrap justify-start">
+            {capacityOptions.map(cap => (
+              <ToggleGroupItem key={cap} value={cap}>{cap}</ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </div>
+      )}
+
       {ramOptions.length > 0 && (
         <div className="space-y-3">
           <Label>RAM</Label>

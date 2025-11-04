@@ -30,11 +30,12 @@ export default function Home() {
 
       const allFetchedProducts = [...fetchedPhones, ...fetchedAccessories];
       const uniqueBrands = [...new Set(allFetchedProducts.map((p) => p.brand))];
-      const uniqueCapacities = [...new Set(fetchedPhones.map((p) => p.capacity))].sort(
-        (a, b) => parseInt(a) - parseInt(b)
-      );
-
+      
       const allPhones = fetchedPhones as Cellphone[];
+
+      const uniqueCapacities = [...new Set(allPhones.map(p => p.dataTecnica?.Almacenamiento).filter(Boolean) as string[])].sort(
+        (a, b) => (parseInt(a) || 0) - (parseInt(b) || 0)
+      );
       const uniqueRam = [...new Set(allPhones.map(p => p.dataTecnica?.RAM).filter(Boolean) as string[])];
       const uniqueOs = [...new Set(allPhones.map(p => p.dataTecnica?.['Sistema Operativo']).filter(Boolean) as string[])];
       const uniqueProcessors = [...new Set(allPhones.map(p => p.dataTecnica?.Procesador).filter(Boolean) as string[])];

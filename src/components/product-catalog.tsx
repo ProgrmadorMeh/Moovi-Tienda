@@ -23,12 +23,12 @@ interface ProductCatalogProps {
 const PRODUCTS_PER_PAGE = 20;
 
 function isCellphone(product: Product): product is Cellphone {
-  return 'capacity' in product && product.capacity !== undefined;
+  return "imei" in product; // Using a property that is unique to cellphones now
 }
 
 type Filters = {
   brand: string;
-  capacity: string;
+  capacity: string[];
   price: string;
   ram: string[];
   os: string[];
@@ -48,7 +48,7 @@ const ProductCatalog = memo(({
 }: ProductCatalogProps) => {
   const [filters, setFilters] = useState<Filters>({
     brand: "all",
-    capacity: "all",
+    capacity: [],
     price: "all",
     ram: [],
     os: [],
@@ -67,21 +67,19 @@ const ProductCatalog = memo(({
       
       const brandMatch = brand === "all" || product.brand === brand;
       
-      const capacityMatch =
-        capacity === "all" ||
-        (isCellphone(product) && product.capacity === capacity);
-      
       const selectedPriceRange = priceRanges.find(r => r.value === price);
       const priceMatch = price === "all" || (selectedPriceRange && product.salePrice >= selectedPriceRange.min && product.salePrice <= selectedPriceRange.max);
 
       if (isCellphone(product)) {
+        const capacityMatch = capacity.length === 0 || (product.dataTecnica?.Almacenamiento && capacity.includes(product.dataTecnica.Almacenamiento));
         const ramMatch = ram.length === 0 || (product.dataTecnica?.RAM && ram.includes(product.dataTecnica.RAM));
         const osMatch = os.length === 0 || (product.dataTecnica?.['Sistema Operativo'] && os.includes(product.dataTecnica['Sistema Operativo']));
         const processorMatch = processor.length === 0 || (product.dataTecnica?.Procesador && processor.includes(product.dataTecnica.Procesador));
         return brandMatch && capacityMatch && priceMatch && ramMatch && osMatch && processorMatch;
       }
 
-      return brandMatch && capacityMatch && priceMatch;
+      // For accessories, we don't check technical specs
+      return brandMatch && priceMatch;
     });
 
     return filtered.sort((a, b) => {
