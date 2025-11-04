@@ -29,7 +29,6 @@ export type Accessory = BaseProduct & {
   category: string;
   // Excluimos campos de celulares.
   imei?: never;
-  dataTecnica?: never;
 };
 
 // El tipo `Product` es una unión de `Cellphone` o `Accessory`.

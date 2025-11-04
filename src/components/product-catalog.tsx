@@ -23,7 +23,9 @@ interface ProductCatalogProps {
 const PRODUCTS_PER_PAGE = 20;
 
 function isCellphone(product: Product): product is Cellphone {
-  return "imei" in product;
+  // A 'cellphone' is defined as a product that is NOT an accessory.
+  // The 'category' field only exists on accessories.
+  return !("category" in product);
 }
 
 type Filters = {
@@ -63,7 +65,7 @@ const ProductCatalog = memo(({
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
-      const { brand, capacity, price, ram, os, processor } = filters;
+      const { brand, price } = filters;
       
       const brandMatch = brand === "all" || product.brand === brand;
       
@@ -73,6 +75,7 @@ const ProductCatalog = memo(({
       // Technical specs filters - only apply to cellphones
       let techSpecsMatch = true;
       if (isCellphone(product)) {
+        const { capacity, ram, os, processor } = filters;
         const capacityMatch = capacity.length === 0 || (product.dataTecnica?.Almacenamiento && capacity.includes(product.dataTecnica.Almacenamiento));
         const ramMatch = ram.length === 0 || (product.dataTecnica?.RAM && ram.includes(product.dataTecnica.RAM));
         const osMatch = os.length === 0 || (product.dataTecnica?.['Sistema Operativo'] && os.includes(product.dataTecnica['Sistema Operativo']));
