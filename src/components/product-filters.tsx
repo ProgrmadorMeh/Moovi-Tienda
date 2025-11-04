@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Separator } from "./ui/separator";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import type { FilterState } from "@/hooks/use-product-filters";
 
 // Definimos los rangos de precios
 export const priceRanges = [
@@ -21,40 +23,71 @@ export const priceRanges = [
   { value: "2000000-99999999", label: "Más de $2.000.000", min: 2000000, max: 99999999 },
 ];
 
-type FilterValues = {
-  brand: string;
-  capacity: string;
-  price: string;
-};
-
 interface ProductFiltersProps {
   brands: string[];
-  capacityOptions: string[];
-  filters: FilterValues;
-  setFilters: (filters: FilterValues) => void;
+  storageOptions: string[];
+  ramOptions: string[];
+  osOptions: string[];
+  processorOptions: string[];
+  filters: FilterState;
+  onFilterChange: (key: keyof FilterState | `techSpec.${string}`, value: any) => void;
   sort: string;
-  setSort: (sort: string) => void;
+  onSortChange: (sort: string) => void;
 }
+
+// Componente reutilizable para un grupo de filtros de especificaciones técnicas
+const TechSpecFilterGroup = ({ label, options, techSpecKey, selectedValues, onValueChange }: {
+  label: string;
+  options: string[];
+  techSpecKey: keyof FilterState['techSpecs'];
+  selectedValues: string[];
+  onValueChange: (key: keyof FilterState['techSpecs'], value: string[]) => void;
+}) => {
+  if (options.length === 0) return null;
+
+  return (
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <ToggleGroup
+        type="multiple"
+        variant="outline"
+        value={selectedValues}
+        onValueChange={(value) => onValueChange(techSpecKey, value)}
+        className="flex flex-wrap justify-start gap-2"
+      >
+        {options.map((option) => (
+          <ToggleGroupItem key={option} value={option} className="text-xs">
+            {option}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+    </div>
+  );
+};
 
 export default function ProductFilters({
   brands = [],
-  capacityOptions = [],
+  storageOptions = [],
+  ramOptions = [],
+  osOptions = [],
+  processorOptions = [],
   filters,
-  setFilters,
+  onFilterChange,
   sort,
-  setSort,
+  onSortChange,
 }: ProductFiltersProps) {
-  const handleFilterChange = (key: keyof FilterValues, value: string) => {
-    setFilters({ ...filters, [key]: value });
-  };
 
+  const handleTechSpecChange = (key: keyof FilterState['techSpecs'], value: string[]) => {
+    onFilterChange(`techSpec.${key}`, value);
+  };
+  
   return (
     <div className="space-y-6 rounded-lg border bg-card p-6">
       <h3 className="font-headline text-2xl font-semibold">Filtros</h3>
 
       <div className="space-y-4">
         <Label htmlFor="sort">Ordenar por</Label>
-        <Select value={sort} onValueChange={setSort}>
+        <Select value={sort} onValueChange={onSortChange}>
           <SelectTrigger id="sort">
             <SelectValue placeholder="Ordenar por" />
           </SelectTrigger>
@@ -71,7 +104,7 @@ export default function ProductFilters({
 
       <div className="space-y-4">
         <Label htmlFor="brand">Marca</Label>
-        <Select value={filters.brand} onValueChange={(v) => handleFilterChange('brand', v)}>
+        <Select value={filters.brand} onValueChange={(v) => onFilterChange('brand', v)}>
           <SelectTrigger id="brand">
             <SelectValue placeholder="Selecciona una marca" />
           </SelectTrigger>
@@ -88,7 +121,7 @@ export default function ProductFilters({
 
       <div className="space-y-4">
         <Label htmlFor="price">Precio</Label>
-        <Select value={filters.price} onValueChange={(v) => handleFilterChange('price', v)}>
+        <Select value={filters.price} onValueChange={(v) => onFilterChange('price', v)}>
           <SelectTrigger id="price">
             <SelectValue placeholder="Selecciona un rango de precio" />
           </SelectTrigger>
@@ -101,23 +134,37 @@ export default function ProductFilters({
           </SelectContent>
         </Select>
       </div>
+      
+      <Separator />
 
-      <div className="space-y-4">
-        <Label htmlFor="capacity">Almacenamiento</Label>
-        <Select value={filters.capacity} onValueChange={(v) => handleFilterChange('capacity', v)}>
-          <SelectTrigger id="capacity">
-            <SelectValue placeholder="Selecciona capacidad" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas las Capacidades</SelectItem>
-            {capacityOptions.map((capacity) => (
-              <SelectItem key={capacity} value={capacity}>
-                {capacity}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <TechSpecFilterGroup
+        label="Almacenamiento"
+        options={storageOptions}
+        techSpecKey="Almacenamiento"
+        selectedValues={filters.techSpecs.Almacenamiento}
+        onValueChange={handleTechSpecChange}
+      />
+      <TechSpecFilterGroup
+        label="RAM"
+        options={ramOptions}
+        techSpecKey="RAM"
+        selectedValues={filters.techSpecs.RAM}
+        onValueChange={handleTechSpecChange}
+      />
+      <TechSpecFilterGroup
+        label="Sistema Operativo"
+        options={osOptions}
+        techSpecKey="Sistema Operativo"
+        selectedValues={filters.techSpecs['Sistema Operativo']}
+        onValueChange={handleTechSpecChange}
+      />
+      <TechSpecFilterGroup
+        label="Procesador"
+        options={processorOptions}
+        techSpecKey="Procesador"
+        selectedValues={filters.techSpecs.Procesador}
+        onValueChange={handleTechSpecChange}
+      />
     </div>
   );
 }
