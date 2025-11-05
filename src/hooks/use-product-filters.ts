@@ -60,45 +60,44 @@ export function useProductFilters(
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
-      // Brand Filter
+      // Common filters
       const brandMatch = filters.brand === "all" || product.brand === filters.brand;
-
-      // Price Filter
       const selectedPriceRange = priceRanges.find(r => r.value === filters.price);
       const priceMatch = filters.price === "all" || (selectedPriceRange && product.salePrice >= selectedPriceRange.min && product.salePrice < selectedPriceRange.max);
       
-      // Early exit for non-matching common filters
+      // If common filters don't match, exit early
       if (!brandMatch || !priceMatch) {
           return false;
       }
-
-      // If we are filtering accessories, we are done.
+      
+      // Logic for accessories: only check common filters and ensure it's not a cellphone
       if (productType === 'accessories') {
-          return true;
+        return !isCellphone(product);
       }
 
-      // --- Logic for cellphones: check all tech specs ---
-      if (productType === 'cellphones' && isCellphone(product)) {
+      // Logic for cellphones: ensure it IS a cellphone and then check tech specs
+      if (productType === 'cellphones') {
+        if (!isCellphone(product)) {
+            return false; // It's not a cellphone, so exclude it from this catalog
+        }
+
         const techSpecKeys = Object.keys(filters.techSpecs) as Array<keyof FilterState['techSpecs']>;
 
-        // Check every tech spec filter. `every` returns true if the array is empty.
         return techSpecKeys.every(specKey => {
             const selectedSpecs = filters.techSpecs[specKey];
-            // If no filter is selected for this spec, it's a match.
-            if (selectedSpecs.length === 0) return true;
+            if (selectedSpecs.length === 0) return true; // No filter for this spec, so it passes
 
             const productSpecValue = product.dataTecnica?.[specKey];
-            // If the product has the spec, its value must be in the selected filters.
             if (productSpecValue) {
                 return selectedSpecs.includes(productSpecValue);
             }
-
-            // If the product doesn't have the spec, it's not a match for this filter.
+            
+            // Product doesn't have this spec key, so it fails the filter if options are selected
             return false;
         });
       }
 
-      // Default to false if it's not an accessory and doesn't pass cellphone checks
+      // Default case (should not be reached)
       return false;
     });
 
