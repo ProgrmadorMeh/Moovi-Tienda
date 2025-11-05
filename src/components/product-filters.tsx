@@ -11,11 +11,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "./ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-<<<<<<< HEAD
-
-=======
 import type { FilterState } from "@/hooks/use-product-filters";
->>>>>>> main
 
 // Definimos los rangos de precios
 export const priceRanges = [
@@ -27,25 +23,6 @@ export const priceRanges = [
   { value: "2000000-99999999", label: "Más de $2.000.000", min: 2000000, max: Infinity },
 ];
 
-<<<<<<< HEAD
-type FilterValues = {
-  brand: string;
-  capacity: string[];
-  price: string;
-  ram: string[];
-  os: string[];
-  processor: string[];
-};
-
-interface ProductFiltersProps {
-  brands: string[];
-  capacityOptions: string[];
-  ramOptions: string[];
-  osOptions: string[];
-  processorOptions: string[];
-  filters: FilterValues;
-  setFilters: (filters: FilterValues) => void;
-=======
 interface ProductFiltersProps {
   brands: string[];
   storageOptions: string[];
@@ -54,7 +31,6 @@ interface ProductFiltersProps {
   processorOptions: string[];
   filters: FilterState;
   onFilterChange: (key: keyof FilterState | `techSpecs.${string}`, value: any) => void;
->>>>>>> main
   sort: string;
   onSortChange: (sort: string) => void;
   productType: 'cellphones' | 'accessories';
@@ -92,11 +68,7 @@ const TechSpecFilterGroup = ({ label, options, techSpecKey, selectedValues, onVa
 
 export default function ProductFilters({
   brands = [],
-<<<<<<< HEAD
-  capacityOptions = [],
-=======
   storageOptions = [],
->>>>>>> main
   ramOptions = [],
   osOptions = [],
   processorOptions = [],
@@ -106,17 +78,6 @@ export default function ProductFilters({
   onSortChange,
   productType,
 }: ProductFiltersProps) {
-<<<<<<< HEAD
-  const handleFilterChange = (key: keyof Omit<FilterValues, 'ram' | 'os' | 'processor' | 'capacity'>, value: string) => {
-    setFilters({ ...filters, [key]: value });
-  };
-  
-  const handleToggleGroupChange = (key: 'ram' | 'os' | 'processor' | 'capacity', value: string[]) => {
-    setFilters({ ...filters, [key]: value });
-  };
-
-=======
->>>>>>> main
 
   const handleTechSpecChange = (key: keyof FilterState['techSpecs'], value: string[]) => {
     onFilterChange(`techSpecs.${key}`, value);
@@ -177,53 +138,6 @@ export default function ProductFilters({
         </Select>
       </div>
       
-<<<<<<< HEAD
-      <Separator />
-
-      {/* Filtros de Etiquetas (Selección Múltiple) */}
-      {capacityOptions.length > 0 && (
-        <div className="space-y-3">
-          <Label>Almacenamiento</Label>
-          <ToggleGroup type="multiple" value={filters.capacity} onValueChange={(value) => handleToggleGroupChange('capacity', value)} variant="outline" className="flex-wrap justify-start">
-            {capacityOptions.map(cap => (
-              <ToggleGroupItem key={cap} value={cap}>{cap}</ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </div>
-      )}
-
-      {ramOptions.length > 0 && (
-        <div className="space-y-3">
-          <Label>RAM</Label>
-          <ToggleGroup type="multiple" value={filters.ram} onValueChange={(value) => handleToggleGroupChange('ram', value)} variant="outline" className="flex-wrap justify-start">
-            {ramOptions.map(ram => (
-              <ToggleGroupItem key={ram} value={ram}>{ram}</ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </div>
-      )}
-
-      {osOptions.length > 0 && (
-        <div className="space-y-3">
-          <Label>Sistema Operativo</Label>
-          <ToggleGroup type="multiple" value={filters.os} onValueChange={(value) => handleToggleGroupChange('os', value)} variant="outline" className="flex-wrap justify-start">
-            {osOptions.map(os => (
-              <ToggleGroupItem key={os} value={os}>{os}</ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </div>
-      )}
-
-      {processorOptions.length > 0 && (
-        <div className="space-y-3">
-          <Label>Procesador</Label>
-          <ToggleGroup type="multiple" value={filters.processor} onValueChange={(value) => handleToggleGroupChange('processor', value)} variant="outline" className="flex-wrap justify-start">
-            {processorOptions.map(proc => (
-              <ToggleGroupItem key={proc} value={proc} className="text-xs">{proc}</ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </div>
-=======
       {productType === 'cellphones' && (
         <>
           <Separator />
@@ -256,7 +170,6 @@ export default function ProductFilters({
             onValueChange={handleTechSpecChange}
           />
         </>
->>>>>>> main
       )}
     </div>
   );
