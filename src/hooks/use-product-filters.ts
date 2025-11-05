@@ -25,8 +25,10 @@ const INITIAL_FILTERS: FilterState = {
   },
 };
 
+// Un producto NO es un celular si tiene la propiedad 'category'.
+// Esta es la forma más fiable de distinguir un accesorio.
 const isCellphone = (product: Product): product is Cellphone => {
-  return product.hasOwnProperty('dataTecnica') || product.hasOwnProperty('imei');
+  return !product.hasOwnProperty('category');
 };
 
 export function useProductFilters(
@@ -73,7 +75,7 @@ export function useProductFilters(
 
       if (productType === 'cellphones') {
         if (!isCellphone(product)) {
-          return false; // Descartar si no es un celular en la pestaña de celulares
+          return false; // Descartar si no es un celular
         }
         
         // Filtros de especificaciones técnicas para celulares
@@ -84,18 +86,18 @@ export function useProductFilters(
             return true; // No hay filtro para esta especificación
           }
           const productSpecValue = product.dataTecnica?.[specKey];
-          return productSpecValue ? selectedSpecs.includes(productSpecValue) : false;
+          // Solo aplicar el filtro si el producto tiene la especificación.
+          // Si el producto no tiene la spec, no lo descartamos por este filtro.
+          if (!productSpecValue) return true;
+          return selectedSpecs.includes(productSpecValue);
         });
 
         return commonFiltersMatch && techSpecsMatch;
       }
 
       if (productType === 'accessories') {
-        if (isCellphone(product)) {
-          return false; // Descartar si es un celular en la pestaña de accesorios
-        }
-        // Para accesorios, solo aplicamos filtros comunes
-        return commonFiltersMatch;
+        // Para accesorios, solo aplicamos filtros comunes y nos aseguramos de que no sea un celular
+        return !isCellphone(product) && commonFiltersMatch;
       }
 
       return false; // No debería llegar aquí
