@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import type { Product } from "@/lib/types";
 import ProductCard from "./product-card";
 import PaginationControls from "./pagination-controls";
@@ -49,6 +49,11 @@ export default function ProductCatalog({
     );
   }, [filteredAndSortedProducts, currentPage]);
 
+  useEffect(() => {
+    console.log("Filtered Products:", filteredAndSortedProducts);
+    console.log("Paginated Products:", paginatedProducts);
+  }, [filteredAndSortedProducts, paginatedProducts]);
+
   const totalPages = Math.ceil(
     filteredAndSortedProducts.length / PRODUCTS_PER_PAGE
   );
@@ -56,7 +61,7 @@ export default function ProductCatalog({
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
       <aside className="lg:col-span-1">
-        <div className="sticky top-20">
+        <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2">
           <ProductFilters
             brands={brands}
             storageOptions={storageOptions}
