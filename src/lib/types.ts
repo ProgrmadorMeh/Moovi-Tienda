@@ -14,11 +14,7 @@ type BaseProduct = {
   shipping: boolean;
   installments: number;
   color: string;
-<<<<<<< HEAD
   dataTecnica?: Record<string, string>; // Usamos un objeto genérico para las especificaciones
-=======
-  dataTecnica?: { [key: string]: string }; // Objeto para especificaciones técnicas
->>>>>>> main
 };
 
 // Tipo específico para celulares, extiende la base y añade sus propios campos.

@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 "use client"
 
 import * as React from "react"
@@ -43,10 +39,6 @@ const Toggle = React.forwardRef<
     {...props}
   />
 ))
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 Toggle.displayName = TogglePrimitive.Root.displayName
 
 export { Toggle, toggleVariants }
