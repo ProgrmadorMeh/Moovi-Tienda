@@ -62,7 +62,15 @@ export function useProductFilters(
 
   const filteredAndSortedProducts = useMemo(() => {
     let filteredProducts = products.filter((product) => {
-      // Filtros comunes de marca y precio
+      // 1. Filtrar por tipo de producto (cellphone vs accessory)
+      if (productType === 'cellphones' && !isCellphone(product)) {
+        return false;
+      }
+      if (productType === 'accessories' && isCellphone(product)) {
+        return false;
+      }
+
+      // 2. Filtros comunes de marca y precio
       const brandMatch = filters.brand === "all" || product.brand === filters.brand;
       const selectedPriceRange = priceRanges.find((r) => r.value === filters.price);
       const priceMatch =
@@ -73,34 +81,28 @@ export function useProductFilters(
       
       const commonFiltersMatch = brandMatch && priceMatch;
 
-      if (productType === 'cellphones') {
-        if (!isCellphone(product)) {
-          return false; // Descartar si no es un celular
-        }
-        
-        // Filtros de especificaciones técnicas para celulares
+      if (!commonFiltersMatch) {
+        return false;
+      }
+
+      // 3. Filtros de especificaciones técnicas (SOLO para celulares)
+      if (productType === 'cellphones' && isCellphone(product)) {
         const techSpecKeys = Object.keys(filters.techSpecs) as Array<keyof FilterState['techSpecs']>;
-        const techSpecsMatch = techSpecKeys.every((specKey) => {
+        
+        for (const specKey of techSpecKeys) {
           const selectedSpecs = filters.techSpecs[specKey];
           if (selectedSpecs.length === 0) {
-            return true; // No hay filtro para esta especificación
+            continue; // No hay filtro para esta especificación, pasar a la siguiente.
           }
+          
           const productSpecValue = product.dataTecnica?.[specKey];
-          // Solo aplicar el filtro si el producto tiene la especificación.
-          // Si el producto no tiene la spec, no lo descartamos por este filtro.
-          if (!productSpecValue) return true;
-          return selectedSpecs.includes(productSpecValue);
-        });
-
-        return commonFiltersMatch && techSpecsMatch;
+          if (!productSpecValue || !selectedSpecs.includes(productSpecValue)) {
+            return false; // Si el producto no tiene la spec o no coincide, descartarlo.
+          }
+        }
       }
 
-      if (productType === 'accessories') {
-        // Para accesorios, solo aplicamos filtros comunes y nos aseguramos de que no sea un celular
-        return !isCellphone(product) && commonFiltersMatch;
-      }
-
-      return false; // No debería llegar aquí
+      return true;
     });
 
     // Ordenar los productos resultantes
