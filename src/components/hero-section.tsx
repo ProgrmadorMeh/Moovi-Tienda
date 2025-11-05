@@ -29,9 +29,6 @@ export default function HeroSection() {
         <div className="mt-4 flex min-h-[96px] items-center justify-center text-lg text-gray-200 md:text-xl">
           <Typewriter phrases={phrases} className="text-2xl" />
         </div>
-        <div className="mt-8">
-          <Button size="lg" onClick={handleScrollToCatalog}>Ver Catálogo</Button>
-        </div>
       </div>
       <div className="relative z-10 w-full mt-12">
         <AnimatedFeatureCards />
