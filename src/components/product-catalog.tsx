@@ -53,8 +53,6 @@ export default function ProductCatalog({
     filteredAndSortedProducts.length / PRODUCTS_PER_PAGE
   );
 
-  console.log("Productos a mostrar en el catálogo:", paginatedProducts);
-
   return (
     <div>
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
