@@ -14,13 +14,21 @@ const extractAndNormalizeOptions = (products: Cellphone[], key: keyof Cellphone[
   products.forEach(product => {
     const value = product.dataTecnica?.[key];
     if (typeof value === 'string' && value) {
-      // Dividir por '/' y limpiar cada opción
-      value.split('/').forEach(option => {
-        const trimmedOption = option.trim();
-        if (trimmedOption) {
-          allValues.add(trimmedOption);
+      // Si el valor contiene '/', lo tratamos como una lista de opciones.
+      if (value.includes('/')) {
+        value.split('/').forEach(option => {
+          const trimmedOption = option.trim();
+          if (trimmedOption) {
+            allValues.add(trimmedOption);
+          }
+        });
+      } else {
+        // Si no contiene '/', es un valor único.
+        const trimmedValue = value.trim();
+        if (trimmedValue) {
+          allValues.add(trimmedValue);
         }
-      });
+      }
     }
   });
 
