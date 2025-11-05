@@ -26,7 +26,8 @@ const INITIAL_FILTERS: FilterState = {
 };
 
 const isCellphone = (product: Product): product is Cellphone => {
-  return product.hasOwnProperty('dataTecnica');
+  // Un producto es un celular si tiene `dataTecnica` o `imei`.
+  return product.hasOwnProperty('dataTecnica') || product.hasOwnProperty('imei');
 };
 
 export function useProductFilters(
@@ -59,49 +60,48 @@ export function useProductFilters(
   }, []);
 
   const filteredAndSortedProducts = useMemo(() => {
-    let filtered = products.filter((product) => {
-      // Common filters
+    // 1. Filtrar por tipo de producto (celular o accesorio)
+    const typeFilteredProducts = products.filter(product => {
+        if (productType === 'cellphones') return isCellphone(product);
+        if (productType === 'accessories') return !isCellphone(product);
+        return false;
+    });
+
+    // 2. Aplicar filtros comunes (marca y precio)
+    let commonFiltered = typeFilteredProducts.filter((product) => {
       const brandMatch = filters.brand === "all" || product.brand === filters.brand;
+      
       const selectedPriceRange = priceRanges.find(r => r.value === filters.price);
       const priceMatch = filters.price === "all" || (selectedPriceRange && product.salePrice >= selectedPriceRange.min && product.salePrice < selectedPriceRange.max);
       
-      // If common filters don't match, exit early
-      if (!brandMatch || !priceMatch) {
-          return false;
-      }
-      
-      // Logic for accessories: only check common filters and ensure it's not a cellphone
-      if (productType === 'accessories') {
-        return !isCellphone(product);
-      }
-
-      // Logic for cellphones: ensure it IS a cellphone and then check tech specs
-      if (productType === 'cellphones') {
-        if (!isCellphone(product)) {
-            return false; // It's not a cellphone, so exclude it from this catalog
-        }
-
-        const techSpecKeys = Object.keys(filters.techSpecs) as Array<keyof FilterState['techSpecs']>;
-
-        return techSpecKeys.every(specKey => {
-            const selectedSpecs = filters.techSpecs[specKey];
-            if (selectedSpecs.length === 0) return true; // No filter for this spec, so it passes
-
-            const productSpecValue = product.dataTecnica?.[specKey];
-            if (productSpecValue) {
-                return selectedSpecs.includes(productSpecValue);
-            }
-            
-            // Product doesn't have this spec key, so it fails the filter if options are selected
-            return false;
-        });
-      }
-
-      // Default case (should not be reached)
-      return false;
+      return brandMatch && priceMatch;
     });
 
-    return filtered.sort((a, b) => {
+    // 3. Aplicar filtros de especificaciones técnicas (solo para celulares)
+    if (productType === 'cellphones') {
+        commonFiltered = commonFiltered.filter(product => {
+            const techSpecKeys = Object.keys(filters.techSpecs) as Array<keyof FilterState['techSpecs']>;
+
+            return techSpecKeys.every(specKey => {
+                const selectedSpecs = filters.techSpecs[specKey];
+                if (selectedSpecs.length === 0) return true; // No filter for this spec
+
+                // Asegurarse de que el producto sea un celular antes de acceder a dataTecnica
+                if (isCellphone(product) && product.dataTecnica) {
+                    const productSpecValue = product.dataTecnica[specKey];
+                    if (productSpecValue) {
+                        return selectedSpecs.includes(productSpecValue);
+                    }
+                }
+                
+                // Si el producto no tiene la especificación, no cumple el filtro
+                return false;
+            });
+        });
+    }
+
+    // 4. Ordenar los productos resultantes
+    return commonFiltered.sort((a, b) => {
       const aName = `${a.brand} ${a.model}`;
       const bName = `${b.brand} ${b.model}`;
       switch (sort) {
