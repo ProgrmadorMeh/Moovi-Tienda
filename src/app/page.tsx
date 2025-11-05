@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from "react";
@@ -6,7 +5,7 @@ import HeroSection from '@/components/hero-section';
 import ProductSections from "@/components/product-sections";
 import { getCellphonesCached, getAccessoriesCached } from "@/lib/data";
 import type { Cellphone, Accessory } from "@/lib/types";
-import Loading from "./loading"; 
+import Loading from "./loading";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
