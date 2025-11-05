@@ -25,7 +25,6 @@ const INITIAL_FILTERS: FilterState = {
   },
 };
 
-// Un producto es un accesorio si tiene la propiedad 'category'.
 const isCellphone = (product: Product): product is Cellphone => {
   return !product.hasOwnProperty('category');
 };
@@ -62,8 +61,9 @@ export function useProductFilters(
   const filteredAndSortedProducts = useMemo(() => {
     let filteredProducts = products.filter((product) => {
       // 1. Filtrar por tipo de producto (cellphone vs accessory)
-      if (productType === 'cellphones' && !isCellphone(product)) return false;
-      if (productType === 'accessories' && isCellphone(product)) return false;
+      const isCorrectType = (productType === 'cellphones' && isCellphone(product)) ||
+                             (productType === 'accessories' && !isCellphone(product));
+      if (!isCorrectType) return false;
 
       // 2. Filtros comunes de marca y precio
       const brandMatch = filters.brand === "all" || product.brand === filters.brand;
@@ -82,24 +82,22 @@ export function useProductFilters(
         
         for (const specKey of techSpecKeys) {
           const selectedSpecFilters = filters.techSpecs[specKey];
-          if (selectedSpecFilters.length === 0) continue; // No hay filtro para esta spec, continuar.
+          if (selectedSpecFilters.length === 0) continue; 
 
           const productSpecValue = product.dataTecnica?.[specKey];
-          if (!productSpecValue) return false; // El producto no tiene esta spec, descartar.
+          if (!productSpecValue) return false; 
 
-          // Comprobar si *alguna* de las etiquetas seleccionadas está presente en el valor de la spec del producto.
           const hasMatchingSpec = selectedSpecFilters.some(filterValue =>
             productSpecValue.includes(filterValue)
           );
           
-          if (!hasMatchingSpec) return false; // Si ninguna etiqueta coincide, descartar el producto.
+          if (!hasMatchingSpec) return false; 
         }
       }
 
       return true;
     });
 
-    // Ordenar los productos resultantes
     return filteredProducts.sort((a, b) => {
       const aName = `${a.brand} ${a.model}`;
       const bName = `${b.brand} ${b.model}`;
