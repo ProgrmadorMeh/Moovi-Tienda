@@ -1,6 +1,6 @@
 
 import { useMemo, useState, useCallback } from "react";
-import type { Product } from "@/lib/types";
+import type { Product, Cellphone } from "@/lib/types";
 import { priceRanges } from "@/components/product-filters";
 
 export interface FilterState {
@@ -25,13 +25,17 @@ const INITIAL_FILTERS: FilterState = {
   },
 };
 
+const isCellphone = (product: Product): product is Cellphone => {
+  return 'dataTecnica' in product && typeof product.dataTecnica === 'object';
+};
+
 export function useProductFilters(products: Product[]) {
   const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
   const [sort, setSort] = useState("price-asc");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const handleFilterChange = useCallback((key: keyof FilterState | `techSpec.${keyof FilterState['techSpecs']}`, value: any) => {
-    if (key.startsWith('techSpec.')) {
+  const handleFilterChange = useCallback((key: keyof FilterState | `techSpecs.${keyof FilterState['techSpecs']}`, value: any) => {
+    if (key.startsWith('techSpecs.')) {
       const specKey = key.split('.')[1] as keyof FilterState['techSpecs'];
       setFilters(prev => ({
         ...prev,
@@ -63,14 +67,16 @@ export function useProductFilters(products: Product[]) {
       // Technical Specs Filters
       const techSpecMatch = (specKey: keyof FilterState['techSpecs']) => {
         const selectedSpecs = filters.techSpecs[specKey];
-        // Si no hay filtros seleccionados para esta especificación, no descartar el producto.
-        if (selectedSpecs.length === 0) return true;
+        if (selectedSpecs.length === 0) return true; // No filter for this spec, so it's a match
         
-        const productSpecValue = product.dataTecnica?.[specKey];
-        // Si el producto no tiene esta especificación, no coincide, pero solo si el filtro está activo.
-        if (!productSpecValue) return false;
+        // This check is the key: only apply tech filters to cellphones
+        if (!isCellphone(product)) {
+            return true; // If it's an accessory, it's a match for any tech spec filter
+        }
 
-        // Si el producto tiene la especificación, comprobar si su valor está en los seleccionados.
+        const productSpecValue = product.dataTecnica?.[specKey];
+        if (!productSpecValue) return false; // Cellphone doesn't have the spec, so no match
+
         return selectedSpecs.includes(productSpecValue);
       };
 
@@ -79,7 +85,12 @@ export function useProductFilters(products: Product[]) {
       const osMatch = techSpecMatch('Sistema Operativo');
       const processorMatch = techSpecMatch('Procesador');
 
-      // Un producto debe coincidir con todos los filtros activos
+      // An accessory must only match brand and price.
+      // A cellphone must match brand, price, AND all active tech specs.
+      if (!isCellphone(product)) {
+        return brandMatch && priceMatch;
+      }
+
       return brandMatch && priceMatch && storageMatch && ramMatch && osMatch && processorMatch;
     });
 
