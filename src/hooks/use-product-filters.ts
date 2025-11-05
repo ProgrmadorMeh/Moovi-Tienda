@@ -26,7 +26,6 @@ const INITIAL_FILTERS: FilterState = {
 };
 
 const isCellphone = (product: Product): product is Cellphone => {
-  // Un producto es un celular si tiene `dataTecnica` o `imei`.
   return product.hasOwnProperty('dataTecnica') || product.hasOwnProperty('imei');
 };
 
@@ -51,7 +50,7 @@ export function useProductFilters(
     } else {
       setFilters(prev => ({ ...prev, [key as keyof FilterState]: value }));
     }
-    setCurrentPage(1); // Reset page on filter change
+    setCurrentPage(1);
   }, []);
 
   const handleSortChange = useCallback((value: string) => {
@@ -60,48 +59,50 @@ export function useProductFilters(
   }, []);
 
   const filteredAndSortedProducts = useMemo(() => {
-    // 1. Filtrar por tipo de producto (celular o accesorio)
-    const typeFilteredProducts = products.filter(product => {
-        if (productType === 'cellphones') return isCellphone(product);
-        if (productType === 'accessories') return !isCellphone(product);
-        return false;
-    });
-
-    // 2. Aplicar filtros comunes (marca y precio)
-    let commonFiltered = typeFilteredProducts.filter((product) => {
+    let filteredProducts = products.filter((product) => {
+      // Filtros comunes de marca y precio
       const brandMatch = filters.brand === "all" || product.brand === filters.brand;
+      const selectedPriceRange = priceRanges.find((r) => r.value === filters.price);
+      const priceMatch =
+        filters.price === "all" ||
+        (selectedPriceRange &&
+          product.salePrice >= selectedPriceRange.min &&
+          product.salePrice < selectedPriceRange.max);
       
-      const selectedPriceRange = priceRanges.find(r => r.value === filters.price);
-      const priceMatch = filters.price === "all" || (selectedPriceRange && product.salePrice >= selectedPriceRange.min && product.salePrice < selectedPriceRange.max);
-      
-      return brandMatch && priceMatch;
+      const commonFiltersMatch = brandMatch && priceMatch;
+
+      if (productType === 'cellphones') {
+        if (!isCellphone(product)) {
+          return false; // Descartar si no es un celular en la pestaña de celulares
+        }
+        
+        // Filtros de especificaciones técnicas para celulares
+        const techSpecKeys = Object.keys(filters.techSpecs) as Array<keyof FilterState['techSpecs']>;
+        const techSpecsMatch = techSpecKeys.every((specKey) => {
+          const selectedSpecs = filters.techSpecs[specKey];
+          if (selectedSpecs.length === 0) {
+            return true; // No hay filtro para esta especificación
+          }
+          const productSpecValue = product.dataTecnica?.[specKey];
+          return productSpecValue ? selectedSpecs.includes(productSpecValue) : false;
+        });
+
+        return commonFiltersMatch && techSpecsMatch;
+      }
+
+      if (productType === 'accessories') {
+        if (isCellphone(product)) {
+          return false; // Descartar si es un celular en la pestaña de accesorios
+        }
+        // Para accesorios, solo aplicamos filtros comunes
+        return commonFiltersMatch;
+      }
+
+      return false; // No debería llegar aquí
     });
 
-    // 3. Aplicar filtros de especificaciones técnicas (solo para celulares)
-    if (productType === 'cellphones') {
-        commonFiltered = commonFiltered.filter(product => {
-            const techSpecKeys = Object.keys(filters.techSpecs) as Array<keyof FilterState['techSpecs']>;
-
-            return techSpecKeys.every(specKey => {
-                const selectedSpecs = filters.techSpecs[specKey];
-                if (selectedSpecs.length === 0) return true; // No filter for this spec
-
-                // Asegurarse de que el producto sea un celular antes de acceder a dataTecnica
-                if (isCellphone(product) && product.dataTecnica) {
-                    const productSpecValue = product.dataTecnica[specKey];
-                    if (productSpecValue) {
-                        return selectedSpecs.includes(productSpecValue);
-                    }
-                }
-                
-                // Si el producto no tiene la especificación, no cumple el filtro
-                return false;
-            });
-        });
-    }
-
-    // 4. Ordenar los productos resultantes
-    return commonFiltered.sort((a, b) => {
+    // Ordenar los productos resultantes
+    return filteredProducts.sort((a, b) => {
       const aName = `${a.brand} ${a.model}`;
       const bName = `${b.brand} ${b.model}`;
       switch (sort) {
