@@ -11,18 +11,23 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "./ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+<<<<<<< HEAD
 
+=======
+import type { FilterState } from "@/hooks/use-product-filters";
+>>>>>>> main
 
 // Definimos los rangos de precios
 export const priceRanges = [
-  { value: "all", label: "Cualquier Precio" },
+  { value: "all", label: "Cualquier Precio", min: 0, max: Infinity },
   { value: "0-250000", label: "Menos de $250.000", min: 0, max: 250000 },
   { value: "250000-500000", label: "$250.000 a $500.000", min: 250000, max: 500000 },
   { value: "500000-1000000", label: "$500.000 a $1.000.000", min: 500000, max: 1000000 },
   { value: "1000000-2000000", label: "$1.000.000 a $2.000.000", min: 1000000, max: 2000000 },
-  { value: "2000000-99999999", label: "Más de $2.000.000", min: 2000000, max: 99999999 },
+  { value: "2000000-99999999", label: "Más de $2.000.000", min: 2000000, max: Infinity },
 ];
 
+<<<<<<< HEAD
 type FilterValues = {
   brand: string;
   capacity: string[];
@@ -40,21 +45,68 @@ interface ProductFiltersProps {
   processorOptions: string[];
   filters: FilterValues;
   setFilters: (filters: FilterValues) => void;
+=======
+interface ProductFiltersProps {
+  brands: string[];
+  storageOptions: string[];
+  ramOptions: string[];
+  osOptions: string[];
+  processorOptions: string[];
+  filters: FilterState;
+  onFilterChange: (key: keyof FilterState | `techSpecs.${string}`, value: any) => void;
+>>>>>>> main
   sort: string;
-  setSort: (sort: string) => void;
+  onSortChange: (sort: string) => void;
+  productType: 'cellphones' | 'accessories';
 }
+
+// Componente reutilizable para un grupo de filtros de especificaciones técnicas
+const TechSpecFilterGroup = ({ label, options, techSpecKey, selectedValues, onValueChange }: {
+  label: string;
+  options: string[];
+  techSpecKey: keyof FilterState['techSpecs'];
+  selectedValues: string[];
+  onValueChange: (key: keyof FilterState['techSpecs'], value: string[]) => void;
+}) => {
+  if (options.length === 0) return null;
+
+  return (
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <ToggleGroup
+        type="multiple"
+        variant="outline"
+        value={selectedValues}
+        onValueChange={(value) => onValueChange(techSpecKey, value)}
+        className="flex flex-wrap justify-start gap-2"
+      >
+        {options.map((option) => (
+          <ToggleGroupItem key={option} value={option} className="text-xs">
+            {option}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+    </div>
+  );
+};
 
 export default function ProductFilters({
   brands = [],
+<<<<<<< HEAD
   capacityOptions = [],
+=======
+  storageOptions = [],
+>>>>>>> main
   ramOptions = [],
   osOptions = [],
   processorOptions = [],
   filters,
-  setFilters,
+  onFilterChange,
   sort,
-  setSort,
+  onSortChange,
+  productType,
 }: ProductFiltersProps) {
+<<<<<<< HEAD
   const handleFilterChange = (key: keyof Omit<FilterValues, 'ram' | 'os' | 'processor' | 'capacity'>, value: string) => {
     setFilters({ ...filters, [key]: value });
   };
@@ -63,14 +115,20 @@ export default function ProductFilters({
     setFilters({ ...filters, [key]: value });
   };
 
+=======
+>>>>>>> main
 
+  const handleTechSpecChange = (key: keyof FilterState['techSpecs'], value: string[]) => {
+    onFilterChange(`techSpecs.${key}`, value);
+  };
+  
   return (
     <div className="space-y-6 rounded-lg border bg-card p-6">
       <h3 className="font-headline text-2xl font-semibold">Filtros</h3>
 
       <div className="space-y-4">
         <Label htmlFor="sort">Ordenar por</Label>
-        <Select value={sort} onValueChange={setSort}>
+        <Select value={sort} onValueChange={onSortChange}>
           <SelectTrigger id="sort">
             <SelectValue placeholder="Ordenar por" />
           </SelectTrigger>
@@ -88,7 +146,7 @@ export default function ProductFilters({
       {/* Filtros de Selección Única */}
       <div className="space-y-4">
         <Label htmlFor="brand">Marca</Label>
-        <Select value={filters.brand} onValueChange={(v) => handleFilterChange('brand', v)}>
+        <Select value={filters.brand} onValueChange={(v) => onFilterChange('brand', v)}>
           <SelectTrigger id="brand">
             <SelectValue placeholder="Selecciona una marca" />
           </SelectTrigger>
@@ -105,7 +163,7 @@ export default function ProductFilters({
 
       <div className="space-y-4">
         <Label htmlFor="price">Precio</Label>
-        <Select value={filters.price} onValueChange={(v) => handleFilterChange('price', v)}>
+        <Select value={filters.price} onValueChange={(v) => onFilterChange('price', v)}>
           <SelectTrigger id="price">
             <SelectValue placeholder="Selecciona un rango de precio" />
           </SelectTrigger>
@@ -119,6 +177,7 @@ export default function ProductFilters({
         </Select>
       </div>
       
+<<<<<<< HEAD
       <Separator />
 
       {/* Filtros de Etiquetas (Selección Múltiple) */}
@@ -164,6 +223,40 @@ export default function ProductFilters({
             ))}
           </ToggleGroup>
         </div>
+=======
+      {productType === 'cellphones' && (
+        <>
+          <Separator />
+          <TechSpecFilterGroup
+            label="Almacenamiento"
+            options={storageOptions}
+            techSpecKey="Almacenamiento"
+            selectedValues={filters.techSpecs.Almacenamiento}
+            onValueChange={handleTechSpecChange}
+          />
+          <TechSpecFilterGroup
+            label="RAM"
+            options={ramOptions}
+            techSpecKey="RAM"
+            selectedValues={filters.techSpecs.RAM}
+            onValueChange={handleTechSpecChange}
+          />
+          <TechSpecFilterGroup
+            label="Sistema Operativo"
+            options={osOptions}
+            techSpecKey="Sistema Operativo"
+            selectedValues={filters.techSpecs['Sistema Operativo']}
+            onValueChange={handleTechSpecChange}
+          />
+          <TechSpecFilterGroup
+            label="Procesador"
+            options={processorOptions}
+            techSpecKey="Procesador"
+            selectedValues={filters.techSpecs.Procesador}
+            onValueChange={handleTechSpecChange}
+          />
+        </>
+>>>>>>> main
       )}
     </div>
   );

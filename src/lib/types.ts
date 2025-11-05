@@ -14,7 +14,11 @@ type BaseProduct = {
   shipping: boolean;
   installments: number;
   color: string;
+<<<<<<< HEAD
   dataTecnica?: Record<string, string>; // Usamos un objeto genérico para las especificaciones
+=======
+  dataTecnica?: { [key: string]: string }; // Objeto para especificaciones técnicas
+>>>>>>> main
 };
 
 // Tipo específico para celulares, extiende la base y añade sus propios campos.
@@ -60,6 +64,6 @@ export const defaultBase = {
 };
 
 // Esto asegura que al crear un `defaultProduct`, tiene todos los campos de `Product`
-export const defaultProduct: Product = { ...defaultBase };
-export const defaultCellphone: Cellphone = { ...defaultBase };
-export const defaultAccessory: Accessory = { ...defaultBase };
+export const defaultProduct: Product = { ...defaultBase, imei: "N/A" };
+export const defaultCellphone: Cellphone = { ...defaultBase, imei: "N/A" };
+export const defaultAccessory: Accessory = { ...defaultBase, category: "General" };
