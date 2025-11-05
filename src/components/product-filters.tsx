@@ -15,12 +15,12 @@ import type { FilterState } from "@/hooks/use-product-filters";
 
 // Definimos los rangos de precios
 export const priceRanges = [
-  { value: "all", label: "Cualquier Precio" },
+  { value: "all", label: "Cualquier Precio", min: 0, max: Infinity },
   { value: "0-250000", label: "Menos de $250.000", min: 0, max: 250000 },
   { value: "250000-500000", label: "$250.000 a $500.000", min: 250000, max: 500000 },
   { value: "500000-1000000", label: "$500.000 a $1.000.000", min: 500000, max: 1000000 },
   { value: "1000000-2000000", label: "$1.000.000 a $2.000.000", min: 1000000, max: 2000000 },
-  { value: "2000000-99999999", label: "Más de $2.000.000", min: 2000000, max: 99999999 },
+  { value: "2000000-99999999", label: "Más de $2.000.000", min: 2000000, max: Infinity },
 ];
 
 interface ProductFiltersProps {
@@ -30,9 +30,10 @@ interface ProductFiltersProps {
   osOptions: string[];
   processorOptions: string[];
   filters: FilterState;
-  onFilterChange: (key: keyof FilterState | `techSpec.${string}`, value: any) => void;
+  onFilterChange: (key: keyof FilterState | `techSpecs.${string}`, value: any) => void;
   sort: string;
   onSortChange: (sort: string) => void;
+  productType: 'cellphones' | 'accessories';
 }
 
 // Componente reutilizable para un grupo de filtros de especificaciones técnicas
@@ -75,10 +76,11 @@ export default function ProductFilters({
   onFilterChange,
   sort,
   onSortChange,
+  productType,
 }: ProductFiltersProps) {
 
   const handleTechSpecChange = (key: keyof FilterState['techSpecs'], value: string[]) => {
-    onFilterChange(`techSpec.${key}`, value);
+    onFilterChange(`techSpecs.${key}`, value);
   };
   
   return (
@@ -135,36 +137,39 @@ export default function ProductFilters({
         </Select>
       </div>
       
-      <Separator />
-
-      <TechSpecFilterGroup
-        label="Almacenamiento"
-        options={storageOptions}
-        techSpecKey="Almacenamiento"
-        selectedValues={filters.techSpecs.Almacenamiento}
-        onValueChange={handleTechSpecChange}
-      />
-      <TechSpecFilterGroup
-        label="RAM"
-        options={ramOptions}
-        techSpecKey="RAM"
-        selectedValues={filters.techSpecs.RAM}
-        onValueChange={handleTechSpecChange}
-      />
-      <TechSpecFilterGroup
-        label="Sistema Operativo"
-        options={osOptions}
-        techSpecKey="Sistema Operativo"
-        selectedValues={filters.techSpecs['Sistema Operativo']}
-        onValueChange={handleTechSpecChange}
-      />
-      <TechSpecFilterGroup
-        label="Procesador"
-        options={processorOptions}
-        techSpecKey="Procesador"
-        selectedValues={filters.techSpecs.Procesador}
-        onValueChange={handleTechSpecChange}
-      />
+      {productType === 'cellphones' && (
+        <>
+          <Separator />
+          <TechSpecFilterGroup
+            label="Almacenamiento"
+            options={storageOptions}
+            techSpecKey="Almacenamiento"
+            selectedValues={filters.techSpecs.Almacenamiento}
+            onValueChange={handleTechSpecChange}
+          />
+          <TechSpecFilterGroup
+            label="RAM"
+            options={ramOptions}
+            techSpecKey="RAM"
+            selectedValues={filters.techSpecs.RAM}
+            onValueChange={handleTechSpecChange}
+          />
+          <TechSpecFilterGroup
+            label="Sistema Operativo"
+            options={osOptions}
+            techSpecKey="Sistema Operativo"
+            selectedValues={filters.techSpecs['Sistema Operativo']}
+            onValueChange={handleTechSpecChange}
+          />
+          <TechSpecFilterGroup
+            label="Procesador"
+            options={processorOptions}
+            techSpecKey="Procesador"
+            selectedValues={filters.techSpecs.Procesador}
+            onValueChange={handleTechSpecChange}
+          />
+        </>
+      )}
     </div>
   );
 }

@@ -67,6 +67,7 @@ export default function ProductSections({
           <TabsContent value="all">
             <ProductCatalog
               products={allProducts}
+              productType="cellphones"
               brands={cellphoneBrands}
               storageOptions={storageOptions}
               ramOptions={ramOptions}
@@ -79,6 +80,7 @@ export default function ProductSections({
           <TabsContent value="featured">
             <ProductCatalog
               products={featuredProducts}
+              productType="cellphones"
               brands={cellphoneBrands}
               storageOptions={storageOptions}
               ramOptions={ramOptions}
@@ -91,6 +93,7 @@ export default function ProductSections({
           <TabsContent value="discounted">
             <ProductCatalog
               products={discountedProducts}
+              productType="cellphones"
               brands={cellphoneBrands}
               storageOptions={storageOptions}
               ramOptions={ramOptions}
@@ -103,6 +106,7 @@ export default function ProductSections({
           <TabsContent value="accessories">
             <ProductCatalog
               products={accessories}
+              productType="accessories"
               brands={accessoryBrands}
               storageOptions={[]}
               ramOptions={[]}

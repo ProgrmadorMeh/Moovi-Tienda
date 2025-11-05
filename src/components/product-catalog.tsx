@@ -10,6 +10,7 @@ import { useProductFilters } from "@/hooks/use-product-filters";
 
 interface ProductCatalogProps {
   products: Product[];
+  productType: 'cellphones' | 'accessories';
   brands: string[];
   storageOptions: string[];
   ramOptions: string[];
@@ -22,6 +23,7 @@ const PRODUCTS_PER_PAGE = 20;
 
 export default function ProductCatalog({
   products,
+  productType,
   brands,
   storageOptions,
   ramOptions,
@@ -37,7 +39,7 @@ export default function ProductCatalog({
     setCurrentPage,
     handleFilterChange,
     handleSortChange,
-  } = useProductFilters(products);
+  } = useProductFilters(products, productType);
 
   const paginatedProducts = useMemo(() => {
     const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
@@ -68,6 +70,7 @@ export default function ProductCatalog({
               onFilterChange={handleFilterChange}
               sort={sort}
               onSortChange={handleSortChange}
+              productType={productType}
             />
           </div>
         </aside>

@@ -26,10 +26,13 @@ const INITIAL_FILTERS: FilterState = {
 };
 
 const isCellphone = (product: Product): product is Cellphone => {
-  return 'dataTecnica' in product && typeof product.dataTecnica === 'object';
+  return product.hasOwnProperty('dataTecnica');
 };
 
-export function useProductFilters(products: Product[]) {
+export function useProductFilters(
+    products: Product[],
+    productType: 'cellphones' | 'accessories'
+) {
   const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
   const [sort, setSort] = useState("price-asc");
   const [currentPage, setCurrentPage] = useState(1);
@@ -62,36 +65,41 @@ export function useProductFilters(products: Product[]) {
 
       // Price Filter
       const selectedPriceRange = priceRanges.find(r => r.value === filters.price);
-      const priceMatch = filters.price === "all" || (selectedPriceRange && product.salePrice >= selectedPriceRange.min && product.salePrice <= selectedPriceRange.max);
+      const priceMatch = filters.price === "all" || (selectedPriceRange && product.salePrice >= selectedPriceRange.min && product.salePrice < selectedPriceRange.max);
       
-      // Technical Specs Filters
-      const techSpecMatch = (specKey: keyof FilterState['techSpecs']) => {
-        const selectedSpecs = filters.techSpecs[specKey];
-        if (selectedSpecs.length === 0) return true; // No filter for this spec, so it's a match
-        
-        // This check is the key: only apply tech filters to cellphones
-        if (!isCellphone(product)) {
-            return true; // If it's an accessory, it's a match for any tech spec filter
-        }
-
-        const productSpecValue = product.dataTecnica?.[specKey];
-        if (!productSpecValue) return false; // Cellphone doesn't have the spec, so no match
-
-        return selectedSpecs.includes(productSpecValue);
-      };
-
-      const storageMatch = techSpecMatch('Almacenamiento');
-      const ramMatch = techSpecMatch('RAM');
-      const osMatch = techSpecMatch('Sistema Operativo');
-      const processorMatch = techSpecMatch('Procesador');
-
-      // An accessory must only match brand and price.
-      // A cellphone must match brand, price, AND all active tech specs.
-      if (!isCellphone(product)) {
-        return brandMatch && priceMatch;
+      // Early exit for non-matching common filters
+      if (!brandMatch || !priceMatch) {
+          return false;
       }
 
-      return brandMatch && priceMatch && storageMatch && ramMatch && osMatch && processorMatch;
+      // If we are filtering accessories, we are done.
+      if (productType === 'accessories') {
+          return true;
+      }
+
+      // --- Logic for cellphones: check all tech specs ---
+      if (productType === 'cellphones' && isCellphone(product)) {
+        const techSpecKeys = Object.keys(filters.techSpecs) as Array<keyof FilterState['techSpecs']>;
+
+        // Check every tech spec filter. `every` returns true if the array is empty.
+        return techSpecKeys.every(specKey => {
+            const selectedSpecs = filters.techSpecs[specKey];
+            // If no filter is selected for this spec, it's a match.
+            if (selectedSpecs.length === 0) return true;
+
+            const productSpecValue = product.dataTecnica?.[specKey];
+            // If the product has the spec, its value must be in the selected filters.
+            if (productSpecValue) {
+                return selectedSpecs.includes(productSpecValue);
+            }
+
+            // If the product doesn't have the spec, it's not a match for this filter.
+            return false;
+        });
+      }
+
+      // Default to false if it's not an accessory and doesn't pass cellphone checks
+      return false;
     });
 
     return filtered.sort((a, b) => {
@@ -105,7 +113,7 @@ export function useProductFilters(products: Product[]) {
         default: return 0;
       }
     });
-  }, [products, filters, sort]);
+  }, [products, filters, sort, productType]);
 
   return {
     filteredAndSortedProducts,
