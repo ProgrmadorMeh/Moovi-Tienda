@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { Product, Cellphone, Accessory } from '@/lib/types';
 import ProductCatalog from './product-catalog';
@@ -9,9 +9,7 @@ import QuickViewModal from './quick-view-modal';
 import { Smartphone, Star, Tag, Watch } from 'lucide-react';
 
 interface ProductSectionsProps {
-  allProducts: Cellphone[];
-  featuredProducts: Cellphone[];
-  discountedProducts: Cellphone[];
+  cellphones: Cellphone[];
   accessories: Accessory[];
   brands: string[];
   storageOptions: string[];
@@ -21,9 +19,7 @@ interface ProductSectionsProps {
 }
 
 export default function ProductSections({
-  allProducts,
-  featuredProducts,
-  discountedProducts,
+  cellphones,
   accessories,
   brands,
   storageOptions,
@@ -37,8 +33,11 @@ export default function ProductSections({
     setQuickViewProduct(product);
   }, []);
 
+  const featuredProducts = useMemo(() => cellphones.filter((p) => p.discount > 0), [cellphones]);
+  const discountedProducts = useMemo(() => cellphones.filter((p) => p.discount > 0), [cellphones]);
+
   const accessoryBrands = [...new Set(accessories.map((a) => a.brand))];
-  const cellphoneBrands = [...new Set(allProducts.map((p) => p.brand))];
+  const cellphoneBrands = [...new Set(cellphones.map((p) => p.brand))];
 
 
   return (
@@ -66,7 +65,7 @@ export default function ProductSections({
 
           <TabsContent value="all">
             <ProductCatalog
-              products={allProducts}
+              products={cellphones}
               productType="cellphones"
               brands={cellphoneBrands}
               storageOptions={storageOptions}

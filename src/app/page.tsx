@@ -4,13 +4,13 @@
 import { useState, useEffect } from "react";
 import HeroSection from '@/components/hero-section';
 import ProductSections from "@/components/product-sections";
-import { getCellphonesCached, getAccessoriesCached, getAllProductsCached } from "@/lib/data";
-import type { Product, Cellphone, Accessory } from "@/lib/types";
+import { getCellphonesCached, getAccessoriesCached } from "@/lib/data";
+import type { Cellphone, Accessory } from "@/lib/types";
 import Loading from "./loading"; 
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const [phones, setPhones] = useState<Cellphone[]>([]);
+  const [cellphones, setCellphones] = useState<Cellphone[]>([]);
   const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
   const [storageOptions, setStorageOptions] = useState<string[]>([]);
@@ -20,12 +20,12 @@ export default function Home() {
 
   useEffect(() => {
     const loadData = async () => {
-      const [fetchedPhones, fetchedAccessories, allProducts] = await Promise.all([
+      const [fetchedPhones, fetchedAccessories] = await Promise.all([
         getCellphonesCached(),
         getAccessoriesCached(),
-        getAllProductsCached(),
       ]);
 
+      const allProducts = [...fetchedPhones, ...fetchedAccessories];
       const uniqueBrands = [...new Set(allProducts.map((p) => p.brand))];
       
       const uniqueSpecs = (key: string) => [...new Set(
@@ -34,7 +34,7 @@ export default function Home() {
           .filter((value): value is string => typeof value === 'string' && value.length > 0)
       )].sort();
 
-      setPhones(fetchedPhones);
+      setCellphones(fetchedPhones);
       setAccessories(fetchedAccessories);
       setBrands(uniqueBrands);
       setStorageOptions(uniqueSpecs('Almacenamiento'));
@@ -57,9 +57,7 @@ export default function Home() {
       <HeroSection />
       <div id="product-catalog" className="container mx-auto px-4 py-12">
         <ProductSections
-          allProducts={phones}
-          featuredProducts={phones.filter((p) => p.discount > 0)}
-          discountedProducts={phones.filter((p) => p.discount > 0)}
+          cellphones={cellphones}
           accessories={accessories}
           brands={brands}
           storageOptions={storageOptions}
