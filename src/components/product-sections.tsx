@@ -33,6 +33,7 @@ export default function ProductSections({
     setQuickViewProduct(product);
   }, []);
 
+  // Derivamos los productos destacados y en oferta SOLAMENTE de los celulares.
   const featuredProducts = useMemo(() => cellphones.filter((p) => p.discount > 0), [cellphones]);
   const discountedProducts = useMemo(() => cellphones.filter((p) => p.discount > 0), [cellphones]);
 
