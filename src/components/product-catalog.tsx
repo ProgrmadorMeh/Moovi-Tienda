@@ -10,7 +10,7 @@ import ProductFilters from "./product-filters";
 
 interface ProductCatalogProps {
   products: Product[];
-  productType: 'cellphones' | 'accessories';
+  productType: 'cellphones' | 'accessories' | 'all';
   brands: string[];
   storageOptions: string[];
   ramOptions: string[];
@@ -76,7 +76,7 @@ export default function ProductCatalog({
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {paginatedProducts.map((product, index) => (
               <ProductCard
-                key={product.id}
+                key={`${'imei' in product ? 'cell-' : 'acc-'}${product.id}`}
                 product={product}
                 onQuickView={onQuickView}
                 priority={currentPage === 1 && index < 4}
