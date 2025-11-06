@@ -1,11 +1,20 @@
 import { cache } from 'react';
-import { methodGetList } from "@/lib/funtion/metodos/methodGetList";
+import { createClient } from './supabaseClient';
 import type { Cellphone, Accessory, Product } from "@/lib/types";
 
 const isRawProductCellphone = (p: any): boolean => {
     // Un producto es un celular si NO tiene la propiedad 'category'.
     // Esta es la forma más simple de distinguir basado en el modelo de datos.
     return !p.hasOwnProperty('category');
+};
+
+const methodGetList = async (tabla: string) => {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from(tabla)
+    .select('*, marcas(nombre)');
+  if (error) throw error;
+  return data;
 };
 
 /**
@@ -88,12 +97,9 @@ export const getAllProductsCached = cache(async (): Promise<Product[]> => {
     methodGetList("accesorios"),
   ]);
 
-  const cellphonesRes = results[0];
-  const accessoriesRes = results[1];
-
   const allProductsRaw = [
-    ...(cellphonesRes.data ?? []) as any[],
-    ...(accessoriesRes.data ?? []) as any[],
+    ...(cellphonesRes ?? []) as any[],
+    ...(accessoriesRes ?? []) as any[],
   ];
 
   const allProducts = processProducts(allProductsRaw);
