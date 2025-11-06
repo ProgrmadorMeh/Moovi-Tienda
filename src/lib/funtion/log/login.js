@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabaseClient';
 
 /**
  * Inicia sesión de un usuario con email y contraseña.

@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabaseClient';
 
 /**
  * Modificar registros de la tabla mediante un ID.

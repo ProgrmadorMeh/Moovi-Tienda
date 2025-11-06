@@ -1,11 +1,15 @@
+import { createClient } from '@/lib/supabaseClient';
 import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { User, Mail, Shield, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+
+export const dynamic = 'force-dynamic';
 
 export default async function MiCuentaPage() {
-  const supabase = createClient();
+  const supabase = createPagesServerClient({ cookies });
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {

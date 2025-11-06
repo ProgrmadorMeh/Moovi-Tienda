@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabaseClient';
 
 /**
  * Registra un nuevo usuario con email y contraseña.

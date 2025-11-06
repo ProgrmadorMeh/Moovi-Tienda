@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabaseClient';
 
 /**
  * Envia un email para cambiar la contraseña.

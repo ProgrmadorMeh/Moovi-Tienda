@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabaseClient';
 import { cache } from 'react';
 
 export const methodGetList = cache(async (tabla, filtros = {}, campos = "*") => {

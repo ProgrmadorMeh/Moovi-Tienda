@@ -1,8 +1,9 @@
-import { createClient } from '@/lib/supabase/server';
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
+import { cookies } from 'next/headers';
 
 export async function POST(req) {
-  const supabase = createClient(); // Usa el cliente de servidor
+  const supabase = createPagesServerClient({ cookies });
   try {
     // 1. Instanciar el cliente dentro de la función
     const client = new MercadoPagoConfig({ 

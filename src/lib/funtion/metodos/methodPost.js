@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabaseClient';
 
 /**
  * Sube uno o varios registros a Supabase.

@@ -1,27 +1,29 @@
-import { NextResponse, type NextRequest } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
+import { NextResponse } from 'next/server'
 
-// This function can be marked `async` if using `await` inside
-export async function middleware(request: NextRequest) {
-  const supabase = createClient()
-  const { data } = await supabase.auth.getSession()
+import type { NextRequest } from 'next/server'
 
-  const { pathname } = request.nextUrl;
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next()
+  const supabase = createMiddlewareClient({ req, res })
   
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  const { pathname } = req.nextUrl;
+
   // Redirigir si no está autenticado y trata de acceder a rutas protegidas
-  if (!data.session && (pathname.startsWith('/mi-cuenta') || pathname.startsWith('/mis-compras') || pathname.startsWith('/checkout'))) {
-    return NextResponse.redirect(new URL('/login', request.url))
+  if (!session && (pathname.startsWith('/mi-cuenta') || pathname.startsWith('/mis-compras') || pathname.startsWith('/checkout'))) {
+    return NextResponse.redirect(new URL('/login', req.url))
   }
   
   // Redirigir si está autenticado y trata de acceder a login/register
-  if (data.session && (pathname === '/login' || pathname === '/register')) {
-     return NextResponse.redirect(new URL('/', request.url))
+  if (session && (pathname === '/login' || pathname === '/register')) {
+     return NextResponse.redirect(new URL('/', req.url))
   }
 
-  return NextResponse.next()
+  return res
 }
  
-// See "Matching Paths" below to learn more
 export const config = {
   matcher: [
     '/login',

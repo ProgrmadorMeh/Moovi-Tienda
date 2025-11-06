@@ -1,5 +1,5 @@
 // src/app/mis-compras/pedidos/[id]/page.tsx
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabaseClient';
 import { notFound, redirect } from 'next/navigation';
 import { format, parseISO, differenceInHours, differenceInDays } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -11,6 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 
 // --- Lógica de Estado de Envío (reutilizada) ---
@@ -61,10 +63,11 @@ const ShippingTimeline = ({ dateApproved }: { dateApproved: string }) => {
   );
 };
 
+export const dynamic = 'force-dynamic';
 
 // --- Página Principal ---
 export default async function OrderDetailPage({ params }: { params: { id: string } }) {
-  const supabase = createClient();
+  const supabase = createPagesServerClient({ cookies });
   const { id: paymentId } = params;
 
   // 1. Validar sesión de usuario

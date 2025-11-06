@@ -1,10 +1,14 @@
+import { createClient } from '@/lib/supabaseClient';
 import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import OrderHistory from './order-history';
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+
+export const dynamic = 'force-dynamic';
 
 export default async function MisComprasPage() {
-  const supabase = createClient();
+  const supabase = createPagesServerClient({ cookies });
   // 1. Obtener la sesión del usuario del lado del servidor
   const { data: { session } } = await supabase.auth.getSession();
 

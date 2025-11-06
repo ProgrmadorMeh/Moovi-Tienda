@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabaseClient';
 // Para la operación de admin, necesitamos un cliente especial que se debe crear de forma segura en el backend
 // pero la función original parece estar mezclando conceptos.
 // Esta función, tal como está, solo puede ser llamada desde el cliente,
