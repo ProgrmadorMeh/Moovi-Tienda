@@ -59,24 +59,33 @@ export default function OrderHistory({ orders }: OrderHistoryProps) {
         return (
           <Card key={order.id} className="bg-background/50 hover:bg-accent/50 transition-colors">
             <Link href={`/mi-cuenta/pedidos/${order.payment_id}`} className="block p-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full text-left">
-                    <div>
-                        <p className="font-bold">Pedido #{order.payment_id}</p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 items-center gap-4 text-left">
+                    {/* Columna 1: ID y Fecha */}
+                    <div className="col-span-2 sm:col-span-1">
+                        <p className="font-bold">Pedido #{order.payment_id.slice(-6)}</p>
                         <p className="text-sm text-muted-foreground">
-                            {format(parseISO(order.date_approved), "d 'de' MMMM 'de' yyyy", { locale: es })}
+                            {format(parseISO(order.date_approved), "d MMM yyyy", { locale: es })}
                         </p>
                     </div>
-                    <div className="flex items-center gap-4 mt-2 sm:mt-0">
-                        <p className="font-semibold text-lg">
-                            {new Intl.NumberFormat('es-AR', { style: 'currency', currency: order.currency }).format(order.amount)}
-                        </p>
+
+                    {/* Columna 2: Estado del Pago */}
+                    <div className="text-left sm:text-center">
                         <Badge variant={order.status === 'approved' ? 'default' : 'destructive'} className="bg-green-500/80">
                             {order.status === 'approved' ? 'Aprobado' : 'Fallido'}
                         </Badge>
-                        <div className="hidden sm:flex items-center gap-2 text-sm">
-                            <span>{shippingStatusText}</span>
-                            <ChevronRight className="h-4 w-4" />
-                        </div>
+                    </div>
+                    
+                    {/* Columna 3: Estado del Envío */}
+                    <div className="hidden sm:block text-center">
+                         <p>{shippingStatusText}</p>
+                    </div>
+
+                    {/* Columna 4: Total y Flecha */}
+                    <div className="flex items-center justify-end gap-4 col-span-2 sm:col-span-1">
+                        <p className="font-semibold text-lg">
+                            {new Intl.NumberFormat('es-AR', { style: 'currency', currency: order.currency }).format(order.amount)}
+                        </p>
+                        <ChevronRight className="h-5 w-5 text-muted-foreground" />
                     </div>
                 </div>
             </Link>
