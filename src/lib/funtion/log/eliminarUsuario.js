@@ -1,4 +1,4 @@
-import { supabase } from '../supabaseClient.js';
+import { createClient } from '@/lib/supabase/client';
 /**
  * Elimina el usuario registrado.
  * @param {Object} datos - Debe incluir `tabla` y `id`
@@ -10,6 +10,7 @@ const supabaseAdmin = createClient(
 );
 
 async function eliminarCuentaDelUsuario() {
+  const supabase = createClient();
   // 1. Obtener el token de la sesión actual
   const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
@@ -62,4 +63,3 @@ async function eliminarCuentaDelUsuario() {
     data: null,
   };
 }
-

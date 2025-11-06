@@ -1,6 +1,7 @@
-import { supabase } from '../supabaseClient.js';
+import { createClient } from '@/lib/supabase/client';
 
 export async function emailRecuperacion(email) {
+  const supabase = createClient();
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: 'http://localhost:3000/recuperar', // cambia esta URL
   });

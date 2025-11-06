@@ -1,10 +1,11 @@
-import { supabase } from '../../supabaseClient.js';
+import { createClient } from '@/lib/supabase/client';
 
 /**
  * Envia un email para cambiar la contraseña.
  * @returns {Promise<{ success: boolean, message: string, data: any[] | null  }>}
  */
 export async function emailPassword(email) {
+  const supabase = createClient();
   try{
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: "https://Moovi.com/reset-password", // Direccion donde llevara el email

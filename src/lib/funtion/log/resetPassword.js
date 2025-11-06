@@ -1,4 +1,4 @@
-import { supabase } from '../../supabaseClient.js';
+import { createClient } from '@/lib/supabase/client';
 
 /**
  * Cambia la contraseña del usuario actual.
@@ -6,6 +6,7 @@ import { supabase } from '../../supabaseClient.js';
  * @returns {Promise<{ success: boolean, message: string, data: any[] | null  }>}
  */
 export async function resetPassword(nuevaContraseña) {
+    const supabase = createClient();
     const { data, error } = await supabase.auth.updateUser({
         password: nuevaContraseña,
     });
