@@ -79,19 +79,36 @@ export function useProductFilters(
       if (isCellphone(product) && product.dataTecnica) {
         const techSpecKeys = Object.keys(filters.techSpecs) as Array<keyof FilterState['techSpecs']>;
         
-        for (const specKey of techSpecKeys) {
+        // Usamos .every() para asegurarnos de que el producto cumpla con TODOS los filtros de especificaciones activas.
+        const allSpecsMatch = techSpecKeys.every(specKey => {
           const selectedSpecFilters = filters.techSpecs[specKey];
-          if (selectedSpecFilters.length === 0) continue; 
+          // Si no hay filtros para esta especificación, damos por válida la condición.
+          if (selectedSpecFilters.length === 0) return true;
 
           const productSpecValue = product.dataTecnica?.[specKey];
-          if (!productSpecValue) return false; 
+          // Si el producto no tiene esta especificación, no cumple el filtro.
+          if (!productSpecValue) return false;
 
-          const hasMatchingSpec = selectedSpecFilters.some(filterValue =>
-            String(productSpecValue).includes(filterValue.replace(' GB', '').replace(' TB', '000')) // Normalización
-          );
-          
-          if (!hasMatchingSpec) return false; 
-        }
+          const productSpecString = String(productSpecValue).toLowerCase();
+
+          // El producto debe coincidir con AL MENOS UNO de los valores seleccionados para esta especificación.
+          // Por ejemplo, si se selecciona "128 GB" y "256 GB", el producto debe tener al menos uno de ellos.
+          // Esto es incorrecto. El usuario quiere que si selecciona "128GB" aparezcan los que tienen "128GB".
+          // Si selecciona "128GB" y "256GB" no debería mostrar nada, o sí, dependiendo de la interpretación.
+          // La interpretación correcta es que si un producto tiene "128GB/256GB" debe aparecer si se selecciona "128GB" O "256GB".
+          // Si se seleccionan ambas, es un "OR".
+
+          // La lógica correcta es: ¿Este producto cumple con *alguna* de las opciones seleccionadas para esta spec?
+          return selectedSpecFilters.some(filterValue => {
+            const normalizedFilter = filterValue.toLowerCase().replace('gb', '').replace('tb', '000').trim();
+            // Verificamos si la cadena de la especificación del producto incluye el número del filtro.
+            // Usamos una expresión regular para buscar el número como una palabra completa o seguido de "gb" o "tb"
+            const regex = new RegExp(`\\b${normalizedFilter}\\b`);
+            return regex.test(productSpecString.replace('gb', '').replace('tb', '000'));
+          });
+        });
+
+        if (!allSpecsMatch) return false;
       }
 
       return true;
