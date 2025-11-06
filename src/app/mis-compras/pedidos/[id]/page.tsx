@@ -1,5 +1,4 @@
 
-
 // src/app/mis-compras/pedidos/[id]/page.tsx
 import { supabase } from '@/lib/supabaseClient';
 import { notFound, redirect } from 'next/navigation';
@@ -19,7 +18,7 @@ export const dynamic = 'force-dynamic';
 
 // --- Lógica de Estado de Envío (reutilizada) ---
 const getShippingStatus = (dateApproved: string) => {
-  if (!dateApproved) return { current: 'Pendiente', index: -1 };
+  if (!dateApproved) return { current: 'Pendiente', index: -1, progress: 0 };
   
   const approvalDate = parseISO(dateApproved);
   const now = new Date();

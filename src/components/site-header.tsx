@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Smartphone, ShoppingCart, Menu, User, LogOut } from 'lucide-react';
+import { Smartphone, ShoppingCart, Menu, User, LogOut, Package } from 'lucide-react';
 import { useCartStore } from '@/lib/cart-store';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -112,8 +112,18 @@ export default function SiteHeader() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/mi-cuenta">Mi Cuenta</Link>
+                    <Link href="/mi-cuenta" className='flex items-center'>
+                      <User className="mr-2 h-4 w-4" />
+                      Mi Cuenta
+                    </Link>
                   </DropdownMenuItem>
+                   <DropdownMenuItem asChild>
+                    <Link href="/mis-compras" className='flex items-center'>
+                      <Package className="mr-2 h-4 w-4" />
+                      Mis Compras
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-red-500 focus:text-red-500">
                     <LogOut className="mr-2 h-4 w-4" />
                     Cerrar Sesión
