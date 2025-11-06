@@ -121,7 +121,7 @@ const ProductCard = memo(({ product, onQuickView, priority = false }: ProductCar
                 </p>
             ) : (product as any).fees && (
                 <p className="text-lg font-semibold text-green-600">
-                    o {(product as any).fees.count} cuotas de {formatPrice((product as any).fees.price, currency, rate)}
+                    o {(product as any).fees.count} cuotas de {formatPrice(((product as any).fees.price), currency, rate)}
                 </p>
             )}
           </div>
