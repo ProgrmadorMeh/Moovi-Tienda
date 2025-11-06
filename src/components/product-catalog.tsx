@@ -14,8 +14,6 @@ interface ProductCatalogProps {
   brands: string[];
   storageOptions: string[];
   ramOptions: string[];
-  osOptions: string[];
-  processorOptions: string[];
   onQuickView: (product: Product) => void;
 }
 
@@ -27,8 +25,6 @@ export default function ProductCatalog({
   brands,
   storageOptions,
   ramOptions,
-  osOptions,
-  processorOptions,
   onQuickView,
 }: ProductCatalogProps) {
   const {
@@ -66,8 +62,6 @@ export default function ProductCatalog({
             brands={brands}
             storageOptions={storageOptions}
             ramOptions={ramOptions}
-            osOptions={osOptions}
-            processorOptions={processorOptions}
             filters={filters}
             onFilterChange={handleFilterChange}
             sort={sort}

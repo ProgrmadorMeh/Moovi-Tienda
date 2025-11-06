@@ -14,8 +14,6 @@ interface ProductSectionsProps {
   brands: string[];
   storageOptions: string[];
   ramOptions: string[];
-  osOptions: string[];
-  processorOptions: string[];
 }
 
 export default function ProductSections({
@@ -24,8 +22,6 @@ export default function ProductSections({
   brands,
   storageOptions,
   ramOptions,
-  osOptions,
-  processorOptions,
 }: ProductSectionsProps) {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
@@ -71,8 +67,6 @@ export default function ProductSections({
               brands={cellphoneBrands}
               storageOptions={storageOptions}
               ramOptions={ramOptions}
-              osOptions={osOptions}
-              processorOptions={processorOptions}
               onQuickView={handleQuickView}
             />
           </TabsContent>
@@ -84,8 +78,6 @@ export default function ProductSections({
               brands={cellphoneBrands}
               storageOptions={storageOptions}
               ramOptions={ramOptions}
-              osOptions={osOptions}
-              processorOptions={processorOptions}
               onQuickView={handleQuickView}
             />
           </TabsContent>
@@ -97,8 +89,6 @@ export default function ProductSections({
               brands={cellphoneBrands}
               storageOptions={storageOptions}
               ramOptions={ramOptions}
-              osOptions={osOptions}
-              processorOptions={processorOptions}
               onQuickView={handleQuickView}
             />
           </TabsContent>
@@ -110,8 +100,6 @@ export default function ProductSections({
               brands={accessoryBrands}
               storageOptions={[]}
               ramOptions={[]}
-              osOptions={[]}
-              processorOptions={[]}
               onQuickView={handleQuickView}
             />
           </TabsContent>
@@ -128,4 +116,3 @@ export default function ProductSections({
     </>
   );
 }
-

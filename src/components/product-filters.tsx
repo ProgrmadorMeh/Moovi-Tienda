@@ -28,8 +28,6 @@ interface ProductFiltersProps {
   brands: string[];
   storageOptions: string[];
   ramOptions: string[];
-  osOptions: string[];
-  processorOptions: string[];
   filters: FilterState;
   onFilterChange: (key: keyof FilterState | `techSpecs.${string}`, value: any) => void;
   sort: string;
@@ -71,8 +69,6 @@ export default function ProductFilters({
   brands = [],
   storageOptions = [],
   ramOptions = [],
-  osOptions = [],
-  processorOptions = [],
   filters,
   onFilterChange,
   sort,
@@ -157,20 +153,6 @@ export default function ProductFilters({
             options={ramOptions}
             techSpecKey="RAM"
             selectedValues={filters.techSpecs.RAM}
-            onValueChange={handleTechSpecChange}
-          />
-          <TechSpecFilterGroup
-            label="Sistema Operativo"
-            options={osOptions}
-            techSpecKey="Sistema Operativo"
-            selectedValues={filters.techSpecs['Sistema Operativo']}
-            onValueChange={handleTechSpecChange}
-          />
-          <TechSpecFilterGroup
-            label="Procesador"
-            options={processorOptions}
-            techSpecKey="Procesador"
-            selectedValues={filters.techSpecs.Procesador}
             onValueChange={handleTechSpecChange}
           />
         </>

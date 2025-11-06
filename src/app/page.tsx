@@ -19,8 +19,6 @@ export default function Home() {
   // Usamos las opciones predefinidas desde el nuevo archivo de filtros
   const storageOptions = predefinedFilters.Almacenamiento;
   const ramOptions = predefinedFilters.RAM;
-  const osOptions = predefinedFilters['Sistema Operativo'];
-  const processorOptions = predefinedFilters.Procesador;
 
   useEffect(() => {
     const loadData = async () => {
@@ -60,8 +58,6 @@ export default function Home() {
           brands={brands}
           storageOptions={storageOptions}
           ramOptions={ramOptions}
-          osOptions={osOptions}
-          processorOptions={processorOptions}
         />
       </div>
     </>

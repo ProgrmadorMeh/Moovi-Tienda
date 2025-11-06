@@ -9,8 +9,6 @@ export interface FilterState {
   techSpecs: {
     Almacenamiento: string[];
     RAM: string[];
-    'Sistema Operativo': string[];
-    Procesador: string[];
   };
 }
 
@@ -20,8 +18,6 @@ const INITIAL_FILTERS: FilterState = {
   techSpecs: {
     Almacenamiento: [],
     RAM: [],
-    'Sistema Operativo': [],
-    Procesador: [],
   },
 };
 
