@@ -27,10 +27,10 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
         setIsLoading(true);
         const response = await fetch('/api/dolar-quote');
         if (!response.ok) {
-          // Si la API falla, usamos un valor de respaldo
+          // Si la API falla, usamos un valor de respaldo sin mostrar error en UI
           const fallbackRate = 1000;
           setRate(fallbackRate);
-          setError('Usando cotización de respaldo.');
+          setError(null); // No consideramos esto un error para el usuario
           console.warn(`ADVERTENCIA: No se pudo cargar la cotización real. Usando valor de respaldo: ${fallbackRate}`);
         } else {
           const data = await response.json();
@@ -41,7 +41,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
              // Si la API responde OK pero sin 'rate', también usamos respaldo
             const fallbackRate = 1000;
             setRate(fallbackRate);
-            setError('API no devolvió cotización. Usando valor de respaldo.');
+            setError(null); // No es un error de UI
             console.warn(`ADVERTENCIA: La API no devolvió una cotización válida. Usando valor de respaldo: ${fallbackRate}`);
           }
         }
@@ -50,7 +50,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
         // Fallback en caso de error de red u otro problema crítico
         const fallbackRate = 1000;
         setRate(fallbackRate);
-        setError('Error de red. Usando cotización de respaldo.');
+        setError(null); // No es un error de UI
         console.warn(`ADVERTENCIA: Error de red al buscar cotización. Usando valor de respaldo: ${fallbackRate}`);
       } finally {
         setIsLoading(false);
