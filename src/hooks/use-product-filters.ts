@@ -91,13 +91,6 @@ export function useProductFilters(
 
           const productSpecString = String(productSpecValue).toLowerCase();
 
-          // El producto debe coincidir con AL MENOS UNO de los valores seleccionados para esta especificación.
-          // Por ejemplo, si se selecciona "128 GB" y "256 GB", el producto debe tener al menos uno de ellos.
-          // Esto es incorrecto. El usuario quiere que si selecciona "128GB" aparezcan los que tienen "128GB".
-          // Si selecciona "128GB" y "256GB" no debería mostrar nada, o sí, dependiendo de la interpretación.
-          // La interpretación correcta es que si un producto tiene "128GB/256GB" debe aparecer si se selecciona "128GB" O "256GB".
-          // Si se seleccionan ambas, es un "OR".
-
           // La lógica correcta es: ¿Este producto cumple con *alguna* de las opciones seleccionadas para esta spec?
           return selectedSpecFilters.some(filterValue => {
             const normalizedFilter = filterValue.toLowerCase().replace('gb', '').replace('tb', '000').trim();
