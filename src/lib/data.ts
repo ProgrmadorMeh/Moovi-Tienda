@@ -2,10 +2,6 @@ import { cache } from 'react';
 import { methodGetList } from "@/lib/funtion/metodos/methodGetList";
 import type { Cellphone, Accessory, Product } from "@/lib/types";
 
-// ----------------- CACHE -----------------
-
-let cachedAllProducts: Product[] | null = null;
-
 const isRawProductCellphone = (p: any): boolean => {
     // Un producto es un celular si NO tiene la propiedad 'category'.
     // Esta es la forma más simple de distinguir basado en el modelo de datos.
@@ -84,12 +80,9 @@ function processProducts(products: any[]): Product[] {
 /**
  * Obtiene todos los productos combinados (celulares + accesorios) con cache
  * y aplica la lógica de precios y marcas correcta.
- * @param refresh - Si es true, fuerza recargar desde Supabase
+ * La función `cache` de React se encarga de memoizar la petición durante un ciclo de renderizado.
  */
-export const getAllProductsCached = cache(async (refresh = false): Promise<Product[]> => {
-  if (!refresh && cachedAllProducts) {
-    return cachedAllProducts;
-  }
+export const getAllProductsCached = cache(async (): Promise<Product[]> => {
   const results = await Promise.all([
     methodGetList("celulares"),
     methodGetList("accesorios"),
@@ -103,23 +96,23 @@ export const getAllProductsCached = cache(async (refresh = false): Promise<Produ
     ...(accessoriesRes.data ?? []) as any[],
   ];
 
-  cachedAllProducts = processProducts(allProductsRaw);
+  const allProducts = processProducts(allProductsRaw);
   
-  return cachedAllProducts;
+  return allProducts;
 });
 
 /**
  * Obtiene solo celulares, ya procesados.
  */
-export async function getCellphonesCached(refresh = false): Promise<Cellphone[]> {
-  const allProducts = await getAllProductsCached(refresh);
+export async function getCellphonesCached(): Promise<Cellphone[]> {
+  const allProducts = await getAllProductsCached();
   return allProducts.filter((p): p is Cellphone => 'imei' in p || (p.hasOwnProperty('dataTecnica') && !p.hasOwnProperty('category')));
 }
 
 /**
  * Obtiene solo accesorios, ya procesados.
  */
-export async function getAccessoriesCached(refresh = false): Promise<Accessory[]> {
-  const allProducts = await getAllProductsCached(refresh);
+export async function getAccessoriesCached(): Promise<Accessory[]> {
+  const allProducts = await getAllProductsCached();
   return allProducts.filter((p): p is Accessory => "category" in p);
 }

@@ -26,8 +26,9 @@ export default function Home() {
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
-      // Forzamos la actualización de la caché en la carga inicial de la página principal.
-      const fetchedProducts = await getAllProductsCached(true); 
+      // Ahora getAllProductsCached no acepta 'refresh', simplemente obtiene los datos.
+      // La caché de React se maneja por petición, por lo que una recarga traerá datos frescos.
+      const fetchedProducts = await getAllProductsCached(); 
       setAllProducts(fetchedProducts);
       setIsLoading(false);
     };
