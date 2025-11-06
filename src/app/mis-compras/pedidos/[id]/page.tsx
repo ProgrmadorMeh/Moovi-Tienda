@@ -13,8 +13,6 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
 
-export const dynamic = 'force-dynamic';
-
 // --- Lógica de Estado de Envío (reutilizada) ---
 const getShippingStatus = (dateApproved: string) => {
   if (!dateApproved) return { current: 'Pendiente', index: -1, progress: 0 };
@@ -135,7 +133,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
           <div>
             <h3 className="text-lg font-semibold mb-4">Seguimiento del Paquete</h3>
             <div className="relative w-full h-64 rounded-lg overflow-hidden border">
-                <Image src={mapUrl} alt="Mapa de seguimiento simulado" fill objectFit="cover" />
+                <Image src={mapUrl} alt="Mapa de seguimiento simulado" layout="fill" objectFit="cover" />
                 <div className="absolute inset-0 bg-black/30"></div>
                 <div className="absolute top-4 left-4 p-3 bg-background/80 backdrop-blur-sm rounded-lg text-sm">
                     <p className="font-bold">Ubicación Estimada:</p>

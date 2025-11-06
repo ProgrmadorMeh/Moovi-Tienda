@@ -3,8 +3,6 @@ import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import OrderHistory from './order-history';
 
-export const dynamic = 'force-dynamic'; // Asegura que la página se renderice dinámicamente
-
 export default async function MisComprasPage() {
   const supabase = createClient();
   // 1. Obtener la sesión del usuario del lado del servidor

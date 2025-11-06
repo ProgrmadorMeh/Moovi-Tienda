@@ -1,65 +1,43 @@
 import { createClient } from '@/lib/supabase/client';
-/**
- * Elimina el usuario registrado.
- * @param {Object} datos - Debe incluir `tabla` y `id`
- * @returns {Promise<{ success: boolean, message: string, data: any[] | null  }>}
- */
-const supabaseAdmin = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+// Para la operación de admin, necesitamos un cliente especial que se debe crear de forma segura en el backend
+// pero la función original parece estar mezclando conceptos.
+// Esta función, tal como está, solo puede ser llamada desde el cliente,
+// y un cliente NUNCA debe tener acceso a la SERVICE_ROLE_KEY.
+// La eliminación de un usuario debe ser manejada por una API Route o Server Action.
 
+/**
+ * Inicia el proceso para eliminar la cuenta de un usuario.
+ * Esta función DEBE llamar a una API interna segura que use la service_role_key.
+ * Por ahora, solo simula la llamada y la lógica del cliente.
+ * @returns {Promise<{ success: boolean, message: string }>}
+ */
 async function eliminarCuentaDelUsuario() {
   const supabase = createClient();
-  // 1. Obtener el token de la sesión actual
+  // 1. Obtener la sesión actual del lado del cliente.
   const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
   if (sessionError || !session) {
     console.error('No hay sesión activa o error:', sessionError?.message);
-    return { 
-      success: false, 
-      message: 'No hay sesión activa',
-      data: null,
+    return {
+      success: false,
+      message: 'No hay sesión activa. No se puede eliminar la cuenta.',
     };
   }
 
-  const token = session.access_token;
+  // Aquí es donde llamarías a tu API de backend.
+  // Ejemplo:
+  // const response = await fetch('/api/user/delete', { method: 'POST' });
+  // const result = await response.json();
+  //
+  // if (result.success) {
+  //   await supabase.auth.signOut(); // Cierra la sesión en el cliente
+  // }
+  // return result;
 
-  const supabaseAuthed = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
-    global: {
-      headers: { Authorization: `Bearer ${token}` },
-    },
-  });
-
-  const { data: userData, error: userError } = await supabaseAuthed.auth.getUser();
-
-  if (userError || !userData?.user) {
-    console.error('Error obteniendo usuario:', userError?.message);
-    return { 
-      success: false, 
-      message: 'No se pudo obtener usuario autenticado',
-      data: null,
-    };
-  }
-
-  const userId = userData.user.id;
-
-  // Eliminar usuario con la clave admin (service role)
-  const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);
-
-  if (deleteError) {
-    console.error('Error al eliminar usuario:', deleteError.message);
-    return { 
-      success: false, 
-      message: deleteError.message,
-      data: null,
-    };
-  }
-
-  console.log('Usuario eliminado:', userId);
-  return { 
-    success: true, 
-    message: 'Usuario eliminado correctamente',
-    data: null,
+  // Como no tenemos la API, devolvemos un mensaje informativo.
+  console.warn("La eliminación de usuarios debe implementarse a través de una API segura en el backend.");
+  return {
+    success: false,
+    message: "Funcionalidad no implementada. La eliminación debe hacerse desde el servidor.",
   };
 }

@@ -13,8 +13,6 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
 
-export const dynamic = 'force-dynamic';
-
 // --- Lógica de Estado de Envío (reutilizada) ---
 const getShippingStatus = (dateApproved: string) => {
   if (!dateApproved) return { current: 'Pendiente', index: -1, progress: 0 };

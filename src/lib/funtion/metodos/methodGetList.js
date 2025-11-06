@@ -1,15 +1,8 @@
+import { createClient } from '@/lib/supabase/server';
 import { cache } from 'react';
 
-// Modificado para recibir una instancia de Supabase en lugar de importarla
-export const methodGetList = cache(async (supabase, tabla, filtros = {}, campos = "*") => {
-  if (!supabase || !tabla) {
-    return {
-      success: false,
-      message: 'Debes proporcionar una instancia de Supabase y el nombre de la tabla.',
-      data: null,
-    };
-  }
-
+export const methodGetList = cache(async (tabla, filtros = {}, campos = "*") => {
+  const supabase = createClient();
   try {
     const condiciones = Object.entries(filtros)
       .filter(([_, valor]) => valor && valor.toString().trim() !== '')

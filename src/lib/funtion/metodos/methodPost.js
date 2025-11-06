@@ -5,12 +5,13 @@ import { createClient } from '@/lib/supabase/server';
  * Si se inserta un celular, inserta o recupera primero la marca y la vincula.
  * Permite subir múltiples imágenes y guardar sus URLs en el campo "imageUrl".
  *
- * @param {Object} datos - Datos del formulario
- * @param {string} tabla - Nombre de la tabla destino
+ * @param {Object} datos - Datos del formulario.
+ * @param {string} tabla - Nombre de la tabla destino.
  * @returns {Promise<{ success: boolean, message: string, data: any[] | null }>}
  */
 export async function methodPost(datos, tabla) {
   const supabase = createClient();
+
   // Validar campos vacíos (excepto archivos)
   for (const [key, value] of Object.entries(datos)) {
     if (key !== 'files' && (!value || value === '')) {

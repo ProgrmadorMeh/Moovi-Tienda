@@ -4,8 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { User, Mail, Shield, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export const dynamic = 'force-dynamic';
-
 export default async function MiCuentaPage() {
   const supabase = createClient();
   const { data: { session } } = await supabase.auth.getSession();
