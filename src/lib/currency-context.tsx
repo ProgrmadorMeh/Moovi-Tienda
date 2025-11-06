@@ -27,18 +27,31 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
         setIsLoading(true);
         const response = await fetch('/api/dolar-quote');
         if (!response.ok) {
-          throw new Error('No se pudo cargar la cotización.');
-        }
-        const data = await response.json();
-        if (data.rate) {
-          setRate(data.rate);
-          setError(null);
+          // Si la API falla, usamos un valor de respaldo
+          const fallbackRate = 1000;
+          setRate(fallbackRate);
+          setError('Usando cotización de respaldo.');
+          console.warn(`ADVERTENCIA: No se pudo cargar la cotización real. Usando valor de respaldo: ${fallbackRate}`);
         } else {
-          throw new Error(data.error || 'La API no devolvió una cotización válida.');
+          const data = await response.json();
+          if (data.rate) {
+            setRate(data.rate);
+            setError(null);
+          } else {
+             // Si la API responde OK pero sin 'rate', también usamos respaldo
+            const fallbackRate = 1000;
+            setRate(fallbackRate);
+            setError('API no devolvió cotización. Usando valor de respaldo.');
+            console.warn(`ADVERTENCIA: La API no devolvió una cotización válida. Usando valor de respaldo: ${fallbackRate}`);
+          }
         }
       } catch (e: any) {
-        console.error(e);
-        setError(e.message);
+        console.error("Error crítico al buscar cotización:", e);
+        // Fallback en caso de error de red u otro problema crítico
+        const fallbackRate = 1000;
+        setRate(fallbackRate);
+        setError('Error de red. Usando cotización de respaldo.');
+        console.warn(`ADVERTENCIA: Error de red al buscar cotización. Usando valor de respaldo: ${fallbackRate}`);
       } finally {
         setIsLoading(false);
       }

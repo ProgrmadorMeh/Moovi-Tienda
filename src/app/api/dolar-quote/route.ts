@@ -7,6 +7,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   const apiKey = process.env.EXCHANGERATE_API_KEY;
   if (!apiKey) {
+    console.error('API Error: La variable de entorno EXCHANGERATE_API_KEY no está configurada.');
     return NextResponse.json(
       { error: 'API key no configurada en el servidor' },
       { status: 500 }
@@ -19,23 +20,27 @@ export async function GET() {
     });
 
     if (!response.ok) {
+      const errorBody = await response.text();
+      console.error(`API Error: La API externa devolvió un estado ${response.status}. Body: ${errorBody}`);
       throw new Error(`Error al contactar la API externa: ${response.statusText}`);
     }
 
     const data = await response.json();
 
     if (data.result === 'error') {
+       console.error(`API Error: La API externa devolvió un error de tipo: ${data['error-type']}`);
       throw new Error(`Error de la API externa: ${data['error-type']}`);
     }
 
-    const rate = data.conversion_rates.ARS;
+    const rate = data.conversion_rates?.ARS;
     if (!rate) {
+      console.error('API Error: No se encontró la tasa de cambio para ARS en la respuesta.');
       throw new Error('No se encontró la tasa de cambio para ARS.');
     }
 
     return NextResponse.json({ rate });
-  } catch (error) {
-    console.error('Error en /api/dolar-quote:', error);
+  } catch (error: any) {
+    console.error('Error en /api/dolar-quote:', error.message);
     return NextResponse.json(
       { error: 'No se pudo obtener la cotización del dólar.' },
       { status: 500 }
