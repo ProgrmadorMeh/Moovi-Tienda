@@ -27,7 +27,7 @@ const isCellphone = (product: Product): product is Cellphone => {
 
 export function useProductFilters(
     products: Product[],
-    productType: 'cellphones' | 'accessories'
+    productType: 'cellphones' | 'accessories' | 'all'
 ) {
   const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
   const [sort, setSort] = useState("price-asc");
@@ -56,10 +56,12 @@ export function useProductFilters(
 
   const filteredAndSortedProducts = useMemo(() => {
     let filteredProducts = products.filter((product) => {
-      // 1. Filtrar por tipo de producto (cellphone vs accessory)
-      const isCorrectType = (productType === 'cellphones' && isCellphone(product)) ||
-                             (productType === 'accessories' && !isCellphone(product));
-      if (!isCorrectType) return false;
+      // 1. (Opcional) Filtrar por tipo de producto si no es 'all'
+      if (productType !== 'all') {
+        const isCorrectType = (productType === 'cellphones' && isCellphone(product)) ||
+                               (productType === 'accessories' && !isCellphone(product));
+        if (!isCorrectType) return false;
+      }
 
       // 2. Filtros comunes de marca y precio
       const brandMatch = filters.brand === "all" || product.brand === filters.brand;
@@ -72,8 +74,8 @@ export function useProductFilters(
       
       if (!brandMatch || !priceMatch) return false;
 
-      // 3. Filtros de especificaciones técnicas (SOLO para celulares)
-      if (productType === 'cellphones' && isCellphone(product)) {
+      // 3. Filtros de especificaciones técnicas (SOLO si el producto es un celular)
+      if (isCellphone(product)) {
         const techSpecKeys = Object.keys(filters.techSpecs) as Array<keyof FilterState['techSpecs']>;
         
         for (const specKey of techSpecKeys) {
@@ -84,7 +86,7 @@ export function useProductFilters(
           if (!productSpecValue) return false; 
 
           const hasMatchingSpec = selectedSpecFilters.some(filterValue =>
-            productSpecValue.includes(filterValue)
+            String(productSpecValue).includes(filterValue)
           );
           
           if (!hasMatchingSpec) return false; 

@@ -32,8 +32,8 @@ export default function ProductSections({
   const allProducts = useMemo(() => [...cellphones, ...accessories], [cellphones, accessories]);
   
   // Productos destacados y en oferta de *todos* los productos.
-  const featuredProducts = useMemo(() => allProducts.filter((p) => p.discount > 0), [allProducts]);
-  const discountedProducts = useMemo(() => allProducts.filter((p) => p.discount > 0), [allProducts]);
+  const discountedProducts = useMemo(() => allProducts.filter((p) => (p.discount ?? 0) > 0), [allProducts]);
+  const featuredProducts = useMemo(() => allProducts.filter((p) => (p.discount ?? 0) > 0), [allProducts]);
 
   const accessoryBrands = [...new Set(accessories.map((a) => a.brand))];
   const cellphoneBrands = [...new Set(cellphones.map((p) => p.brand))];
@@ -76,7 +76,7 @@ export default function ProductSections({
           <TabsContent value="featured">
             <ProductCatalog
               products={featuredProducts}
-              productType="cellphones"
+              productType="all"
               brands={brands}
               storageOptions={storageOptions}
               ramOptions={ramOptions}
@@ -87,7 +87,7 @@ export default function ProductSections({
           <TabsContent value="discounted">
             <ProductCatalog
               products={discountedProducts}
-              productType="cellphones"
+              productType="all"
               brands={brands}
               storageOptions={storageOptions}
               ramOptions={ramOptions}
