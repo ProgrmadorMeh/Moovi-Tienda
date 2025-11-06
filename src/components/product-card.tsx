@@ -66,7 +66,7 @@ const ProductCard = memo(({ product, onQuickView, priority = false }: ProductCar
           {(product.discount ?? 0) > 0 && (
             <Badge
               variant="destructive"
-              className="absolute top-2 right-2 z-10 text-lg"
+              className="absolute top-2 right-2 z-10 text-base"
             >
               {product.discount}% OFF
             </Badge>
@@ -76,7 +76,7 @@ const ProductCard = memo(({ product, onQuickView, priority = false }: ProductCar
               variant="default"
               className="absolute top-2 left-2 z-10 flex items-center gap-1"
             >
-              <ShieldCheck size={24} />
+              <ShieldCheck size={16} />
               <span>Envío Seguro</span>
             </Badge>
           )}
@@ -86,7 +86,7 @@ const ProductCard = memo(({ product, onQuickView, priority = false }: ProductCar
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
             className={cn(
-                "object-cover transition-opacity duration-300 group-hover:scale-105",
+                "object-cover transition-transform duration-300 group-hover:scale-105",
                 isImageLoading ? "opacity-0" : "opacity-100"
             )}
             priority={priority}
@@ -96,31 +96,31 @@ const ProductCard = memo(({ product, onQuickView, priority = false }: ProductCar
         </div>
       </Link>
       
-      <div className="flex flex-1 flex-col p-4 relative">
+      <div className="flex flex-1 flex-col p-3 relative">
         <div className="flex-1">
-          <p className="text-xl font-medium text-primary">{product.brand || 'Sin Marca'}</p>
-          <h3 className="text-2xl truncate font-semibold">{productName}</h3>
+          <p className="text-sm font-medium text-primary">{product.brand || 'Sin Marca'}</p>
+          <h3 className="text-lg truncate font-semibold">{productName}</h3>
 
-          <div className="mt-2 space-y-1">
+          <div className="mt-2 space-y-0.5">
             {product.originalPrice && product.originalPrice > product.salePrice && (
-              <p className="text-lg text-muted-foreground line-through">
+              <p className="text-sm text-muted-foreground line-through">
                 {formatPrice(product.originalPrice, currency, rate)}
               </p>
             )}
-            <p className="text-2xl font-bold">
+            <p className="text-xl font-bold">
               {formatPrice(product.salePrice, currency, rate)}
             </p>
 
-            <p className="text-lg text-muted-foreground">
-              Precio sin impuestos nacionales: {formatPrice(product.salePrice / 1.21, currency, rate)}
+            <p className="text-xs text-muted-foreground">
+              Precio sin impuestos: {formatPrice(product.salePrice / 1.21, currency, rate)}
             </p>
 
             {(product.installments ?? 0) > 0 ? (
-                <p className="text-lg text-green-600">
-                    o {product.installments} cuotas sin interés de {formatPrice(product.salePrice / product.installments, currency, rate)}
+                <p className="text-sm text-green-600">
+                    o {product.installments} cuotas de {formatPrice(product.salePrice / product.installments, currency, rate)}
                 </p>
             ) : (product as any).fees && (
-                <p className="text-lg font-semibold text-green-600">
+                <p className="text-sm font-semibold text-green-600">
                     o {(product as any).fees.count} cuotas de {formatPrice(((product as any).fees.price), currency, rate)}
                 </p>
             )}
@@ -131,18 +131,19 @@ const ProductCard = memo(({ product, onQuickView, priority = false }: ProductCar
             <div className="grid grid-cols-2 gap-2">
                 <Button
                     variant="outline"
+                    size="sm"
                     onClick={handleQuickViewClick}
                 >
                     <Eye className="mr-2 h-4 w-4" />
                     Vista Rápida
                 </Button>
-                <Button variant="outline" onClick={handleAddToCart}>
+                <Button variant="outline" size="sm" onClick={handleAddToCart}>
                     <ShoppingCart className="mr-2 h-4 w-4" />
                     Agregar
                 </Button>
             </div>
-            <Link href={`/products/${product.id}`} className="w-full block mt-4">
-              <Button className="w-full">
+            <Link href={`/products/${product.id}`} className="w-full block mt-2">
+              <Button className="w-full" size="sm">
                   <FileText className="mr-2 h-4 w-4" />
                   Ver Detalles
               </Button>
