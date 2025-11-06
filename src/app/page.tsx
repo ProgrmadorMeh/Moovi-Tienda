@@ -8,6 +8,7 @@ import { getCellphonesCached, getAccessoriesCached } from "@/lib/data";
 import type { Cellphone, Accessory } from "@/lib/types";
 import Loading from "./loading";
 import { predefinedFilters } from "@/lib/filters";
+import AnimatedFeatureCards from "@/components/ui/animated-feature-cards";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -48,6 +49,10 @@ export default function Home() {
   return (
     <>
       <HeroSection />
+       {/* El carrusel ahora se solapa con la parte inferior del Hero para una transición suave */}
+      <div className="relative z-20 -mt-24">
+        <AnimatedFeatureCards />
+      </div>
       <div id="product-catalog" className="container mx-auto px-4 py-12">
         <ProductSections
           cellphones={cellphones}
