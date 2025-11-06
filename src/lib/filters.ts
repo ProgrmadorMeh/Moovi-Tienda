@@ -1,5 +1,3 @@
-// src/lib/filters.ts
-
 interface PredefinedFilters {
   RAM: string[];
   Almacenamiento: string[];
