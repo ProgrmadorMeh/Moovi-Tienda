@@ -1,3 +1,4 @@
+
 import { cache } from 'react';
 import { createClient } from './supabaseClient';
 import type { Cellphone, Accessory, Product } from "@/lib/types";
@@ -92,7 +93,7 @@ function processProducts(products: any[]): Product[] {
  * La función `cache` de React se encarga de memoizar la petición durante un ciclo de renderizado.
  */
 export const getAllProductsCached = cache(async (): Promise<Product[]> => {
-  const results = await Promise.all([
+  const [cellphonesRes, accessoriesRes] = await Promise.all([
     methodGetList("celulares"),
     methodGetList("accesorios"),
   ]);
