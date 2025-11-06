@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from "react";
@@ -24,12 +25,12 @@ interface ProductPageClientProps {
   product: Product;
 }
 
-// Datos de ejemplo para la galería
+// Datos de ejemplo para la galería (usando solo la imagen por defecto)
 const placeholderImages = [
-  defaultBase.imageUrl,
-  defaultBase.imageUrl.replace('place', 'place2'),
-  defaultBase.imageUrl.replace('place', 'place3'),
-  defaultBase.imageUrl.replace('place', 'place4'),
+  defaultBase.imageUrl as string,
+  defaultBase.imageUrl as string,
+  defaultBase.imageUrl as string,
+  defaultBase.imageUrl as string,
 ];
 
 export default function ProductPageClient({ product }: ProductPageClientProps) {
@@ -193,3 +194,4 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
     </div>
   );
 }
+
