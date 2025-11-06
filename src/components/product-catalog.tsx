@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import type { Product } from "@/lib/types";
 import ProductCard from "./product-card";
 import PaginationControls from "./pagination-controls";
@@ -44,11 +44,6 @@ export default function ProductCatalog({
       startIndex + PRODUCTS_PER_PAGE
     );
   }, [filteredAndSortedProducts, currentPage]);
-
-  useEffect(() => {
-    console.log("Filtered Products:", filteredAndSortedProducts);
-    console.log("Paginated Products:", paginatedProducts);
-  }, [filteredAndSortedProducts, paginatedProducts]);
 
   const totalPages = Math.ceil(
     filteredAndSortedProducts.length / PRODUCTS_PER_PAGE

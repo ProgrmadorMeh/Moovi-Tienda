@@ -1,44 +1,58 @@
 
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import HeroSection from '@/components/hero-section';
 import ProductSections from "@/components/product-sections";
-import { getCellphonesCached, getAccessoriesCached } from "@/lib/data";
-import type { Cellphone, Accessory } from "@/lib/types";
+import { getAllProductsCached } from "@/lib/data";
+import type { Cellphone, Accessory, Product } from "@/lib/types";
 import Loading from "./loading";
 import { predefinedFilters } from "@/lib/filters";
 import AnimatedFeatureCards from "@/components/ui/animated-feature-cards";
 
+const isCellphone = (product: Product): product is Cellphone => {
+    return 'imei' in product || 'dataTecnica' in product;
+};
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const [cellphones, setCellphones] = useState<Cellphone[]>([]);
-  const [accessories, setAccessories] = useState<Accessory[]>([]);
-  const [brands, setBrands] = useState<string[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   
-  // Usamos las opciones predefinidas desde el nuevo archivo de filtros
   const storageOptions = predefinedFilters.Almacenamiento;
   const ramOptions = predefinedFilters.RAM;
 
   useEffect(() => {
     const loadData = async () => {
-      const [fetchedPhones, fetchedAccessories] = await Promise.all([
-        getCellphonesCached(),
-        getAccessoriesCached(),
-      ]);
-
-      const allProducts = [...fetchedPhones, ...fetchedAccessories];
-      const uniqueBrands = [...new Set(allProducts.map((p) => p.brand))];
-      
-      setCellphones(fetchedPhones);
-      setAccessories(fetchedAccessories);
-      setBrands(uniqueBrands);
-      
+      // Forzamos la actualización de la caché en la carga inicial de la página principal.
+      const fetchedProducts = await getAllProductsCached(true); 
+      setAllProducts(fetchedProducts);
       setIsLoading(false);
     };
 
     loadData();
   }, []);
+
+  // Memoizamos la derivación de los datos para evitar recálculos en cada render.
+  const { cellphones, accessories, brands } = useMemo(() => {
+    const phones: Cellphone[] = [];
+    const accs: Accessory[] = [];
+    const uniqueBrands = new Set<string>();
+
+    for (const product of allProducts) {
+      uniqueBrands.add(product.brand);
+      if (isCellphone(product)) {
+        phones.push(product);
+      } else {
+        accs.push(product as Accessory);
+      }
+    }
+    
+    return {
+      cellphones: phones,
+      accessories: accs,
+      brands: Array.from(uniqueBrands),
+    };
+  }, [allProducts]);
 
   if (isLoading) {
     return <Loading />;

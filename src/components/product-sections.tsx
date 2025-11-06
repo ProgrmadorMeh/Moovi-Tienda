@@ -35,8 +35,8 @@ export default function ProductSections({
   const discountedProducts = useMemo(() => allProducts.filter((p) => (p.discount ?? 0) > 0), [allProducts]);
   const featuredProducts = useMemo(() => allProducts.filter((p) => (p.discount ?? 0) > 0), [allProducts]);
 
-  const accessoryBrands = [...new Set(accessories.map((a) => a.brand))];
-  const cellphoneBrands = [...new Set(cellphones.map((p) => p.brand))];
+  const accessoryBrands = useMemo(() => [...new Set(accessories.map((a) => a.brand))], [accessories]);
+  const cellphoneBrands = useMemo(() => [...new Set(cellphones.map((p) => p.brand))], [cellphones]);
 
 
   return (
