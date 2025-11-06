@@ -18,6 +18,7 @@ export const methodGetList = cache(async (supabase, tabla, filtros = {}, campos 
 
     let selectQuery = campos;
 
+    // La relación con 'marcas' debe ser manejada por la consulta que llama a esta función
     if (tabla === "celulares" || tabla === "accesorios") {
       selectQuery = `
         *,
