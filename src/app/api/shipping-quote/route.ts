@@ -1,3 +1,4 @@
+
 import { NextResponse } from 'next/server';
 
 interface CartItem {
@@ -55,8 +56,10 @@ export async function POST(req: Request) {
     // 2. Costo por Peso (ej. $500 por cada kg)
     const weightCost = totalWeight * 500;
 
-    // 3. Costo por Volumen (simulado)
-    const volumeCost = totalItems > 5 ? 800 : 0; // Costo extra si son muchos productos
+    // 3. Costo por Volumen (simulado y más granular)
+    // Se cobra un costo inicial por el empaquetado y un adicional por cada artículo.
+    const volumeCost = totalItems > 1 ? 200 + (totalItems - 1) * 150 : 0;
+
 
     // 4. Seguro (ej. 1% del valor declarado)
     const insuranceCost = declaredValue * 0.01;
