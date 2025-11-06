@@ -1,8 +1,6 @@
-
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Product } from "@/lib/types";
-import { getAllProductsCached } from "@/lib/data";
 import { toast } from "@/hooks/use-toast";
 
 // --- TIPOS Y ESTADO INICIAL ---
@@ -11,23 +9,32 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
-interface CartState {
-  items: CartItem[];
-  coupon: Coupon | null;
-  shippingCost: number;
-  allProducts: Product[]; // guardamos todos los productos para usar en el carrito o búsqueda
-}
-
 interface Coupon {
   code: string;
   discount: number; // Porcentaje de descuento
 }
 
-const INITIAL_STATE: CartState = {
+interface CartState {
+  items: CartItem[];
+  coupon: Coupon | null;
+  shippingCost: number;
+}
+
+interface CartActions {
+  addItem: (product: Product) => void;
+  removeItem: (productId: string) => void;
+  updateQuantity: (productId: string, newQuantity: number) => void;
+  applyCoupon: (coupon: Coupon | null) => void;
+  setShippingCost: (cost: number) => void;
+  clearCart: () => void;
+  getTotalItems: () => number;
+}
+
+
+const INITIAL_STATE: Omit<CartState, 'allProducts'> = {
   items: [],
   coupon: null,
   shippingCost: 0,
-  allProducts: [],
 };
 
 // --- STORE ---
@@ -38,11 +45,6 @@ export const useCartStore = create(
       ...INITIAL_STATE,
 
       // --- ACCIONES ---
-
-      loadProducts: async () => {
-        const products = await getAllProductsCached();
-        set({ allProducts: products });
-      },
 
       addItem: (product) => {
         set((state) => {
@@ -113,24 +115,11 @@ export const useCartStore = create(
 
       applyCoupon: (coupon) => set({ coupon }),
       setShippingCost: (cost) => set({ shippingCost: cost }),
-      clearCart: () => set((state) => ({...INITIAL_STATE, allProducts: state.allProducts})),
+      clearCart: () => set({ ...INITIAL_STATE }),
 
       // --- SELECTORES ---
-      getSubtotal: () => {
-        return get().items.reduce(
-          (acc, item) => acc + item.salePrice * item.quantity,
-          0
-        );
-      },
-
       getTotalItems: () => {
         return get().items.reduce((acc, item) => acc + item.quantity, 0);
-      },
-
-      getTotal: () => {
-        const subtotal = get().getSubtotal();
-        const couponDiscount = get().coupon ? subtotal * (get().coupon!.discount / 100) : 0;
-        return subtotal - couponDiscount + get().shippingCost;
       },
     }),
     {
@@ -140,18 +129,3 @@ export const useCartStore = create(
     }
   )
 );
-
-// --- INTERFACE DE ACCIONES ---
-
-interface CartActions {
-  loadProducts: () => Promise<void>;
-  addItem: (product: Product) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, newQuantity: number) => void;
-  applyCoupon: (coupon: Coupon | null) => void;
-  setShippingCost: (cost: number) => void;
-  clearCart: () => void;
-  getSubtotal: () => number;
-  getTotalItems: () => number;
-  getTotal: () => number;
-}

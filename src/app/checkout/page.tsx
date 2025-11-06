@@ -7,9 +7,11 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Preference from '@/lib/funtion/pago/RealizarCompra.js';
 import { useUserStore } from '@/lib/user-store';
+import { useCurrency } from '@/lib/currency-context';
+import { formatPrice } from '@/lib/utils';
 
 // Tipos para las opciones de envío
 interface ShippingOption {
@@ -20,7 +22,8 @@ interface ShippingOption {
 }
 
 export default function CheckoutPage() {
-  const { items, coupon, getSubtotal, getTotal, setShippingCost, shippingCost } = useCartStore();
+  const { items, coupon, setShippingCost, shippingCost } = useCartStore();
+  const { currency, rate } = useCurrency();
   const router = useRouter();
   const { toast } = useToast();
   const { user, loading } = useUserStore();
@@ -150,6 +153,19 @@ export default function CheckoutPage() {
     }
   };
 
+  const subtotal = useMemo(() => {
+    return items.reduce((acc, item) => acc + item.salePrice * item.quantity, 0);
+  }, [items]);
+
+  const discountAmount = useMemo(() => {
+    return coupon ? subtotal * (coupon.discount / 100) : 0;
+  }, [subtotal, coupon]);
+
+  const total = useMemo(() => {
+    return subtotal - discountAmount + shippingCost;
+  }, [subtotal, discountAmount, shippingCost]);
+
+
   if (loading || !user || items.length === 0) {
     return (
         <div className="container mx-auto flex h-screen items-center justify-center">
@@ -215,7 +231,7 @@ export default function CheckoutPage() {
                         </p>
                       </div>
                     </div>
-                    <span className="font-semibold">${typeof opt.cost === 'number' ? opt.cost.toFixed(2) : 'N/A'}</span>
+                    <span className="font-semibold">{formatPrice(opt.cost ?? 0, 'ARS', rate)}</span>
                   </Label>
                 ))}
               </RadioGroup>
@@ -230,16 +246,16 @@ export default function CheckoutPage() {
             <div className="sticky top-32 rounded-lg border bg-white/10 backdrop-blur-lg p-6 shadow-lg">
               <h2 className="mb-6 text-xl font-semibold">Resumen del Pedido</h2>
               <div className="space-y-3">
-                <div className="flex justify-between"><span>Subtotal</span><span>${getSubtotal().toFixed(2)}</span></div>
+                <div className="flex justify-between"><span>Subtotal</span><span>{formatPrice(subtotal, currency, rate)}</span></div>
                 {coupon && (
                   <div className="flex justify-between text-green-500">
                     <span>Descuento ({coupon.code})</span>
-                    <span>-${(getSubtotal() * (coupon.discount / 100)).toFixed(2)}</span>
+                    <span>-{formatPrice(discountAmount, currency, rate)}</span>
                   </div>
                 )}
-                <div className="flex justify-between"><span>Envío</span><span>${shippingCost.toFixed(2)}</span></div>
+                <div className="flex justify-between"><span>Envío</span><span>{formatPrice(shippingCost, currency, rate)}</span></div>
                 <div className="h-px bg-gray-300"></div>
-                <div className="flex justify-between text-xl font-bold"><span>Total</span><span>${getTotal().toFixed(2)}</span></div>
+                <div className="flex justify-between text-xl font-bold"><span>Total</span><span>{formatPrice(total, currency, rate)}</span></div>
               </div>
               <Button type="submit" className="w-full mt-6" size="lg" disabled={isSubmitting || !selectedShipping}>{isSubmitting ? 'Procesando...' : 'Ir a Pagar'}</Button>
                <div className="mt-4 text-xs text-gray-400">

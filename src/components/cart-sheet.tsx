@@ -13,15 +13,17 @@ import {
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { defaultBase } from '@/lib/types';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
+import { useCurrency } from '@/lib/currency-context';
+import { formatPrice } from '@/lib/utils';
 
 export default function CartSheet() {
-  const {
-    items,
-    getSubtotal,
-  } = useCartStore();
+  const { items } = useCartStore();
+  const { currency, rate } = useCurrency();
 
-  const subtotal = getSubtotal();
+  const subtotal = useMemo(() => {
+    return items.reduce((acc, item) => acc + item.salePrice * item.quantity, 0);
+  }, [items]);
 
   return (
     <>
@@ -54,7 +56,7 @@ export default function CartSheet() {
           <SheetFooter className="flex-col space-y-4 border-t pt-6 sm:flex-col sm:space-y-4">
             <div className="flex w-full justify-between text-lg font-semibold">
               <span>Subtotal:</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>{formatPrice(subtotal, currency, rate)}</span>
             </div>
 
             <div className="grid w-full grid-cols-2 gap-4">
@@ -80,6 +82,7 @@ export default function CartSheet() {
 
 const CartItemRow = memo(function CartItemRow({ item }: { item: CartItem }) {
   const { updateQuantity, removeItem } = useCartStore();
+  const { currency, rate } = useCurrency();
 
     // Lógica para asegurar que siempre haya una URL de imagen válida
     let imageSrc = defaultBase.imageUrl as string;
@@ -102,7 +105,7 @@ const CartItemRow = memo(function CartItemRow({ item }: { item: CartItem }) {
 
       <div className="flex-1">
         <h4 className="font-semibold">{item.model}</h4>
-        <p className="text-sm text-gray-500">${item.salePrice.toFixed(2)}</p>
+        <p className="text-sm text-gray-500">{formatPrice(item.salePrice, currency, rate)}</p>
 
         <div className="mt-2 flex items-center rounded-md border w-fit">
           <button 

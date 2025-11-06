@@ -7,9 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Minus, X, Tag, ArrowLeft } from 'lucide-react';
-import { useState, memo, useEffect } from 'react';
+import { useState, memo, useEffect, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { defaultBase } from '@/lib/types';
+import { useCurrency } from '@/lib/currency-context';
+import { formatPrice } from '@/lib/utils';
+
 
 // Cupones de ejemplo
 const COUPONS = [
@@ -18,9 +21,8 @@ const COUPONS = [
 ];
 
 export default function CartPage() {
-  const { items, coupon, shippingCost, getSubtotal, getTotal, applyCoupon, setShippingCost } = useCartStore();
-  const subtotal = getSubtotal();
-  const total = getTotal();
+  const { items, coupon, shippingCost, applyCoupon, setShippingCost } = useCartStore();
+  const { currency, rate } = useCurrency();
   const { toast } = useToast();
   const [couponCode, setCouponCode] = useState('');
 
@@ -42,6 +44,19 @@ export default function CartPage() {
       toast({ variant: "destructive", description: '❌ Cupón no válido' });
     }
   };
+  
+  const subtotal = useMemo(() => {
+    return items.reduce((acc, item) => acc + item.salePrice * item.quantity, 0);
+  }, [items]);
+
+  const discountAmount = useMemo(() => {
+    return coupon ? subtotal * (coupon.discount / 100) : 0;
+  }, [subtotal, coupon]);
+
+  const total = useMemo(() => {
+    return subtotal - discountAmount + shippingCost;
+  }, [subtotal, discountAmount, shippingCost]);
+
 
   return (
     <div className="container mx-auto px-4 py-12 pt-32">
@@ -73,20 +88,20 @@ export default function CartPage() {
               <h2 className="mb-6 text-xl font-semibold">Resumen del Pedido</h2>
               
               <div className="space-y-3">
-                <div className="flex justify-between"><span>Subtotal</span><span>${subtotal.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</span></div>
+                <div className="flex justify-between"><span>Subtotal</span><span>{formatPrice(subtotal, currency, rate)}</span></div>
                 
                 {coupon && (
                   <div className="flex justify-between text-green-500">
                     <span>Descuento ({coupon.code})</span>
-                    <span>-${(subtotal * (coupon.discount / 100)).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</span>
+                    <span>-{formatPrice(discountAmount, currency, rate)}</span>
                   </div>
                 )}
 
-                <div className="flex justify-between"><span>Envío</span><span>${shippingCost.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</span></div>
+                <div className="flex justify-between"><span>Envío</span><span>{formatPrice(shippingCost, currency, rate)}</span></div>
 
                 <div className="h-px bg-gray-300"></div>
 
-                <div className="flex justify-between text-xl font-bold"><span>Total</span><span>${total.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</span></div>
+                <div className="flex justify-between text-xl font-bold"><span>Total</span><span>{formatPrice(total, currency, rate)}</span></div>
               </div>
 
               <div className="mt-6">
@@ -118,6 +133,7 @@ export default function CartPage() {
 
 const CartPageItemRow = memo(function CartPageItemRow({ item }: { item: CartItem }) {
     const { updateQuantity, removeItem } = useCartStore();
+    const { currency, rate } = useCurrency();
 
     const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newQuantity = parseInt(e.target.value, 10);
@@ -151,10 +167,10 @@ const CartPageItemRow = memo(function CartPageItemRow({ item }: { item: CartItem
             <div className="flex-1">
                 <h3 className="text-lg font-semibold">{item.model}</h3>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <p className="text-lg font-semibold">${item.salePrice.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</p>
+                  <p className="text-lg font-semibold">{formatPrice(item.salePrice, currency, rate)}</p>
                   {showOriginalPrice && (
                     <p className="text-sm text-gray-400 line-through">
-                      ${item.originalPrice!.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                      {formatPrice(item.originalPrice!, currency, rate)}
                     </p>
                   )}
                   {showDiscount && (
@@ -177,7 +193,7 @@ const CartPageItemRow = memo(function CartPageItemRow({ item }: { item: CartItem
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.id, item.quantity + 1)}><Plus size={16} /></Button>
                 </div>
 
-                <p className="w-24 text-right font-semibold">${(item.salePrice * item.quantity).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</p>
+                <p className="w-24 text-right font-semibold">{formatPrice(item.salePrice * item.quantity, currency, rate)}</p>
 
                 <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:bg-red-500/10 hover:text-red-500" onClick={() => removeItem(item.id)}><X size={18} /></Button>
             </div>
