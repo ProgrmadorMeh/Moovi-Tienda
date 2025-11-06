@@ -14,6 +14,7 @@ type BaseProduct = {
   shipping: boolean;
   installments: number;
   color: string;
+  weight: number; // en kg
   dataTecnica?: Record<string, string>; // Usamos un objeto genérico para las especificaciones
 };
 
@@ -53,6 +54,7 @@ export const defaultBase = {
   shipping: false,
   installments: 0,
   color: "No especificado",
+  weight: 0.2, // Peso por defecto en kg
   dataTecnica: {},
   // Campos específicos con valores por defecto
   imei: "N/A",
@@ -62,4 +64,4 @@ export const defaultBase = {
 // Esto asegura que al crear un `defaultProduct`, tiene todos los campos de `Product`
 export const defaultProduct: Product = { ...defaultBase, imei: "N/A" };
 export const defaultCellphone: Cellphone = { ...defaultBase, imei: "N/A" };
-export const defaultAccessory: Accessory = { ...defaultBase, category: "General" };
+export const defaultAccessory: Accessory = { ...defaultBase, category: "General", weight: 0.1 };

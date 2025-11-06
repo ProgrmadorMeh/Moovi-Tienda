@@ -11,34 +11,13 @@ import { useState, useEffect } from 'react';
 import Preference from '@/lib/funtion/pago/RealizarCompra.js';
 import { useUserStore } from '@/lib/user-store';
 
-const getShippingOptions = async (postalCode: string): Promise<{id: string, name: string, cost: number}[]> => {
-  console.log(`Buscando opciones de envío para el CP: ${postalCode}`);
-  await new Promise(resolve => setTimeout(resolve, 500));
-
-  if (/^\d{4}$/.test(postalCode)) {
-    const cp = parseInt(postalCode, 10);
-    if (cp >= 1000 && cp < 2000) {
-      return [
-        { id: 'oca-estandar-gba', name: 'Envío Oca Estándar (GBA, 5-7 días)', cost: 3500.00 },
-        { id: 'andreani-urgente-gba', name: 'Envío Andreani Urgente (GBA, 2-3 días)', cost: 5000.00 },
-      ];
-    }
-    return [
-      { id: 'correo-argentino-interior', name: 'Correo Argentino (Interior, 6-10 días)', cost: 6500.00 },
-    ];
-  }
-
-  if (/^\d{5}$/.test(postalCode)) {
-    if (postalCode.startsWith('28')) {
-      return [
-        { id: 'estandar-es', name: 'Envío Estándar (3-5 días)', cost: 5.99 },
-        { id: 'express-es', name: 'Envío Express (1-2 días)', cost: 9.99 },
-      ];
-    }
-  }
-
-  return [];
-};
+// Tipos para las opciones de envío
+interface ShippingOption {
+  id: string;
+  name: string;
+  cost: number;
+  estimated_days: string;
+}
 
 export default function CheckoutPage() {
   const { items, coupon, getSubtotal, getTotal, setShippingCost, shippingCost } = useCartStore();
@@ -46,7 +25,7 @@ export default function CheckoutPage() {
   const { toast } = useToast();
   const { user, loading } = useUserStore();
   const [postalCode, setPostalCode] = useState('');
-  const [shippingOptions, setShippingOptions] = useState<any[]>([]);
+  const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>([]);
   const [isLoadingShipping, setIsLoadingShipping] = useState(false);
   const [selectedShipping, setSelectedShipping] = useState<string | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -84,10 +63,27 @@ export default function CheckoutPage() {
 
     setIsLoadingShipping(true);
     try {
-      const options = await getShippingOptions(postalCode);
+      // Llamada a la nueva API de cotización
+      const response = await fetch('/api/shipping-quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          postalCode,
+          cartItems: items.map(item => ({ id: item.id, quantity: item.quantity, price: item.salePrice, weight: item.weight })),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'No se pudo calcular el envío.');
+      }
+      
+      const options: ShippingOption[] = data.options;
       setShippingOptions(options);
 
       if (options.length > 0) {
+        // Seleccionar la primera opción por defecto
         setSelectedShipping(options[0].id);
         setShippingCost(options[0].cost);
       } else {
@@ -95,13 +91,17 @@ export default function CheckoutPage() {
         setShippingCost(0);
         toast({ variant: "destructive", description: "No se encontraron opciones de envío para este código postal." });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching shipping options:", error);
-      toast({ variant: "destructive", description: "No se pudo calcular el envío." });
+      toast({ variant: "destructive", description: error.message || "No se pudo calcular el envío." });
+      setShippingOptions([]);
+      setSelectedShipping(undefined);
+      setShippingCost(0);
     } finally {
       setIsLoadingShipping(false);
     }
   };
+
 
   const handleShippingChange = (optionId: string) => {
     const selected = shippingOptions.find(opt => opt.id === optionId);
@@ -129,6 +129,7 @@ export default function CheckoutPage() {
       precio: item.salePrice,
     }));
 
+    // El costo de envío ya se suma al total, pero MercadoPago lo necesita como un item más
     if (shippingCost > 0 && selectedShipping) {
       const shippingOption = shippingOptions.find(opt => opt.id === selectedShipping);
       cartForMP.push({
@@ -207,7 +208,12 @@ export default function CheckoutPage() {
                   >
                     <div className="flex items-center space-x-3">
                       <RadioGroupItem value={opt.id} id={opt.id} />
-                      <span>{opt.name}</span>
+                      <div>
+                        <span>{opt.name}</span>
+                        <p className="text-sm text-muted-foreground">
+                          Entrega estimada: {opt.estimated_days}
+                        </p>
+                      </div>
                     </div>
                     <span className="font-semibold">${opt.cost.toFixed(2)}</span>
                   </Label>
@@ -215,7 +221,7 @@ export default function CheckoutPage() {
               </RadioGroup>
             )}
             {postalCode && !isLoadingShipping && shippingOptions.length === 0 && (
-              <p className="text-muted-foreground">No hay opciones de envío para el código postal ingresado.</p>
+              <p className="text-muted-foreground">No hay opciones de envío para el código postal ingresado. Intenta con otro.</p>
             )}
           </div>
         </div>

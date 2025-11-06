@@ -7,6 +7,12 @@ import type { Cellphone, Accessory, Product } from "@/lib/types";
 
 let cachedAllProducts: Product[] | null = null;
 
+const isRawProductCellphone = (p: any): boolean => {
+    // Un producto es un celular si NO tiene la propiedad 'category'.
+    // Esta es la forma más simple de distinguir basado en el modelo de datos.
+    return !p.hasOwnProperty('category');
+};
+
 /**
  * Procesa una lista de productos para asegurar que la lógica de precios, marcas e imágenes sea consistente.
  */
@@ -60,6 +66,8 @@ function processProducts(products: any[]): Product[] {
       brand, 
       imageUrl: processedImageUrl,
       dataTecnica: processedDataTecnica,
+      // Asignación de peso
+      weight: isRawProductCellphone(p) ? 0.2 : 0.1, // 200g para celulares, 100g para accesorios
     };
 
     if (!p.installments) {
@@ -107,7 +115,7 @@ export const getAllProductsCached = cache(async (refresh = false): Promise<Produ
  */
 export async function getCellphonesCached(refresh = false): Promise<Cellphone[]> {
   const allProducts = await getAllProductsCached(refresh);
-  return allProducts.filter((p): p is Cellphone => p.hasOwnProperty('imei') || p.hasOwnProperty('dataTecnica'));
+  return allProducts.filter((p): p is Cellphone => 'imei' in p || (p.hasOwnProperty('dataTecnica') && !p.hasOwnProperty('category')));
 }
 
 /**
@@ -117,4 +125,3 @@ export async function getAccessoriesCached(refresh = false): Promise<Accessory[]
   const allProducts = await getAllProductsCached(refresh);
   return allProducts.filter((p): p is Accessory => "category" in p);
 }
-
