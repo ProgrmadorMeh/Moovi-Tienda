@@ -1,7 +1,6 @@
 
-import type {NextConfig} from 'next';
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,
@@ -25,8 +24,8 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "pwxpxouatzzxvvvszdnx.supabase.co", // 👈 agrega tu dominio de Supabase aquí
-        pathname: "/storage/v1/object/public/**", // 👈 ruta de tus imágenes
+        hostname: "pwxpxouatzzxvvvszdnx.supabase.co",
+        pathname: "/storage/v1/object/public/**",
       },
       {
         protocol: 'https',
@@ -46,8 +45,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      }
     ],
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

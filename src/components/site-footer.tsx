@@ -19,9 +19,6 @@ export default function SiteFooter() {
             <Link href="/terminos-condiciones" className="hover:text-primary">
               Términos y Condiciones
             </Link>
-            <Link href="/politica-cookies" className="hover:text-primary">
-              Política de Cookies
-            </Link>
             <div className="mt-2">
               <p className="font-semibold">Pagos Seguros</p>
             </div>
