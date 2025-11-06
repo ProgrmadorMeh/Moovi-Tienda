@@ -7,6 +7,7 @@ import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/lib/auth-provider";
+import { CurrencyProvider } from "@/lib/currency-context";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -43,12 +44,14 @@ export default function RootLayout({
         )}
       >
         <AuthProvider>
-          <div className="flex min-h-dvh flex-col">
-            <SiteHeader />
-            <main className="flex-1">{children}</main>
-            <SiteFooter />
-          </div>
-          <Toaster />
+          <CurrencyProvider>
+            <div className="flex min-h-dvh flex-col">
+              <SiteHeader />
+              <main className="flex-1">{children}</main>
+              <SiteFooter />
+            </div>
+            <Toaster />
+          </CurrencyProvider>
         </AuthProvider>
       </body>
     </html>

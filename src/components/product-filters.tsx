@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "./ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { FilterState } from "@/hooks/use-product-filters";
+import { CurrencyToggle } from "./currency-toggle";
 
 // Definimos los rangos de precios
 export const priceRanges = [
@@ -85,7 +86,10 @@ export default function ProductFilters({
   
   return (
     <div className="space-y-6 rounded-lg border bg-card p-6">
-      <h3 className="font-headline text-2xl font-semibold">Filtros</h3>
+      <div className="flex justify-between items-center">
+        <h3 className="font-headline text-2xl font-semibold">Filtros</h3>
+        <CurrencyToggle />
+      </div>
 
       <div className="space-y-4">
         <Label htmlFor="sort">Ordenar por</Label>

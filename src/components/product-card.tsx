@@ -1,3 +1,4 @@
+
 'use client';
 
 import { memo, useState } from "react";
@@ -11,7 +12,8 @@ import type { Product } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { defaultBase } from "@/lib/types";
 import { Skeleton } from "./ui/skeleton";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
+import { useCurrency } from "@/lib/currency-context";
 
 interface ProductCardProps {
   product: Product;
@@ -23,6 +25,7 @@ const ProductCard = memo(({ product, onQuickView, priority = false }: ProductCar
   const { addItem } = useCartStore();
   const { toast } = useToast();
   const [isImageLoading, setIsImageLoading] = useState(true);
+  const { currency, rate } = useCurrency(); // <-- Hook para obtener la moneda
 
   const productName = `${product.model}`;
 
@@ -101,24 +104,24 @@ const ProductCard = memo(({ product, onQuickView, priority = false }: ProductCar
           <div className="mt-2 space-y-1">
             {product.originalPrice && product.originalPrice > product.salePrice && (
               <p className="text-lg text-muted-foreground line-through">
-                ${product.originalPrice.toLocaleString("es-AR")}
+                {formatPrice(product.originalPrice, currency, rate)}
               </p>
             )}
             <p className="text-2xl font-bold">
-              ${product.salePrice.toLocaleString("es-AR")}
+              {formatPrice(product.salePrice, currency, rate)}
             </p>
 
             <p className="text-lg text-muted-foreground">
-              Precio sin impuestos nacionales: ${(product.salePrice / 1.21).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              Precio sin impuestos nacionales: {formatPrice(product.salePrice / 1.21, currency, rate)}
             </p>
 
             {(product.installments ?? 0) > 0 ? (
                 <p className="text-lg text-green-600">
-                    o {product.installments} cuotas sin interés de ${(product.salePrice / product.installments).toLocaleString("es-AR", { minimumFractionDigits: 2 })}
+                    o {product.installments} cuotas sin interés de {formatPrice(product.salePrice / product.installments, currency, rate)}
                 </p>
             ) : (product as any).fees && (
                 <p className="text-lg font-semibold text-green-600">
-                    o {(product as any).fees.count} cuotas de ${((product as any).fees.price).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    o {(product as any).fees.count} cuotas de {formatPrice((product as any).fees.price, currency, rate)}
                 </p>
             )}
           </div>
