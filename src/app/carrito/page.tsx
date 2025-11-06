@@ -21,7 +21,7 @@ const COUPONS = [
 ];
 
 export default function CartPage() {
-  const { items, coupon, shippingCost, applyCoupon, setShippingCost } = useCartStore();
+  const { items, coupon, shippingCost, applyCoupon, setShippingCost, getSubtotal } = useCartStore();
   const { currency, rate } = useCurrency();
   const { toast } = useToast();
   const [couponCode, setCouponCode] = useState('');
@@ -45,9 +45,7 @@ export default function CartPage() {
     }
   };
   
-  const subtotal = useMemo(() => {
-    return items.reduce((acc, item) => acc + item.salePrice * item.quantity, 0);
-  }, [items]);
+  const subtotal = getSubtotal();
 
   const discountAmount = useMemo(() => {
     return coupon ? subtotal * (coupon.discount / 100) : 0;
@@ -97,7 +95,7 @@ export default function CartPage() {
                   </div>
                 )}
 
-                <div className="flex justify-between"><span>Envío</span><span>{formatPrice(shippingCost, currency, rate)}</span></div>
+                <div className="flex justify-between"><span>Envío</span><span>{shippingCost > 0 ? formatPrice(shippingCost, currency, rate) : 'A calcular'}</span></div>
 
                 <div className="h-px bg-gray-300"></div>
 

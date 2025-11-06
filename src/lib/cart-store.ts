@@ -28,6 +28,7 @@ interface CartActions {
   setShippingCost: (cost: number) => void;
   clearCart: () => void;
   getTotalItems: () => number;
+  getSubtotal: () => number;
 }
 
 
@@ -120,6 +121,12 @@ export const useCartStore = create(
       // --- SELECTORES ---
       getTotalItems: () => {
         return get().items.reduce((acc, item) => acc + item.quantity, 0);
+      },
+       getSubtotal: () => {
+        return get().items.reduce(
+          (acc, item) => acc + item.salePrice * item.quantity,
+          0
+        );
       },
     }),
     {
