@@ -56,6 +56,7 @@ export default function SiteHeader() {
     await logout();
     toast({ description: 'Has cerrado sesión.' });
     router.push('/');
+    router.refresh();
   };
 
   return (
