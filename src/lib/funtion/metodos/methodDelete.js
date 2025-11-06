@@ -1,4 +1,4 @@
-import { supabase } from '../../supabaseClient.js';
+import { createClient } from '@/lib/supabase/server';
 import { administrador } from '../seguridad.js';
 
 /**
@@ -8,6 +8,7 @@ import { administrador } from '../seguridad.js';
  */
 
 export async function methodDelete(datos) {
+  const supabase = createClient();
   // Verificar autorización
   const autorizado = await administrador();
   if (!autorizado) {

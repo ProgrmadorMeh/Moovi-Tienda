@@ -1,4 +1,4 @@
-import { supabase } from '../../supabaseClient.js';
+import { createClient } from '@/lib/supabase/server';
 
 /**
  * Obtiene un solo registro de una tabla específica mediante su ID.
@@ -7,7 +7,7 @@ import { supabase } from '../../supabaseClient.js';
  */
 
 export async function methodGetById(tabla, id) {
-
+  const supabase = createClient();
   if (!tabla || !id) {
     return {
       success: false,

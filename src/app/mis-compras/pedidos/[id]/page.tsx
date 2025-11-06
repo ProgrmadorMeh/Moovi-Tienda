@@ -1,7 +1,5 @@
-
-
 // src/app/mis-compras/pedidos/[id]/page.tsx
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/lib/supabase/server';
 import { notFound, redirect } from 'next/navigation';
 import { format, parseISO, differenceInHours, differenceInDays } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -68,6 +66,7 @@ const ShippingTimeline = ({ dateApproved }: { dateApproved: string }) => {
 
 // --- Página Principal ---
 export default async function OrderDetailPage({ params }: { params: { id: string } }) {
+  const supabase = createClient();
   const { id: paymentId } = params;
 
   // 1. Validar sesión de usuario

@@ -1,4 +1,4 @@
-import { supabase } from '../../supabaseClient.js';
+import { createClient } from '@/lib/supabase/client';
 
 /**
  * Inicia sesión de un usuario con email y contraseña.
@@ -7,6 +7,7 @@ import { supabase } from '../../supabaseClient.js';
  * @returns {Promise<{ success: boolean, message: string, data: any | null }>}
  */
 export async function loginWithEmail(email, password) {
+  const supabase = createClient();
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,

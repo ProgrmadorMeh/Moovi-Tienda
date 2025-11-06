@@ -1,7 +1,8 @@
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from '@/lib/supabase/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 
 export async function POST(req) {
+  const supabase = createClient();
   try {
     // 1. Instanciar el cliente dentro de la función
     const client = new MercadoPagoConfig({ 

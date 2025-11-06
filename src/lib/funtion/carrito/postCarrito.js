@@ -1,4 +1,4 @@
-import { supabase } from '../../supabaseClient.js';
+import { createClient } from '@/lib/supabase/server';
 
 /**
  * Crea un nuevo pedido en la base de datos a partir de los artículos del carrito.
@@ -7,6 +7,7 @@ import { supabase } from '../../supabaseClient.js';
  * @returns {Promise<{ success: boolean, message: string, data: any | null }>}
  */
 export async function postCarrito(carrito = [], datos = {}) {
+  const supabase = createClient();
   if (!carrito || carrito.length === 0) {
     return { success: false, message: 'El carrito está vacío.', data: null };
   }

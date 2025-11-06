@@ -1,4 +1,4 @@
-import { supabase } from '../../supabaseClient.js';
+import { createClient } from '@/lib/supabase/server';
 
 /**
  * Sube uno o varios registros a Supabase.
@@ -10,6 +10,7 @@ import { supabase } from '../../supabaseClient.js';
  * @returns {Promise<{ success: boolean, message: string, data: any[] | null }>}
  */
 export async function methodPost(datos, tabla) {
+  const supabase = createClient();
   // Validar campos vacíos (excepto archivos)
   for (const [key, value] of Object.entries(datos)) {
     if (key !== 'files' && (!value || value === '')) {

@@ -1,11 +1,11 @@
-
-import { supabase } from '../../supabaseClient';
+import { createClient } from '@/lib/supabase/client';
 
 /**
  * Cierra la sesión del usuario actual.
  * @returns {Promise<{ success: boolean, message: string }>}
  */
 export async function logout(): Promise<{ success: boolean; message: string }> {
+  const supabase = createClient();
   try {
     const { error } = await supabase.auth.signOut();
 
@@ -27,5 +27,3 @@ export async function logout(): Promise<{ success: boolean; message: string }> {
     };
   }
 }
-
-    

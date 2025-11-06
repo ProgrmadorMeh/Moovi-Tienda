@@ -1,8 +1,7 @@
-
 "use client";
 
 import { useEffect, ReactNode } from "react";
-import { supabase } from "./supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useUserStore } from "./user-store";
 
 interface AuthProviderProps {
@@ -10,6 +9,7 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const supabase = createClient();
   const { setUser, setLoading } = useUserStore();
 
   useEffect(() => {
@@ -29,9 +29,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return () => {
       authListener?.subscription.unsubscribe();
     };
-  }, [setUser, setLoading]);
+  }, [setUser, setLoading, supabase.auth]);
 
   return <>{children}</>;
 }
-
-    

@@ -1,4 +1,4 @@
-import { supabase } from '../../supabaseClient.js';
+import { createClient } from '@/lib/supabase/server';
 
 /**
  * Modificar registros de la tabla mediante un ID.
@@ -7,6 +7,7 @@ import { supabase } from '../../supabaseClient.js';
  * @returns {Promise<{ success: boolean, message: string, data: any[] | null }>}
  */
 export async function methodPut(tabla, datos){
+  const supabase = createClient();
   const { id, ...campos } = datos;
   if (!id) {
     return {
