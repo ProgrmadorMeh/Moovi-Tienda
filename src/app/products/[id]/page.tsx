@@ -1,6 +1,6 @@
 
 // app/products/[id]/page.tsx
-import { getAllProductsCached, getCellphonesCached } from "@/lib/data";
+import { getAllProductsCached } from "@/lib/data";
 import { defaultBase, type Product } from "@/lib/types";
 import ProductPageClient from "./product-page-client";
 import { notFound } from 'next/navigation';
@@ -44,14 +44,4 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const product: Product = { ...defaultBase, ...productFromCache };
 
   return <ProductPageClient product={product} />;
-}
-
-// Opcional: Generar páginas estáticas en tiempo de build para los productos más visitados
-export async function generateStaticParams() {
-  const products = await getCellphonesCached();
-
-  // Generar solo las primeras 10 páginas para un build más rápido como ejemplo
-  return products.slice(0, 10).map((product) => ({
-    id: product.id,
-  }));
 }
