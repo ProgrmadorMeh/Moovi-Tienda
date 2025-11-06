@@ -30,11 +30,7 @@ const specIcons: Record<string, React.ElementType> = {
 
 const ProductSpecs = memo(({ product }: { product: Product }) => {
   // Asegurarnos de que estamos tratando con un celular y que tiene datos técnicos
-  if (
-    !isCellphone(product) ||
-    !product.dataTecnica ||
-    Object.keys(product.dataTecnica).length === 0
-  ) {
+  if (!product.dataTecnica || Object.keys(product.dataTecnica).length === 0) {
     return (
       <div className="py-4 text-center text-muted-foreground">
         No hay especificaciones técnicas detalladas para este producto.
