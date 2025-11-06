@@ -215,7 +215,7 @@ export default function CheckoutPage() {
                         </p>
                       </div>
                     </div>
-                    <span className="font-semibold">${opt.cost.toFixed(2)}</span>
+                    <span className="font-semibold">${typeof opt.cost === 'number' ? opt.cost.toFixed(2) : 'N/A'}</span>
                   </Label>
                 ))}
               </RadioGroup>

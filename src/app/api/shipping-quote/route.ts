@@ -64,20 +64,22 @@ export async function POST(req: Request) {
     // --- Calcular Opciones de Envío ---
     
     // Envío Estándar
-    const standardCost = (baseRate * distanceFactor) + weightCost + volumeCost + insuranceCost;
+    const standardCostRaw = (baseRate * distanceFactor) + weightCost + volumeCost + insuranceCost;
+    const standardCost = parseFloat(standardCostRaw.toFixed(2)) || 0;
     const standardOption = {
       id: 'standard',
       name: 'Envío Estándar',
-      cost: parseFloat(standardCost.toFixed(2)),
+      cost: standardCost,
       estimated_days: '5-7 días hábiles',
     };
 
     // Envío Express
-    const expressCost = standardCost * 1.6; // 60% más caro
+    const expressCostRaw = standardCost * 1.6; // 60% más caro
+    const expressCost = parseFloat(expressCostRaw.toFixed(2)) || 0;
     const expressOption = {
       id: 'express',
       name: 'Envío Express',
-      cost: parseFloat(expressCost.toFixed(2)),
+      cost: expressCost,
       estimated_days: '1-3 días hábiles',
     };
 
