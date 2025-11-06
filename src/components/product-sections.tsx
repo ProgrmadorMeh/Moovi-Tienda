@@ -29,9 +29,11 @@ export default function ProductSections({
     setQuickViewProduct(product);
   }, []);
 
-  // Derivamos los productos destacados y en oferta SOLAMENTE de los celulares.
-  const featuredProducts = useMemo(() => cellphones.filter((p) => p.discount > 0), [cellphones]);
-  const discountedProducts = useMemo(() => cellphones.filter((p) => p.discount > 0), [cellphones]);
+  const allProducts = useMemo(() => [...cellphones, ...accessories], [cellphones, accessories]);
+  
+  // Productos destacados y en oferta de *todos* los productos.
+  const featuredProducts = useMemo(() => allProducts.filter((p) => p.discount > 0), [allProducts]);
+  const discountedProducts = useMemo(() => allProducts.filter((p) => p.discount > 0), [allProducts]);
 
   const accessoryBrands = [...new Set(accessories.map((a) => a.brand))];
   const cellphoneBrands = [...new Set(cellphones.map((p) => p.brand))];
@@ -75,7 +77,7 @@ export default function ProductSections({
             <ProductCatalog
               products={featuredProducts}
               productType="cellphones"
-              brands={cellphoneBrands}
+              brands={brands}
               storageOptions={storageOptions}
               ramOptions={ramOptions}
               onQuickView={handleQuickView}
@@ -86,7 +88,7 @@ export default function ProductSections({
             <ProductCatalog
               products={discountedProducts}
               productType="cellphones"
-              brands={cellphoneBrands}
+              brands={brands}
               storageOptions={storageOptions}
               ramOptions={ramOptions}
               onQuickView={handleQuickView}
