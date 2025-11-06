@@ -2,6 +2,7 @@
 import { cache } from 'react';
 import { methodGetList } from "@/lib/funtion/metodos/methodGetList";
 import type { Cellphone, Accessory, Product } from "@/lib/types";
+import { createClient } from './supabase/server'; // Importar el cliente del SERVIDOR
 
 // ----------------- CACHE -----------------
 
@@ -92,9 +93,11 @@ export const getAllProductsCached = cache(async (refresh = false): Promise<Produ
     return cachedAllProducts;
   }
 
+  const supabase = createClient(); // Crear el cliente de servidor una vez
+
   const results = await Promise.all([
-    methodGetList("celulares"),
-    methodGetList("accesorios"),
+    methodGetList(supabase, "celulares"),
+    methodGetList(supabase, "accesorios"),
   ]);
 
   const cellphonesRes = results[0];
