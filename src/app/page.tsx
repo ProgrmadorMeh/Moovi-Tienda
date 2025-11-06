@@ -11,7 +11,9 @@ import { predefinedFilters } from "@/lib/filters";
 import AnimatedFeatureCards from "@/components/ui/animated-feature-cards";
 
 const isCellphone = (product: Product): product is Cellphone => {
-    return 'imei' in product || 'dataTecnica' in product;
+    // La forma más robusta y consistente con types.ts
+    // Un producto es un celular si NO tiene la propiedad 'category'.
+    return !('category' in product);
 };
 
 export default function Home() {
@@ -23,6 +25,7 @@ export default function Home() {
 
   useEffect(() => {
     const loadData = async () => {
+      setIsLoading(true);
       // Forzamos la actualización de la caché en la carga inicial de la página principal.
       const fetchedProducts = await getAllProductsCached(true); 
       setAllProducts(fetchedProducts);
