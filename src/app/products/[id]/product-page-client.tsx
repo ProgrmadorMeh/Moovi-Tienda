@@ -17,6 +17,8 @@ import { useRouter } from "next/navigation";
 import ProductSpecs from "@/components/product-specs";
 import AccessoriesCarousel from "@/components/accessories-carousel";
 import { defaultBase } from "@/lib/types";
+import { useCurrency } from "@/lib/currency-context";
+import { formatPrice } from "@/lib/utils";
 
 interface ProductPageClientProps {
   product: Product;
@@ -31,6 +33,7 @@ const placeholderImages = [
 ];
 
 export default function ProductPageClient({ product }: ProductPageClientProps) {
+  const { currency, rate } = useCurrency();
   // 🔹 Normalizamos las imágenes para la galería
   let galleryImages: string[] = [];
 
@@ -130,21 +133,21 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
           <div className="space-y-2">
             <div className="flex items-center gap-4">
-              <p suppressHydrationWarning className="text-4xl font-bold">${product.salePrice.toLocaleString('es-AR')}</p>
+              <p className="text-4xl font-bold">{formatPrice(product.salePrice, currency, rate)}</p>
               {product.originalPrice && product.originalPrice > product.salePrice && (
-                <p suppressHydrationWarning className="text-2xl text-muted-foreground line-through">
-                  ${product.originalPrice!.toLocaleString('es-AR')}
+                <p className="text-2xl text-muted-foreground line-through">
+                  {formatPrice(product.originalPrice, currency, rate)}
                 </p>
               )}
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Precio sin impuestos nacionales: ${(product.salePrice / 1.21).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              Precio sin impuestos nacionales: {formatPrice(product.salePrice / 1.21, currency, rate)}
             </p>
 
             {(product.installments ?? 0) > 0 && (
               <p className="text-md font-semibold text-green-500">
-                o <strong>{product.installments} cuotas sin interés</strong> de <strong>${(product.salePrice / product.installments).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</strong>
+                o <strong>{product.installments} cuotas sin interés</strong> de <strong>{formatPrice(product.salePrice / product.installments, currency, rate)}</strong>
               </p>
             )}
           </div>
