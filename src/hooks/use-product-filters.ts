@@ -22,7 +22,8 @@ const INITIAL_FILTERS: FilterState = {
 };
 
 const isCellphone = (product: Product): product is Cellphone => {
-  return !product.hasOwnProperty('category');
+    // Un producto es un celular si NO tiene la propiedad 'category'.
+    return !('category' in product);
 };
 
 export function useProductFilters(
@@ -75,7 +76,7 @@ export function useProductFilters(
       if (!brandMatch || !priceMatch) return false;
 
       // 3. Filtros de especificaciones técnicas (SOLO si el producto es un celular)
-      if (isCellphone(product)) {
+      if (isCellphone(product) && product.dataTecnica) {
         const techSpecKeys = Object.keys(filters.techSpecs) as Array<keyof FilterState['techSpecs']>;
         
         for (const specKey of techSpecKeys) {
@@ -86,7 +87,7 @@ export function useProductFilters(
           if (!productSpecValue) return false; 
 
           const hasMatchingSpec = selectedSpecFilters.some(filterValue =>
-            String(productSpecValue).includes(filterValue)
+            String(productSpecValue).includes(filterValue.replace(' GB', '').replace(' TB', '000')) // Normalización
           );
           
           if (!hasMatchingSpec) return false; 
