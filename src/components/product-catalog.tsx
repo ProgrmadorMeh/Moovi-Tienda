@@ -52,7 +52,7 @@ export default function ProductCatalog({
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
       <aside className="lg:col-span-1">
-        <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2">
+        <div>
           <ProductFilters
             brands={brands}
             storageOptions={storageOptions}
