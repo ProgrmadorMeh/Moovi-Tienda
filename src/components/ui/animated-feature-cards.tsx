@@ -48,8 +48,8 @@ const duplicatedFeatures = [...features, ...features];
 const AnimatedFeatureCards = () => {
   return (
     <div className="relative w-full overflow-hidden bg-transparent py-4">
-      <div className="absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-black/80 to-transparent" />
-      <div className="absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-black/80 to-transparent" />
+      <div className="absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-background to-transparent" />
+      <div className="absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent" />
       
       <div className="group/scroller flex animate-scroll-infinite">
         {duplicatedFeatures.map((feature, i) => {
@@ -58,9 +58,9 @@ const AnimatedFeatureCards = () => {
             <div
               key={i}
               className={cn(
-                'mx-4 flex-shrink-0 rounded-xl p-6 text-center text-white backdrop-blur-sm',
-                'w-64 h-40', // Ancho y alto fijos para las tarjetas
-                'flex flex-col items-center justify-center space-y-3',
+                'mx-3 flex-shrink-0 rounded-xl p-4 text-center text-white backdrop-blur-sm',
+                'w-48 h-36', // Ancho y alto ajustados
+                'flex flex-col items-center justify-center space-y-2', // Espaciado reducido
                 'transform transition-all duration-300 ease-in-out',
                 'hover:scale-105',
                 `bg-gradient-to-br ${feature.gradient}`,
@@ -68,7 +68,7 @@ const AnimatedFeatureCards = () => {
               )}
             >
               <Icon className="h-8 w-8 text-white/90" />
-              <p className="text-base font-semibold leading-tight">{feature.text}</p>
+              <p className="text-sm font-semibold leading-tight">{feature.text}</p>
             </div>
           );
         })}
@@ -84,7 +84,7 @@ const AnimatedFeatureCards = () => {
           }
         }
         .animate-scroll-infinite {
-          animation: scroll-infinite 20s linear infinite;
+          animation: scroll-infinite 10s linear infinite;
         }
         .group-hover\/scroller:hover .animate-scroll-infinite {
             animation-play-state: paused;
