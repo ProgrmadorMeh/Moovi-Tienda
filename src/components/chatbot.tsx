@@ -15,6 +15,17 @@ declare global {
 
 const CHATBOT_ID = 'u_4VPr96mgZyhNEllc_h_';
 
+// SVG data URI para el ícono de la carita sonriente
+const customIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+  <circle cx="9" cy="9" r=".5" fill="currentColor"/>
+  <circle cx="15" cy="9" r=".5" fill="currentColor"/>
+</svg>
+`;
+const encodedIcon = `data:image/svg+xml;base64,${typeof window !== 'undefined' ? window.btoa(customIcon) : ''}`;
+
+
 export default function Chatbot() {
   const { user } = useUserStore();
 
@@ -33,6 +44,13 @@ export default function Chatbot() {
       if (window.chatbase) {
         window.chatbase('init', {
           chatId: CHATBOT_ID,
+          theme: {
+            button: {
+                backgroundColor: '#8B5CF6', // Color primario de la marca (morado)
+                iconColor: '#FFFFFF', // Ícono en blanco
+                chatButtonIcon: encodedIcon,
+            },
+          }
         });
       }
     };
