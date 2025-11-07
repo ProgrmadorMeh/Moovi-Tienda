@@ -17,7 +17,7 @@ interface ProductCatalogProps {
   onQuickView: (product: Product) => void;
 }
 
-const PRODUCTS_PER_PAGE = 20;
+const PRODUCTS_PER_PAGE = 18;
 
 export default function ProductCatalog({
   products,
