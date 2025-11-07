@@ -48,6 +48,7 @@
     "firebase": "^11.9.1",
     "fuse.js": "^7.0.0",
     "genkit": "^1.20.0",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.475.0",
     "mercadopago": "^2.0.9",
     "next": "15.3.3",
@@ -64,6 +65,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

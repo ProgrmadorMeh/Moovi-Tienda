@@ -66,7 +66,7 @@ export default function Home() {
     <>
       <HeroSection />
        {/* El carrusel ahora se solapa con la parte inferior del Hero para una transición suave */}
-      <div className="relative z-20 -mt-24 hidden md:block">
+      <div className="relative z-20 -mt-24">
         <AnimatedFeatureCards />
       </div>
       <div id="product-catalog" className="container mx-auto px-4 py-12">

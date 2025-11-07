@@ -8,6 +8,7 @@ import SiteFooter from "@/components/site-footer";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/lib/auth-provider";
 import { CurrencyProvider } from "@/lib/currency-context";
+import Chatbot from "@/components/chatbot";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -51,6 +52,7 @@ export default function RootLayout({
               <SiteFooter />
             </div>
             <Toaster />
+            <Chatbot />
           </CurrencyProvider>
         </AuthProvider>
       </body>
