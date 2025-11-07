@@ -59,16 +59,16 @@ const AnimatedFeatureCards = () => {
               key={i}
               className={cn(
                 'mx-3 flex-shrink-0 rounded-xl p-4 text-center text-white backdrop-blur-sm',
-                'w-48 h-36', // Ancho y alto ajustados
-                'flex flex-col items-center justify-center space-y-2', // Espaciado reducido
+                'w-48 h-36 md:w-64 md:h-40', // Ancho y alto responsivos
+                'flex flex-col items-center justify-center space-y-2 md:space-y-3', // Espaciado responsivo
                 'transform transition-all duration-300 ease-in-out',
                 'hover:scale-105',
                 `bg-gradient-to-br ${feature.gradient}`,
                 feature.glow
               )}
             >
-              <Icon className="h-8 w-8 text-white/90" />
-              <p className="text-sm font-semibold leading-tight">{feature.text}</p>
+              <Icon className="h-8 w-8 md:h-10 md:w-10 text-white/90" />
+              <p className="text-sm md:text-base font-semibold leading-tight">{feature.text}</p>
             </div>
           );
         })}
@@ -84,7 +84,7 @@ const AnimatedFeatureCards = () => {
           }
         }
         .animate-scroll-infinite {
-          animation: scroll-infinite 10s linear infinite;
+          animation: scroll-infinite 20s linear infinite;
         }
         .group-hover\/scroller:hover .animate-scroll-infinite {
             animation-play-state: paused;
