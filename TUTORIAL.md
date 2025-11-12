@@ -116,3 +116,4 @@ Hay datos que necesitan ser accesibles desde toda la aplicación.
 ---
 
 Espero que esta guía profunda te sea de gran utilidad. Cada pieza de este proyecto fue elegida y diseñada para ser moderna, eficiente y escalable. ¡Sigue explorando el código con esta nueva perspectiva y no dudes en preguntar si algo más te causa curiosidad
+

@@ -1,6 +1,4 @@
-
 'use client';
-
 import { useState, useEffect, useMemo } from "react";
 import HeroSection from '@/components/hero-section';
 import ProductSections from "@/components/product-sections";
