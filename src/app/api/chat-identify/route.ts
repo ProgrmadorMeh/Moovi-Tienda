@@ -4,8 +4,7 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
-// Tu clave secreta de Chatbase. ¡Mantenla segura en variables de entorno!
-const CHATBASE_SECRET = 'ijeti6wmxp1k6ez99se0i64215yp27l0';
+const CHATBASE_SECRET = process.env.NEXT_PUBLIC_CHATBASE_SECRET!;
 
 export async function GET() {
   const supabase = createRouteHandlerClient({ cookies });

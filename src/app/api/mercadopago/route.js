@@ -1,4 +1,3 @@
-// No se necesita dotenv en producción con Next.js, las variables se cargan automáticamente
 const accessToken = process.env.NEXT_PUBLIC_MP_ACCESS_TOKEN;
 export async function POST(req) {
   if (req.method !== 'POST') {
